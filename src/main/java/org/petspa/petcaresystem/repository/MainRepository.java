@@ -1,8 +1,8 @@
 package org.petspa.petcaresystem.repository;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 public interface MainRepository {
 
 }

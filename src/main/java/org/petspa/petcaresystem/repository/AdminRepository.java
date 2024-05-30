@@ -2,8 +2,8 @@ package org.petspa.petcaresystem.repository;
 
 import org.petspa.petcaresystem.model.entity.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
 }
