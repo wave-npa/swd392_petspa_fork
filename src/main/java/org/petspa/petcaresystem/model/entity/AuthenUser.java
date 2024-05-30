@@ -10,35 +10,39 @@ import org.petspa.petcaresystem.enums.Status;
 @Entity
 @Getter
 @Setter
-@Table(name = "Pet")
-public class Pet {
+@Table(name = "AuthenUser")
+public class AuthenUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String pet_id;
+    private String user_id;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "full_name")
-    private String pet_name;
-
-    @Column(name = "age")
-    private int age;
+    private String full_name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
-    @Column(name = "species")
-    private String species;
+    @Column(name = "address")
+    private String address;
 
-    @Column(name = "type_of_species")
-    private String type_of_species;
+    @Column(name = "phone")
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
-    @ManyToOne
-    private Customer customer_id;
+    @OneToOne(mappedBy = "role_id")
+    @JsonIgnore
+    private Role role_id;
 
 
 }
