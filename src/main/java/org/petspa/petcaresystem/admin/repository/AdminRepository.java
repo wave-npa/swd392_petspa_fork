@@ -1,6 +1,6 @@
-package org.petspa.petcaresystem.repository;
+package org.petspa.petcaresystem.admin.repository;
 
-import org.petspa.petcaresystem.model.entity.Admin;
+import org.petspa.petcaresystem.admin.model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

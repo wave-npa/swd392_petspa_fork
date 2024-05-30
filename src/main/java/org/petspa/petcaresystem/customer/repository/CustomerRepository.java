@@ -1,6 +1,7 @@
-package org.petspa.petcaresystem.repository;
+package org.petspa.petcaresystem.customer.repository;
 
-import org.petspa.petcaresystem.model.entity.Customer;
+
+import org.petspa.petcaresystem.customer.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

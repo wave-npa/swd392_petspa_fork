@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.authenuser.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.role.model.Role;
 
 @Entity
 @Getter

@@ -1,9 +1,11 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.order.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.customer.model.Customer;
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ public class Order {
     private int order_date;
 
     @OneToOne(mappedBy = "appointment_id")
-    private AuthenUser appointment_id;
+    private Appointment appointment_id;
 
     @ManyToOne
     private Customer customer_id;

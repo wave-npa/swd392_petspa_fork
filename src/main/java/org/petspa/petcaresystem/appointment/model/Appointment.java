@@ -1,10 +1,15 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.pet.model.Pet;
+import org.petspa.petcaresystem.service_and_combo.model.Combo;
+import org.petspa.petcaresystem.service_and_combo.model.Services;
+
 
 import java.util.HashSet;
 import java.util.Set;

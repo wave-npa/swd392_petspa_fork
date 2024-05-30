@@ -1,8 +1,9 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.service_and_combo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.enums.Status;
 
 import java.util.HashSet;

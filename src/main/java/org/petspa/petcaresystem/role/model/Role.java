@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.role.model;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Id;

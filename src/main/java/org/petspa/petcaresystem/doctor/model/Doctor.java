@@ -1,9 +1,12 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.doctor.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.department.model.Department;
+
 
 @Entity
 @Getter

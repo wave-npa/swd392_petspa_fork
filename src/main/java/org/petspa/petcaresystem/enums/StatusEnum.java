@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.model.dto;
+package org.petspa.petcaresystem.enums;
 
 public enum StatusEnum {
     SUCCESS, ERROR

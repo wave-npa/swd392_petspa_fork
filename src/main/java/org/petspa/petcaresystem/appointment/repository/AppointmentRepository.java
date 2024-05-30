@@ -1,6 +1,7 @@
-package org.petspa.petcaresystem.repository;
+package org.petspa.petcaresystem.appointment.repository;
 
-import org.petspa.petcaresystem.model.entity.Appointment;
+
+import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
