@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.repository;
+package org.petspa.petcaresystem.main.repository;
 
 import org.springframework.stereotype.Repository;
 
