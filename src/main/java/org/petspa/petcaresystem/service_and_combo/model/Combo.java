@@ -37,7 +37,4 @@ public class Combo {
 
     @ManyToMany
     private Set<Services> services = new HashSet<>();
-
-    @ManyToMany
-    private Set<Appointment> appointments = new HashSet<>();
 }

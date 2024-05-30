@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.Pet;
+import org.petspa.petcaresystem.role.model.Role;
 import org.petspa.petcaresystem.service_and_combo.model.Combo;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
@@ -37,22 +38,17 @@ public class Appointment {
     @Column(name = "create_date")
     private int create_date;
 
+    @Column(name = "appointment_type")
+    private String appointment_type;
+
     @Column(name = "appointment_time")
     private int appointment_time;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Appointment_Services",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private Set<Services> services = new HashSet<>();
+    @OneToOne(mappedBy = "service_id")
+    @JsonIgnore
+    private Services service_id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Appointment_Combo",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "Combo_id")
-    )
-    private Set<Combo> combos = new HashSet<>();
+    @OneToOne(mappedBy = "Combo_id")
+    @JsonIgnore
+    private Services Combo_id;
 }

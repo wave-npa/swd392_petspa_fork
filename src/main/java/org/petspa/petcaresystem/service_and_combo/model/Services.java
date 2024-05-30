@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.service_and_combo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,8 +42,7 @@ public class Services {
             joinColumns = @JoinColumn(name = "service_id"),
             inverseJoinColumns = @JoinColumn(name = "Combo_id")
     )
+    @JsonIgnore
     private Set<Combo> combos = new HashSet<>();
 
-    @ManyToMany
-    private Set<Appointment> appointments = new HashSet<>();
 }
