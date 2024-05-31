@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.repository.implement;
+package org.petspa.petcaresystem.main.repository.implement;
 
 public class MainRepositoryImpl {
 

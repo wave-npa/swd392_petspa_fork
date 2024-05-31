@@ -1,4 +1,5 @@
-package org.petspa.petcaresystem.controller;
+package org.petspa.petcaresystem.appointment.controller;
 
 public class AppointmentController {
+
 }

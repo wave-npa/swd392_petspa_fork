@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.controller;
+package org.petspa.petcaresystem.admin.controller;
 
 public class AdminController {
 }

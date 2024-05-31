@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.model.entity;
+package org.petspa.petcaresystem.pet.model;
 
 public class MedicalRecord {
 }

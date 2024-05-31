@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.controller;
+package org.petspa.petcaresystem.user.controller;
 
 public class GuestController {
 }

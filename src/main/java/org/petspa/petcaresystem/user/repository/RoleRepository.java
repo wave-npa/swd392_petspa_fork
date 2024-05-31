@@ -1,6 +1,6 @@
-package org.petspa.petcaresystem.repository;
+package org.petspa.petcaresystem.user.repository;
 
-import org.petspa.petcaresystem.model.entity.Role;
+import org.petspa.petcaresystem.user.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
