@@ -1,4 +1,4 @@
 package org.petspa.petcaresystem.authenuser.controller;
 
-public class GuestController {
+public class ProfileController {
 }

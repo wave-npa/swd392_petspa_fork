@@ -3,7 +3,7 @@ package org.petspa.petcaresystem.pet.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 
 @Entity
 @Getter
