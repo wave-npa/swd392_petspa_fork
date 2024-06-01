@@ -12,6 +12,8 @@ import org.petspa.petcaresystem.service_and_combo.model.Combo;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,13 +38,13 @@ public class Appointment {
     private Status status;
 
     @Column(name = "create_date")
-    private int create_date;
+    private Date create_date;
 
     @Column(name = "appointment_type")
     private String appointment_type;
 
     @Column(name = "appointment_time")
-    private int appointment_time;
+    private LocalDateTime appointment_time;
 
     @OneToOne(mappedBy = "service_id")
     @JsonIgnore
