@@ -1,8 +1,13 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
 import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
+import org.petspa.petcaresystem.customer.model.Customer;
+import org.petspa.petcaresystem.customer.repository.CustomerRepository;
+import org.petspa.petcaresystem.enums.Species;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.mapper.PetMapper;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
+import org.petspa.petcaresystem.pet.model.request.CreatePetRequest;
 import org.petspa.petcaresystem.pet.model.request.UpdatePetRequest;
 import org.petspa.petcaresystem.pet.model.response.PetResponse;
 import org.petspa.petcaresystem.pet.repository.MedicalRecordRepository;
@@ -23,6 +28,68 @@ public class PetServiceImple implements PetService {
     PetRepository petRepository;
     @Autowired
     MedicalRecordRepository medicalRecordRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @Override
+    public ResponseEntity<ResponseObj> CreatePetProflie(String cus_id, CreatePetRequest petRequest) {
+        try {
+            Customer customer = customerRepository.findById(cus_id).orElse(null);
+
+            if (customer.equals(null)) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Customer not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+            Pet pet = new Pet();
+            if (!petRequest.getPet_name().equals(null)) {
+                pet.setPet_name(petRequest.getPet_name());
+            }
+
+            if (petRequest.getAge() >= 0) {
+                pet.setAge(petRequest.getAge());
+            }
+
+            if (!petRequest.getGender().equals(null)) {
+                pet.setGender(petRequest.getGender());
+            }
+
+            if (!petRequest.getSpecies().equals(null)) {
+                pet.setSpecies(petRequest.getSpecies());
+            }
+
+            if (!petRequest.getType_of_species().equals(null)) {
+                pet.setType_of_species(petRequest.getType_of_species());
+            }
+
+            if (petRequest.getSpecies().equals(Species.DOG)){
+
+            }
+
+            pet.setStatus(Status.ACTIVE);
+
+            pet.setCustomer_id(customer);
+
+            Pet createpet = petRepository.save(pet);
+
+            PetResponse petResponse = PetMapper.toPetResponse(createpet);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Create Pet Profile Successfully")
+                    .data(petResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
 
     @Override
     @Transactional

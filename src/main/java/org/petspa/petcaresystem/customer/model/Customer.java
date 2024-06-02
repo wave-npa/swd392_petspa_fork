@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
 
 @Entity
 @Getter
@@ -19,5 +20,4 @@ public class Customer {
     @OneToOne(mappedBy = "user_id")
     @JsonIgnore
     private AuthenUser user_id;
-
 }

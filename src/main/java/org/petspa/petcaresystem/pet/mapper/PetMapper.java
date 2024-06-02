@@ -10,6 +10,7 @@ public class PetMapper {
         return PetResponse.builder()
                 .pet_name(pet.getPet_name())
                 .age(pet.getAge())
+                .gender(pet.getGender())
                 .species(pet.getSpecies())
                 .type_of_species(pet.getType_of_species())
                 .status(pet.getStatus())
