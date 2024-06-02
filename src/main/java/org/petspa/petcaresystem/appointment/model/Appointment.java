@@ -6,16 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.pet.model.Pet;
-import org.petspa.petcaresystem.role.model.Role;
-import org.petspa.petcaresystem.service_and_combo.model.Combo;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter

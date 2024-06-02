@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.pet.model;
+package org.petspa.petcaresystem.pet.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
