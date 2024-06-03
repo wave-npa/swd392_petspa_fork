@@ -2,7 +2,7 @@ package org.petspa.petcaresystem.enums;
 
 public enum Status {
     ACTIVE("ACTIVE"),
-    IN_ACTIVE("INACTIVE");
+    INACTIVE("INACTIVE");
 
     private String status;
 
