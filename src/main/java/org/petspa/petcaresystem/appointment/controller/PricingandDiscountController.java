@@ -1,4 +1,4 @@
 package org.petspa.petcaresystem.appointment.controller;
 
-public class PricingandDiscountController {
+public class PricingAndDiscountController {
 }

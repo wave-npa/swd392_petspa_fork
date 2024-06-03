@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: #db name
+    username: #username
+    password: #password
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+#JPA settings    
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  jpa.hibernate.ddl-auto: create
