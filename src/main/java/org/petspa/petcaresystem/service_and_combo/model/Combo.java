@@ -17,10 +17,10 @@ public class Combo {
 
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String Combo_id;
+    private String ComboId;
 
-    @Column(name = "service_name")
-    private String Combo_name;
+    @Column(name = "comboName")
+    private String ComboName;
 
     @Column(name = "description")
     private String description;
@@ -28,8 +28,8 @@ public class Combo {
     @Column(name = "price")
     private float price;
 
-    @Column(name = "discount_percent")
-    private int discount_percent;
+    @Column(name = "discountPercent")
+    private int discountPercent;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -38,6 +38,4 @@ public class Combo {
     @ManyToMany
     private Set<Services> services = new HashSet<>();
 
-    @ManyToMany
-    private Set<Appointment> appointments = new HashSet<>();
 }
