@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 @RestController
 @RequestMapping("/petspa/service")
-@Tag(name = "Service", description = "Service Management API")
+//@Tag(name = "Service", description = "Service Management API")
 public class ServicesandCombosController {
 
     @Autowired
@@ -39,18 +37,18 @@ public class ServicesandCombosController {
     @PostMapping("/save")
     @CrossOrigin
     public Services saveService(@RequestBody Services service) {
-        return serviceAndComboService.save(service);
+        return serviceAndComboService.saveService(service);
     }
 
     @PostMapping("/update")
     @CrossOrigin
     public Services updateService(@RequestBody Services service) {
-        return serviceAndComboService.update(service);
+        return serviceAndComboService.updateService(service);
     }
 
     @DeleteMapping("/delete/{serviceId}")
     @CrossOrigin
     public Services deleteServiceById(@PathVariable String serviceId) {
-        return serviceAndComboService.delete(serviceId);
+        return serviceAndComboService.deleteService(serviceId);
     }
 }

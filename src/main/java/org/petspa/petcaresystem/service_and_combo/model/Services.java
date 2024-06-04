@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.enums.ServiceType;
 import org.petspa.petcaresystem.enums.Status;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,7 +25,7 @@ public class Services {
     private String description;
 
     @Column(name = "serviceType")
-    private ServiceType serviceType;
+    private int serviceType;
 
     @Column(name = "price")
     private float price;
