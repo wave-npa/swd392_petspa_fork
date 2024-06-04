@@ -1,0 +1,21 @@
+package org.petspa.petcaresystem.pet.model.response;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.petspa.petcaresystem.customer.model.Customer;
+import org.petspa.petcaresystem.enums.Gender;
+import org.petspa.petcaresystem.enums.Species;
+import org.petspa.petcaresystem.enums.Status;
+
+@Getter
+@Setter
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PetResponse {
+    String pet_name;
+    int age;
+    Gender gender;
+    Species species;
+    String type_of_species;
+    Status status;
+}

@@ -27,13 +27,13 @@ public class ServicesandCombosController {
     @GetMapping("/getAll")
     @CrossOrigin
     public Collection<Services> getAllServices() {
-        return serviceAndComboService.findAll();
+        return serviceAndComboService.findAllService();
     }
 
     @GetMapping("/get/{serviceId}")
     @CrossOrigin
     public Services getServiceById(@PathVariable String serviceId) {
-        return serviceAndComboService.findById(serviceId);
+        return serviceAndComboService.findServiceById(serviceId);
     }
 
     @PostMapping("/save")

@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model;
+package org.petspa.petcaresystem.authenuser.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -44,6 +44,5 @@ public class AuthenUser {
     @OneToOne(mappedBy = "role_id")
     @JsonIgnore
     private Role role_id;
-
 
 }

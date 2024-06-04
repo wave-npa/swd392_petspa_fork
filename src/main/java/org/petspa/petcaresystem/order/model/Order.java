@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.customer.model.Customer;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class Order {
     private float price;
 
     @Column(name = "order_date")
-    private int order_date;
+    private Date order_date;
 
     @OneToOne(mappedBy = "appointment_id")
     private Appointment appointment_id;

@@ -1,9 +1,11 @@
 package org.petspa.petcaresystem.service_and_combo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.enums.ServiceType;
 import org.petspa.petcaresystem.enums.Status;
 
 import java.util.HashSet;
@@ -16,8 +18,8 @@ import java.util.Set;
 @Table(name = "Services")
 public class Services {
 
-    // @jakarta.persistence.Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @jakarta.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String serviceId;
 
     @Column(name = "serviceName")
@@ -27,7 +29,7 @@ public class Services {
     private String description;
 
     @Column(name = "serviceType")
-    private List<String> serviceType;
+    private ServiceType serviceType;
 
     @Column(name = "price")
     private float price;
@@ -39,14 +41,12 @@ public class Services {
     @Column(name = "status")
     private Status status;
 
-    // @ManyToMany
-    // @JoinTable(
-    //         name = "Services_Combo",
-    //         joinColumns = @JoinColumn(name = "service_id"),
-    //         inverseJoinColumns = @JoinColumn(name = "Combo_id")
-    // )
-    // private Set<Combo> combos = new HashSet<>();
-
-    // @ManyToMany
-    // private Set<Appointment> appointments = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "Services_Combo",
+            joinColumns = @JoinColumn(name = "service_id"),
+            inverseJoinColumns = @JoinColumn(name = "Combo_id")
+    )
+    @JsonIgnore
+    private Set<Combo> combos = new HashSet<>();
 }

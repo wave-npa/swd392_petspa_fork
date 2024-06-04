@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.pet.model;
+package org.petspa.petcaresystem.pet.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.customer.model.Customer;
 import org.petspa.petcaresystem.enums.Gender;
+import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 
 @Entity
@@ -29,7 +30,7 @@ public class Pet {
     private Gender gender;
 
     @Column(name = "species")
-    private String species;
+    private Species species;
 
     @Column(name = "type_of_species")
     private String type_of_species;
