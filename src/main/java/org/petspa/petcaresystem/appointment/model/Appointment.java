@@ -10,7 +10,6 @@ import org.petspa.petcaresystem.pet.model.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Combo;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,37 +21,32 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String appointment_id;
+    private String appointmentId;
 
     @ManyToOne
-    private Doctor doctor_id;
+    private Doctor doctorId;
 
-    @OneToOne(mappedBy = "pet_id")
-    private Pet pet_id;
+    @OneToOne(mappedBy = "petId")
+    private Pet petId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "create_date")
-    private int create_date;
+    @Column(name = "createdDate")
+    private int createdDate;
 
-    @Column(name = "appointment_time")
-    private int appointment_time;
+    @Column(name = "appointmentTime")
+    private int appointmentTime;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Appointment_Services",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private Set<Services> services = new HashSet<>();
+    @OneToOne(mappedBy = "serviceId")
+    private Services service;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Appointment_Combo",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "Combo_id")
-    )
-    private Set<Combo> combos = new HashSet<>();
+//     @ManyToMany
+//     @JoinTable(
+//             name = "Appointment_Combo",
+//             joinColumns = @JoinColumn(name = "appointment_id"),
+//             inverseJoinColumns = @JoinColumn(name = "Combo_id")
+//     )
+//     private Set<Combo> combos = new HashSet<>();
 }
