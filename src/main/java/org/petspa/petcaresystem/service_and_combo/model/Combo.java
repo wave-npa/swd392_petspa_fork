@@ -3,7 +3,6 @@ package org.petspa.petcaresystem.service_and_combo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.enums.Status;
 
 import java.util.HashSet;
@@ -35,7 +34,7 @@ public class Combo {
     @Column(name = "status")
     private Status status;
 
-    @ManyToMany
-    private Set<Services> services = new HashSet<>();
+    // @ManyToMany
+    // private Set<Services> services = new HashSet<>();
 
 }
