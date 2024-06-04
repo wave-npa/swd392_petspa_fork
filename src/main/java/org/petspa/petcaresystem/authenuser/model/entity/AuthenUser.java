@@ -45,5 +45,4 @@ public class AuthenUser {
     @JsonIgnore
     private Role role_id;
 
-
 }

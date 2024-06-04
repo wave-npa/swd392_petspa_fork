@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.enums.ServiceType;
 import org.petspa.petcaresystem.enums.Status;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,19 +20,22 @@ public class Services {
 
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String service_id;
+    private String serviceId;
 
-    @Column(name = "service_name")
-    private String service_name;
+    @Column(name = "serviceName")
+    private String serviceName;
 
     @Column(name = "description")
     private String description;
 
+    @Column(name = "serviceType")
+    private ServiceType serviceType;
+
     @Column(name = "price")
     private float price;
 
-    @Column(name = "discount_percent")
-    private int discount_percent;
+    @Column(name = "discountPercent")
+    private int discountPercent;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -44,5 +49,4 @@ public class Services {
     )
     @JsonIgnore
     private Set<Combo> combos = new HashSet<>();
-
 }

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: #db name
-    username: #username
-    password: #password
+    url: jdbc:mysql://localhost:3306/cloud_vendor?allowPublicKeyRetrieval=true&useSSL=false
+    username: petspa
+    password: swd392
 
   mvc:
     pathmatch:

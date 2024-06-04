@@ -6,6 +6,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface AuthenUserRepository extends JpaRepository<AuthenUser, Integer>{
-    Optional<AuthenUser> findById(@Param("id") String id);
+public interface AuthenUserRepository extends JpaRepository<AuthenUser, String>{
+//    Optional<AuthenUser> findById(@Param("id") String id);
 }

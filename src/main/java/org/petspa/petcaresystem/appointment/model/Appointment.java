@@ -42,11 +42,11 @@ public class Appointment {
     @Column(name = "appointment_time")
     private LocalDateTime appointment_time;
 
-    @OneToOne(mappedBy = "service_id")
+    @ManyToOne
     @JsonIgnore
     private Services service_id;
 
-    @OneToOne(mappedBy = "Combo_id")
+    @ManyToOne
     @JsonIgnore
     private Services Combo_id;
 }
