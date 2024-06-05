@@ -23,10 +23,10 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String appointmentId;
 
-    @ManyToOne
+//    @ManyToOne
     private Doctor doctorId;
 
-    @OneToOne(mappedBy = "petId")
+//    @OneToOne
     private Pet petId;
 
     @Enumerated(EnumType.STRING)
@@ -42,11 +42,11 @@ public class Appointment {
     @Column(name = "appointment_time")
     private LocalDateTime appointment_time;
 
-    @ManyToOne
-    @JsonIgnore
+//    @ManyToOne
+//    @JsonIgnore
     private Services service_id;
 
-    @ManyToOne
-    @JsonIgnore
+//    @ManyToOne
+//    @JsonIgnore
     private Services Combo_id;
 }

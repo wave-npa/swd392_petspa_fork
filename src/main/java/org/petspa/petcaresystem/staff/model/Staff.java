@@ -12,11 +12,11 @@ import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 @Table(name = "Staff")
 public class Staff {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String staff_id;
 
-    @OneToOne(mappedBy = "user_id")
+//    @OneToOne
     @JsonIgnore
     private AuthenUser user_id;
 }

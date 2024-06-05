@@ -39,7 +39,7 @@ public class Pet {
     @Column(name = "status")
     private Status status;
 
-    @ManyToOne
+//    @ManyToOne
     private Customer customer_id;
 
 

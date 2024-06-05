@@ -8,12 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum Gender {
-
-
     MALE("Male"),
     FEMALE("Female");
-
     String gender;
-
-
 }

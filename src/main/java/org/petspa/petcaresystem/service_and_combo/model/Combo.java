@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "Combo")
 public class Combo {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String ComboId;
 
@@ -33,8 +33,4 @@ public class Combo {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-
-    // @ManyToMany
-    // private Set<Services> services = new HashSet<>();
-
 }

@@ -17,6 +17,7 @@ public class AuthenUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @OneToOne
+    @Column(name = "user_id")
     private String user_id;
 
     @Column(name = "email")
@@ -29,7 +30,9 @@ public class AuthenUser {
     private String full_name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @ManyToOne
+    @JoinColumn(name = "gender", nullable = false)
+    @JoinColumn(name = "gender")
     private Gender gender;
 
     @Column(name = "address")
@@ -39,10 +42,12 @@ public class AuthenUser {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+//    @ManyToOne
+    @Column(name = "Status", nullable = false)
+//    @JoinColumn(name = "")
     private Status status;
 
-    @OneToOne(mappedBy = "role_id")
+    @OneToOne
     @JsonIgnore
     private Role role_id;
 

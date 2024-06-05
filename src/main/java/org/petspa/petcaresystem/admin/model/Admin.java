@@ -16,8 +16,8 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String admin_id;
 
-    @OneToOne(mappedBy = "user_id")
-    @JsonIgnore
+//    @OneToOne
+//    @JsonIgnore
     private AuthenUser user_id;
 
 }

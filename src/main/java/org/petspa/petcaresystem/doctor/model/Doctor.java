@@ -14,14 +14,14 @@ import org.petspa.petcaresystem.department.model.Department;
 @Table(name = "Doctor")
 public class Doctor {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String doctor_id;
 
-    @OneToOne(mappedBy = "user_id")
+//    @OneToOne
     @JsonIgnore
     private AuthenUser user_id;
 
-    @ManyToOne
+//    @ManyToOne
     private Department department_id;
 }

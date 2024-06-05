@@ -25,9 +25,9 @@ public class Order {
     @Column(name = "order_date")
     private Date order_date;
 
-    @OneToOne(mappedBy = "appointment_id")
+//    @OneToOne
     private Appointment appointment_id;
 
-    @ManyToOne
+//    @ManyToOne
     private Customer customer_id;
 }

@@ -49,9 +49,9 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                 user.setFull_name(profileRequest.getFull_name());
             }
 
-            if (!profileRequest.getGender().equals(null)){
-                user.setGender(profileRequest.getGender());
-            }
+//            if (!profileRequest.getGender().equals(null)){
+//                user.setGender(profileRequest.getGender());
+//            }
 
             if (!profileRequest.getAddress().equals(null)){
                 user.setAddress(profileRequest.getAddress());

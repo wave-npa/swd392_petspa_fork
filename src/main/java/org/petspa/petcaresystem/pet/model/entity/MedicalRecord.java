@@ -15,6 +15,6 @@ public class  MedicalRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String record_id;
 
-    @OneToOne(mappedBy = "pet_id")
+//    @OneToOne
     private AuthenUser pet_id;
 }

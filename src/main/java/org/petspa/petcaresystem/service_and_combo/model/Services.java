@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "Services")
 public class Services {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String serviceId;
 
@@ -37,7 +37,7 @@ public class Services {
     @Column(name = "status")
     private Status status;
 
-    @ManyToMany
+//    @ManyToMany
     @JoinTable(
             name = "Services_Combo",
             joinColumns = @JoinColumn(name = "service_id"),

@@ -12,7 +12,7 @@ import org.petspa.petcaresystem.enums.Status;
 @Table(name = "Role")
 public class Role {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String role_id;
 
