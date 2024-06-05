@@ -16,6 +16,7 @@ public class AuthenUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OneToOne
     private String user_id;
 
     @Column(name = "email")
