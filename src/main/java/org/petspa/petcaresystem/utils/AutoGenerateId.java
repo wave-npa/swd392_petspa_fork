@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 public class AutoGenerateId {
-
-    
-
-    
     public static String generatePetId() {
         
         PetRepository petRepository = null;

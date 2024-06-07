@@ -7,13 +7,14 @@ import lombok.Setter;
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.customer.model.Customer;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "Order")
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

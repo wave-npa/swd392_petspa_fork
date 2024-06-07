@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Status;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "Services")
-public class Services {
+public class Services implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

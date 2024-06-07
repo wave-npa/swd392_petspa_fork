@@ -8,15 +8,16 @@ import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "AuthenUser")
-public class AuthenUser {
+public class AuthenUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToOne
     @Column(name = "user_id")
     private int user_id;
 
@@ -30,8 +31,6 @@ public class AuthenUser {
     private String full_name;
 
     @Enumerated(EnumType.STRING)
-    @ManyToOne
-    @JoinColumn(name = "gender", nullable = false)
     @JoinColumn(name = "gender")
     private Gender gender;
 
@@ -47,8 +46,8 @@ public class AuthenUser {
 //    @JoinColumn(name = "")
     private Status status;
 
-    @OneToOne
-    @JsonIgnore
-    private Role role_id;
+//    @OneToOne
+//    @JsonIgnore
+//    private Role role_id;
 
 }

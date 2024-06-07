@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Status;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "Role")
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

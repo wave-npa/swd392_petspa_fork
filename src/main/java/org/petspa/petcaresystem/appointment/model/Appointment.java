@@ -10,6 +10,7 @@ import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "Appointment")
-public class Appointment {
+public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

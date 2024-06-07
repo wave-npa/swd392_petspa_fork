@@ -9,11 +9,13 @@ import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "Pet")
-public class Pet {
+public class Pet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
