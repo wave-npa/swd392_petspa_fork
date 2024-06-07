@@ -2,20 +2,25 @@ package org.petspa.petcaresystem.service_and_combo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Status;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Services")
-public class Services {
+public class Services implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String serviceId;
 
     @Column(name = "serviceName")
@@ -38,11 +43,11 @@ public class Services {
     private Status status;
 
 //    @ManyToMany
-    @JoinTable(
-            name = "Services_Combo",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "Combo_id")
-    )
-    @JsonIgnore
-    private Set<Combo> combos = new HashSet<>();
+//    @JoinTable(
+//            name = "Services_Combo",
+//            joinColumns = @JoinColumn(name = "service_id"),
+//            inverseJoinColumns = @JoinColumn(name = "Combo_id")
+//    )
+//    @JsonIgnore
+//    private Set<Combo> combos = new HashSet<>();
 }

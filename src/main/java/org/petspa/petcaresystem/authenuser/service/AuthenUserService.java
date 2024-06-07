@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthenUserService {
 
-    ResponseEntity<ResponseObj> UpdateProflie(String id, UpdateProfileRequest profileRequest);
+    ResponseEntity<ResponseObj> UpdateProflie(int id, UpdateProfileRequest profileRequest);
 
 }

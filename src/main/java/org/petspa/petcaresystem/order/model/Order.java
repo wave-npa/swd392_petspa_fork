@@ -1,7 +1,9 @@
 package org.petspa.petcaresystem.order.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
@@ -12,11 +14,12 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@Table(name = "Order")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Orders")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String order_id;
 
     @Column(name = "price")

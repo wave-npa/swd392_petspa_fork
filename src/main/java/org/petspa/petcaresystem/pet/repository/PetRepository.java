@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PetRepository extends JpaRepository<Pet, Integer> {
+public interface PetRepository extends JpaRepository<Pet, String> {
     Optional<Pet> findById(@Param("id") String id);
 }
