@@ -18,7 +18,7 @@ public class AuthenUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @OneToOne
     @Column(name = "user_id")
-    private String user_id;
+    private int user_id;
 
     @Column(name = "email")
     private String email;
