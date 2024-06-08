@@ -21,12 +21,17 @@ import java.io.Serializable;
 public class Doctor implements Serializable {
 
     @Id
-    private String doctor_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "doctor_id")
+    private Long doctorId;
 
-//    @OneToOne
+    @OneToOne
     @JsonIgnore
-    private AuthenUser user_id;
+    @JoinColumn(name = "user_id", nullable = false)
+    private AuthenUser userId;
 
-//    @ManyToOne
-    private Department department_id;
+//    @OneToMany
+    @JsonIgnore
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department departmentId;
 }

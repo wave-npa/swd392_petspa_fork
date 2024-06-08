@@ -17,11 +17,13 @@ import java.io.Serializable;
 public class Department implements Serializable {
 
     @Id
-    private String department_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "department_id")
+    private Long departmentId;
 
-    @Column(name = "department_name")
-    private String department_name;
+    @Column(name = "department_name", nullable = false)
+    private String departmentName;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     private String address;
 }

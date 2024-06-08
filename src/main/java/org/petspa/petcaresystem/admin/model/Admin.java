@@ -19,10 +19,12 @@ import java.io.Serializable;
 public class Admin implements Serializable {
 
     @Id
-    private String admin_id;
+    @Column(name = "admin_id")
+    private Long adminId;
 
-//    @OneToOne
+    @OneToOne
     @JsonIgnore
-    private AuthenUser user_id;
+    @JoinColumn(name = "user_id", nullable = false)
+    private AuthenUser userId;
 
 }

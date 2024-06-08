@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +19,12 @@ import java.io.Serializable;
 public class  MedicalRecord implements Serializable {
 
     @Id
-    private String record_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "record_id")
+    private Long recordId;
 
-//    @OneToOne
-    private AuthenUser pet_id;
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "pet_id", nullable = false)
+    private AuthenUser petId;
 }

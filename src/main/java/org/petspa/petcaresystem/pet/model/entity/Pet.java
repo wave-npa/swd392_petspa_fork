@@ -22,30 +22,33 @@ import java.io.Serializable;
 public class Pet implements Serializable {
 
     @Id
-    private String pet_id;
+    @Column(name = "pet_id")
+    private String petId;
 
-    @Column(name = "full_name")
-    private String pet_name;
+    @Column(name = "pet_name", nullable = false)
+    private String petName;
 
-    @Column(name = "age")
+    @Column(name = "age", nullable = false)
     private int age;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "species")
+    @Column(name = "species", nullable = false)
     private Species species;
 
-    @Column(name = "type_of_species")
-    private String type_of_species;
+    @Column(name = "type_of_species", nullable = false)
+    private String typeOfSpecies;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Status status;
 
-//    @ManyToOne
-    private Customer customer_id;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customerId;
 
 
 }

@@ -10,8 +10,6 @@ import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
-
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -25,32 +23,40 @@ import java.util.Date;
 public class Appointment implements Serializable {
 
     @Id
-    private String appointmentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "appointment_id")
+    private Long appointmentId;
 
-//    @ManyToOne
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctorId;
 
-//    @OneToOne
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "pet_id", nullable = false)
     private Pet petId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "create_date")
-    private Date create_date;
+    @Column(name = "create_date", nullable = false)
+    private Date createDate;
 
-    @Column(name = "appointment_type")
-    private String appointment_type;
+    @Column(name = "appointment_type", nullable = false)
+    private String appointmentType;
 
-    @Column(name = "appointment_time")
-    private LocalDateTime appointment_time;
+    @Column(name = "appointment_time", nullable = false)
+    private LocalDateTime appointmentTime;
 
-//    @ManyToOne
-//    @JsonIgnore
-    private Services service_id;
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "service_id", nullable = false)
+    private Services serviceId;
 
-//    @ManyToOne
-//    @JsonIgnore
-    private Services Combo_id;
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "combo_id", nullable = false)
+    private Services comboId;
 }

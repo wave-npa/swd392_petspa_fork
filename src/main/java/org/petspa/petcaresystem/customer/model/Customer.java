@@ -19,9 +19,12 @@ import java.io.Serializable;
 public class Customer implements Serializable {
 
     @Id
-    private String customer_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
+    private Long customerId;
 
-//    @OneToOne
+    @OneToOne
     @JsonIgnore
-    private AuthenUser user_id;
+    @JoinColumn(name = "user_id", nullable = false)
+    private AuthenUser userId;
 }

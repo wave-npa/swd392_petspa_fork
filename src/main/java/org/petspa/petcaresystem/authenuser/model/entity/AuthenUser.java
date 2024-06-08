@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
@@ -49,6 +50,8 @@ public class AuthenUser implements Serializable {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "role_id", nullable = false)
-    private String role_id;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role_id;
 }

@@ -16,7 +16,7 @@ public class PetController {
     PetService petService;
 
     @PostMapping
-    public ResponseEntity<ResponseObj> CreatePetProflie(@PathVariable String cus_id,
+    public ResponseEntity<ResponseObj> CreatePetProflie(@PathVariable Long cus_id,
                                                         @RequestBody CreatePetRequest petRequest){
         return petService.CreatePetProflie(cus_id, petRequest);
     }
