@@ -20,7 +20,7 @@ public class Admin implements Serializable {
 
     @Id
     @Column(name = "admin_id")
-    private Long adminId;
+    private String adminId;
 
     @OneToOne
     @JsonIgnore

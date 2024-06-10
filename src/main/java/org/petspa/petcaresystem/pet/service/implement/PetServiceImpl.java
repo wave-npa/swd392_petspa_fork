@@ -31,7 +31,7 @@ public class PetServiceImpl implements PetService {
     CustomerRepository customerRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
+    public ResponseEntity<ResponseObj> CreatePetProflie(String cus_id, CreatePetRequest petRequest) {
 
         try {
             Customer customer = customerRepository.findById(cus_id).orElse(null);

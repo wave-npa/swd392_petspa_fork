@@ -26,7 +26,7 @@ public class AuthenUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int user_id;
+    private Long user_id;
 
     @Column(name = "email", nullable = false)
     private String email;
