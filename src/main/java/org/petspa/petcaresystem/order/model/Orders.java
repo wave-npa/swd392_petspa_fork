@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "Order")
-public class Order implements Serializable {
+public class Orders implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,8 @@ public class Order implements Serializable {
     private Date order_date;
 
 //    @OneToOne
-    private Appointment appointment_id;
-
+//    private Appointment appointment_id;
+//
 //    @ManyToOne
-    private Customer customer_id;
+//    private Customer customer_id;
 }
