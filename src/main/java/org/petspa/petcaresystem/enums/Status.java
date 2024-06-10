@@ -1,16 +1,15 @@
 package org.petspa.petcaresystem.enums;
 
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public enum Status {
-    ACTIVE("ACTIVE"),
-    INACTIVE("INACTIVE");
-
-    private String status;
-
-    Status(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
+    ACTIVE,
+    INACTIVE
 }

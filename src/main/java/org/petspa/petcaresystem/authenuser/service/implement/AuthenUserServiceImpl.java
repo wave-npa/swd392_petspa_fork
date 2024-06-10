@@ -45,21 +45,21 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
             AuthenUser user = authenUser.get();
-            if (!profileRequest.getFull_name().equals(null)){
-                user.setFull_name(profileRequest.getFull_name());
-            }
-
-//            if (!profileRequest.getGender().equals(null)){
-//                user.setGender(profileRequest.getGender());
+//            if (!profileRequest.getFull_name().equals(null)){
+//                user.setFull_name(profileRequest.getFull_name());
 //            }
-
-            if (!profileRequest.getAddress().equals(null)){
-                user.setAddress(profileRequest.getAddress());
-            }
-
-            if (!profileRequest.getPhone().equals(null) && isValidPhoneNumber(profileRequest.getPhone())){
-                user.setPhone(profileRequest.getPhone());
-            }
+//
+////            if (!profileRequest.getGender().equals(null)){
+////                user.setGender(profileRequest.getGender());
+////            }
+//
+//            if (!profileRequest.getAddress().equals(null)){
+//                user.setAddress(profileRequest.getAddress());
+//            }
+//
+//            if (!profileRequest.getPhone().equals(null) && isValidPhoneNumber(profileRequest.getPhone())){
+//                user.setPhone(profileRequest.getPhone());
+//            }
 
             AuthenUser updateauthenUser = authenUserRepository.save(user);
 
