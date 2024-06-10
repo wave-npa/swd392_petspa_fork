@@ -19,9 +19,11 @@ import java.io.Serializable;
 public class Staff implements Serializable {
 
     @Id
-    private String staff_id;
+    @Column(name = "staff_id")
+    private String staffId;
 
-//    @OneToOne
+    @OneToOne
     @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
     private AuthenUser user_id;
 }

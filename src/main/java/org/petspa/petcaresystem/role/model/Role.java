@@ -10,11 +10,11 @@ import org.petspa.petcaresystem.enums.Status;
 import java.io.Serializable;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "role")
+@Getter
+@Setter
+@Table(name = "Role")
 public class Role implements Serializable {
 
     @Id

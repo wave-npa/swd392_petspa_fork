@@ -13,19 +13,20 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
 
+import java.io.Serializable;
+
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityScan
-@Table(name = "authen_user")
+@Getter
+@Setter
+@Table(name = "AuthenUser")
 public class AuthenUser implements Serializable {
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_id;
+    @Column(name = "user_id")
+    private Long user_id;
 
     @Column(name = "email", nullable = false)
     private String email;

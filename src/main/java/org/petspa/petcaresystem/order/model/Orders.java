@@ -14,12 +14,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Orders")
-public class Order implements Serializable {
+@Getter
+@Setter
+@Table(name = "Order")
+public class Orders implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +32,11 @@ public class Order implements Serializable {
     @Column(name = "order_date", nullable = false)
     private Date orderDate;
 
-//    @OneToOne
-//    @JsonIgnore
+    @OneToOne
     @Column(name = "appointment_id", nullable = false)
     private Appointment appointmentId;
 
-//    @ManyToOne
-//    @JsonIgnore
+    @ManyToOne
     @Column(name = "customer_id", nullable = false)
     private Customer customerId;
 }

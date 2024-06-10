@@ -23,14 +23,14 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "doctor_id")
-    private Long doctorId;
+    private String doctorId;
 
     @OneToOne
     @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private AuthenUser userId;
 
-//    @OneToMany
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "department_id", nullable = false)
     private Department departmentId;

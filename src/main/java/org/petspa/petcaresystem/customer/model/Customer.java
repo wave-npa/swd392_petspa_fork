@@ -10,6 +10,8 @@ import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 
 import java.io.Serializable;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private Long customerId;
+    private String customerId;
 
     @OneToOne
     @JsonIgnore
