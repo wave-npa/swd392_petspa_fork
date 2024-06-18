@@ -11,7 +11,6 @@ import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -22,33 +21,25 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Appointment")
-public class Appointment implements Serializable {
+public class Appointment implements Serializable{
 
     @Id
     private String appointmentId;
 
-//    @ManyToOne
-    private Doctor doctorId;
+    private Doctor doctor;
 
-//    @OneToOne
-    private Pet petId;
+    private Pet pet;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
     private Status status;
 
     @Column(name = "create_date")
     private Date create_date;
 
-    @Column(name = "appointment_type")
-    private String appointment_type;
-
     @Column(name = "appointment_time")
     private LocalDateTime appointment_time;
 
-//    @ManyToOne
-//    @JsonIgnore
-    private Services service_id;
+    private Services services;
 
 //    @ManyToOne
 //    @JsonIgnore

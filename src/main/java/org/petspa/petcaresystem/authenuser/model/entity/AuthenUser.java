@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -51,4 +53,9 @@ public class AuthenUser implements Serializable {
 
     @Column(name = "role_id", nullable = false)
     private String role_id;
+
+    public Optional<Pet> findById(String cus_id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
 }
