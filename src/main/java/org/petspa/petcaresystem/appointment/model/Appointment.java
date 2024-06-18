@@ -20,40 +20,35 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Appointment")
-public class Appointment implements Serializable {
+public class Appointment implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
     private Long appointmentId;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "doctor_id", nullable = false)
+//    @ManyToOne
     private Doctor doctorId;
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "pet_id", nullable = false)
+//    @OneToOne
     private Pet petId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private Status status;
 
-    @Column(name = "create_date", nullable = false)
-    private Date createDate;
+    @Column(name = "create_date")
+    private Date create_date;
 
-    @Column(name = "appointment_type", nullable = false)
-    private String appointmentType;
+    @Column(name = "appointment_type")
+    private String appointment_type;
 
     @Column(name = "appointment_time", nullable = false)
     private LocalDateTime appointmentTime;
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "service_id", nullable = false)
-    private Services serviceId;
+//    @ManyToOne
+//    @JsonIgnore
+    private Services service_id;
 
     @OneToOne
     @JsonIgnore

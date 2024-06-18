@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.customer.model.Customer;
+import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -38,5 +38,5 @@ public class Orders implements Serializable {
 
     @ManyToOne
     @Column(name = "customer_id", nullable = false)
-    private Customer customerId;
+    private AuthenUser customerId;
 }
