@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.pet.model.entity;
+package org.petspa.petcaresystem.customer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -10,21 +10,23 @@ import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 
 import java.io.Serializable;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "MedicalRecord")
-public class  MedicalRecord implements Serializable {
+@Table(name = "Customer")
+public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "record_id")
-    private Long recordId;
+    @Column(name = "customer_id")
+    private String customerId;
 
     @OneToOne
     @JsonIgnore
-    @JoinColumn(name = "pet_id", nullable = false)
-    private AuthenUser petId;
+    @JoinColumn(name = "user_id", nullable = false)
+    private AuthenUser userId;
 }

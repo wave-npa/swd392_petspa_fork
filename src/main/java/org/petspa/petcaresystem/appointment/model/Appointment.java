@@ -10,7 +10,6 @@ import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.service_and_combo.model.Services;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -24,24 +23,35 @@ import java.util.Date;
 public class Appointment implements Serializable{
 
     @Id
-    private String appointmentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "appointment_id")
+    private Long appointmentId;
 
-    private Doctor doctor;
+//    @ManyToOne
+    private Doctor doctorId;
 
-    private Pet pet;
+//    @OneToOne
+    private Pet petId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 
     @Column(name = "create_date")
     private Date create_date;
 
-    @Column(name = "appointment_time")
-    private LocalDateTime appointment_time;
+    @Column(name = "appointment_type")
+    private String appointment_type;
 
-    private Services services;
+    @Column(name = "appointment_time", nullable = false)
+    private LocalDateTime appointmentTime;
 
 //    @ManyToOne
 //    @JsonIgnore
-    private Services Combo_id;
+    private Services service_id;
+
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "combo_id", nullable = false)
+    private Services comboId;
 }

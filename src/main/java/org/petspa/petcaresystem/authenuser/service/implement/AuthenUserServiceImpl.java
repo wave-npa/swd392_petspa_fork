@@ -33,7 +33,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseObj> UpdateProflie(int id, UpdateProfileRequest profileRequest){
+    public ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest){
         try {
             Optional<AuthenUser> authenUser = authenUserRepository.findById(id).or(null);
 
