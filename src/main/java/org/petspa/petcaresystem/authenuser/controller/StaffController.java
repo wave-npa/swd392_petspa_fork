@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.staff.controller;
+package org.petspa.petcaresystem.authenuser.controller;
 
 public class StaffController {
 }

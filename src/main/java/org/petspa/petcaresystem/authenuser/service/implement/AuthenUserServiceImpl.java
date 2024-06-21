@@ -22,20 +22,13 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Autowired
     AuthenUserRepository authenUserRepository;
-//    @Autowired
-//    AdminRepository adminRepository;
-//    @Autowired
-//    Staffrepository staffrepository;
-//    @Autowired
-//    DoctorRepository doctorRepository;
-//    @Autowired
-//    CustomerRepository customerRepository;
 
     @Override
     @Transactional
     public ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest){
         try {
-            Optional<AuthenUser> authenUser = authenUserRepository.findById(id).or(null);
+            String cust_id = Long.toString(id);
+            Optional<AuthenUser> authenUser = authenUserRepository.findById(id);
 
             if (!authenUser.isPresent()){
                 ResponseObj responseObj = ResponseObj.builder()

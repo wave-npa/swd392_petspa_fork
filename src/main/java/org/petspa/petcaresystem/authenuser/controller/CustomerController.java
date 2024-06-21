@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.customer.controller;
+package org.petspa.petcaresystem.authenuser.controller;
 
 public class CustomerController {
 }

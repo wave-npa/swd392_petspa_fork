@@ -32,6 +32,6 @@ public class Doctor implements Serializable {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department departmentId;
+    @JoinColumn(name = "department", nullable = false)
+    private Department department;
 }
