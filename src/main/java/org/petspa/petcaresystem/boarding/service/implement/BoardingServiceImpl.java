@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.boarding.service.implement;
 
-public class BoardingServiceImpl {
+import org.petspa.petcaresystem.boarding.service.BoardingService;
+
+public class BoardingServiceImpl implements BoardingService{
 
 }

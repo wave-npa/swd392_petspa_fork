@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.shelter.service.implement;
 
-public class ShelterServiceImpl {
+import org.petspa.petcaresystem.shelter.service.ShelterService;
+
+public class ShelterServiceImpl implements ShelterService{
 
 }

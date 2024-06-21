@@ -1,8 +1,9 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
+import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
-import org.petspa.petcaresystem.customer.model.Customer;
-import org.petspa.petcaresystem.customer.repository.CustomerRepository;
+import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
+import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.mapper.PetMapper;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.petspa.petcaresystem.utils.AutoGenerateId;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,13 +30,14 @@ public class PetServiceImpl implements PetService {
     @Autowired
     MedicalRecordRepository medicalRecordRepository;
     @Autowired
-    CustomerRepository customerRepository;
+    AuthenUserRepository userRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> CreatePetProflie(String cus_id, CreatePetRequest petRequest) {
+    public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
 
         try {
-            Customer customer = customerRepository.findById(cus_id).orElse(null);
+
+            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
 
             if (customer.equals(null)) {
                 ResponseObj responseObj = ResponseObj.builder()
@@ -45,7 +48,7 @@ public class PetServiceImpl implements PetService {
             }
             Pet pet = new Pet();
             if (!petRequest.getPet_name().equals(null)) {
-                pet.setPetName(petRequest.getPet_name());
+                pet.setPet_name(petRequest.getPet_name());
             }
 
             if (petRequest.getAge() >= 0) {
@@ -61,15 +64,12 @@ public class PetServiceImpl implements PetService {
             }
 
             if (!petRequest.getType_of_species().equals(null)) {
-                pet.setTypeOfSpecies(petRequest.getType_of_species());
+                pet.setType_of_species(petRequest.getType_of_species());
             }
-
-            String petid = AutoGenerateId.generatePetId();
-            pet.setPetId(petid);
 
             pet.setStatus(Status.ACTIVE);
 
-            pet.setCustomerId(customer);
+            pet.setCustomer_id(customer);
 
             Pet createpet = petRepository.save(pet);
 
@@ -105,7 +105,7 @@ public class PetServiceImpl implements PetService {
             }
             Pet pet = petOptional.get();
             if (!petRequest.getPet_name().equals(null)) {
-                pet.setPetName(petRequest.getPet_name());
+                pet.setPet_name(petRequest.getPet_name());
             }
 
             if (petRequest.getAge() > 0) {
@@ -121,7 +121,7 @@ public class PetServiceImpl implements PetService {
             }
 
             if (!petRequest.getType_of_species().equals(null)) {
-                pet.setTypeOfSpecies(petRequest.getType_of_species());
+                pet.setType_of_species(petRequest.getType_of_species());
             }
 
             if (!petRequest.getStatus().equals(null)) {

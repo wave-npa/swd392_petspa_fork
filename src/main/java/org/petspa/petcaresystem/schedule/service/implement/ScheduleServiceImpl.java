@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.schedule.service.implement;
 
-public class ScheduleServiceImpl {
+import org.petspa.petcaresystem.schedule.service.ScheduleService;
+
+public class ScheduleServiceImpl implements ScheduleService{
 
 }

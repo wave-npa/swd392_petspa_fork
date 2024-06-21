@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.medicine.service.implement;
 
-public class MedicineServiceImpl {
+import org.petspa.petcaresystem.medicine.service.MedicineService;
+
+public class MedicineServiceImpl implements MedicineService{
 
 }

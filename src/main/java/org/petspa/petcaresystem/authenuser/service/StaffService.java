@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.staff.service;
+package org.petspa.petcaresystem.authenuser.service;
 
 public interface StaffService {
 
