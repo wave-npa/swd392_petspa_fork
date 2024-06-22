@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.authenuser.service.implement;
 
-public class CustomerServiceImpl {
+import org.petspa.petcaresystem.authenuser.service.CustomerService;
+
+public class CustomerServiceImpl implements CustomerService {
 
 }

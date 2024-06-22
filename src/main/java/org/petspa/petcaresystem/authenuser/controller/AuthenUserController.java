@@ -1,6 +1,7 @@
 package org.petspa.petcaresystem.authenuser.controller;
 
-import org.petspa.petcaresystem.authenuser.model.request.ProfileRequest.UpdateProfileRequest;
+import org.petspa.petcaresystem.authenuser.model.request.passwordRequest.UpdatePassword;
+import org.petspa.petcaresystem.authenuser.model.request.profileRequest.UpdateProfileRequest;
 import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,12 @@ public class AuthenUserController {
     @Autowired
     AuthenUserService authenUserService;
 
-    @PutMapping("/profile/{id}")
-    public ResponseEntity<ResponseObj> UpdateProflie(@PathVariable String id,
+    @PutMapping(value = {"/profile/{id}"})
+    public ResponseEntity<ResponseObj> UpdateProflie(@PathVariable Long id,
                                                      @RequestBody UpdateProfileRequest profileRequest){
         return authenUserService.UpdateProflie(id, profileRequest);
     }
+
 
 
 

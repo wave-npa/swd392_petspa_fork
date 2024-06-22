@@ -28,18 +28,15 @@ public class PetServiceImpl implements PetService {
     @Autowired
     PetRepository petRepository;
     @Autowired
-    MedicalRecordRepository medicalRecordRepository;
-    @Autowired
     AuthenUserRepository userRepository;
 
     @Override
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
 
         try {
-            String cust_id = Long.toString(cus_id);
-            AuthenUser customer = userRepository.findById(cust_id).orElse(null);
+            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
 
-            if (customer.equals(null)) {
+            if (customer.getStatus() != Status.ACTIVE || customer.equals(null)) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("Customer not found")
                         .data(null)
@@ -47,25 +44,17 @@ public class PetServiceImpl implements PetService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
             Pet pet = new Pet();
-            if (!petRequest.getPet_name().equals(null)) {
-                pet.setPet_name(petRequest.getPet_name());
-            }
 
-            if (petRequest.getAge() >= 0) {
+            pet.setPet_name(petRequest.getPet_name());
+
+            if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
                 pet.setAge(petRequest.getAge());
             }
+            pet.setGender(petRequest.getGender());
 
-            if (!petRequest.getGender().equals(null)) {
-                pet.setGender(petRequest.getGender());
-            }
+            pet.setSpecies(petRequest.getSpecies());
 
-            if (!petRequest.getSpecies().equals(null)) {
-                pet.setSpecies(petRequest.getSpecies());
-            }
-
-            if (!petRequest.getType_of_species().equals(null)) {
-                pet.setType_of_species(petRequest.getType_of_species());
-            }
+            pet.setType_of_species(petRequest.getType_of_species());
 
             pet.setStatus(Status.ACTIVE);
 
@@ -92,41 +81,31 @@ public class PetServiceImpl implements PetService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseObj> UpdatePetProflie(String pet_id, UpdatePetRequest petRequest) {
+    public ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest) {
         try {
-            Optional<Pet> petOptional = petRepository.findById(pet_id).or(null);
+            Pet pet = petRepository.findById(pet_id).orElse(null);
 
-            if (!petOptional.isPresent()) {
+            if (pet.getPet_id().equals(null)) {
                 ResponseObj responseObj = ResponseObj.builder()
-                        .message("Profile not found")
+                        .message("Pet not found")
                         .data(null)
                         .build();
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
-            Pet pet = petOptional.get();
-            if (!petRequest.getPet_name().equals(null)) {
-                pet.setPet_name(petRequest.getPet_name());
-            }
 
-            if (petRequest.getAge() > 0) {
+            pet.setPet_name(petRequest.getPet_name());
+
+            if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
                 pet.setAge(petRequest.getAge());
             }
 
-            if (!petRequest.getGender().equals(null)) {
-                pet.setGender(petRequest.getGender());
-            }
+            pet.setGender(petRequest.getGender());
 
-            if (!petRequest.getSpecies().equals(null)) {
-                pet.setSpecies(petRequest.getSpecies());
-            }
+            pet.setSpecies(petRequest.getSpecies());
 
-            if (!petRequest.getType_of_species().equals(null)) {
-                pet.setType_of_species(petRequest.getType_of_species());
-            }
+            pet.setType_of_species(petRequest.getType_of_species());
 
-            if (!petRequest.getStatus().equals(null)) {
-                pet.setStatus(petRequest.getStatus());
-            }
+            pet.setStatus(petRequest.getStatus());
 
             Pet updatepet = petRepository.save(pet);
 

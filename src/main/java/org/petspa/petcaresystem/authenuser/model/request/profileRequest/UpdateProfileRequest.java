@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model.request.ProfileRequest;
+package org.petspa.petcaresystem.authenuser.model.request.profileRequest;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,5 +11,6 @@ public class UpdateProfileRequest {
     String full_name;
     Gender gender;
     String address;
+    String email;
     String phone;
 }

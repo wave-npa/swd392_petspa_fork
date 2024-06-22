@@ -36,7 +36,7 @@ public class Appointment implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "appointment_id")
-    private Long appointmentId;
+    private Long appointment_id;
 
     @ManyToMany
     private Collection<AuthenUser> doctor;

@@ -15,13 +15,13 @@ public class PetController {
     @Autowired
     PetService petService;
 
-    @PostMapping
+    @PostMapping(value = {"/pet/create"})
     public ResponseEntity<ResponseObj> CreatePetProflie(@PathVariable Long cus_id,
                                                         @RequestBody CreatePetRequest petRequest){
         return petService.CreatePetProflie(cus_id, petRequest);
     }
-    @PutMapping("/pet/{id}")
-    public ResponseEntity<ResponseObj> UpdatePetProflie(@PathVariable String pet_id,
+    @PutMapping(value = {"/pet/update"})
+    public ResponseEntity<ResponseObj> UpdatePetProflie(@PathVariable Long pet_id,
                                                         @RequestBody UpdatePetRequest petRequest){
         return petService.UpdatePetProflie(pet_id, petRequest);
     }

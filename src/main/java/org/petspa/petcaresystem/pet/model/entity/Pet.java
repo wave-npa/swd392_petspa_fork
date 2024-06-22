@@ -46,7 +46,8 @@ public class Pet implements Serializable {
     @Column(name = "status")
     private Status status;
 
-//    @ManyToOne
+    @ManyToOne
+    @JoinColumn(name = "customer", nullable = false)
     private AuthenUser customer_id;
 
 
