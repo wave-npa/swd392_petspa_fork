@@ -14,7 +14,7 @@ public class AuthenUserController {
     AuthenUserService authenUserService;
 
     @PutMapping("/profile/{id}")
-    public ResponseEntity<ResponseObj> UpdateProflie(@PathVariable Long id,
+    public ResponseEntity<ResponseObj> UpdateProflie(@PathVariable String id,
                                                      @RequestBody UpdateProfileRequest profileRequest){
         return authenUserService.UpdateProflie(id, profileRequest);
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthenUserService {
-    ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest);
+
+    ResponseEntity<ResponseObj> UpdateProflie(String id, UpdateProfileRequest profileRequest);
 
 }

@@ -36,8 +36,8 @@ public class PetServiceImpl implements PetService {
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
 
         try {
-
-            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
+            String cust_id = Long.toString(cus_id);
+            AuthenUser customer = userRepository.findById(cust_id).orElse(null);
 
             if (customer.equals(null)) {
                 ResponseObj responseObj = ResponseObj.builder()
