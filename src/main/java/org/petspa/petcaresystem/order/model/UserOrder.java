@@ -21,11 +21,11 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "UserOrder")
-public class UserOrder implements Serializable {
+public class UserOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userOrderId")
+    @Column(name = "userOrder_id")
     private Long userOrderId;
 
     @Column(name = "price", nullable = false)
@@ -38,7 +38,7 @@ public class UserOrder implements Serializable {
     private Appointment appointment;
 
     @ManyToOne
-    @JoinColumn(name = "customer")
+    @JoinColumn(name = "user_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private AuthenUser customer;

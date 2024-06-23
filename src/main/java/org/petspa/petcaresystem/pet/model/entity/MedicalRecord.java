@@ -3,12 +3,17 @@ package org.petspa.petcaresystem.pet.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.medicine.model.Medicine;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -16,15 +21,24 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MedicalRecord")
-public class  MedicalRecord implements Serializable {
+public class  MedicalRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "record_id")
     private Long recordId;
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "pet_id", nullable = false)
-    private AuthenUser petId;
-}
+    @ManyToOne
+    @JoinColumn(name = "pet")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Pet pet;
+
+    @ManyToMany
+    @JoinTable(
+        name = "pet_medicine", 
+        joinColumns = @JoinColumn(name = "medicine_id"), 
+        inverseJoinColumns = @JoinColumn(name = "record_id"))
+    private Collection<Medicine> petMedicine;    
+    
+}   

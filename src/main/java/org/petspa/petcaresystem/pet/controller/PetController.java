@@ -21,7 +21,7 @@ public class PetController {
         return petService.CreatePetProflie(cus_id, petRequest);
     }
     @PutMapping("/pet/{id}")
-    public ResponseEntity<ResponseObj> UpdatePetProflie(@PathVariable String pet_id,
+    public ResponseEntity<ResponseObj> UpdatePetProflie(@PathVariable Long pet_id,
                                                         @RequestBody UpdatePetRequest petRequest){
         return petService.UpdatePetProflie(pet_id, petRequest);
     }

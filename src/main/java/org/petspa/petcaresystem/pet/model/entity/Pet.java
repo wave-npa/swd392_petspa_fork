@@ -3,16 +3,20 @@ package org.petspa.petcaresystem.pet.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -20,11 +24,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Pet")
-public class Pet implements Serializable {
+public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long pet_id;
+    @Column(name = "pet_id")
+    private Long petId;
 
     @Column(name = "full_name")
     private String pet_name;
@@ -46,8 +51,20 @@ public class Pet implements Serializable {
     @Column(name = "status")
     private Status status;
 
-//    @ManyToOne
-    private AuthenUser customer_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private AuthenUser owner;
 
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<Appointment> appointment;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<MedicalRecord> medicalRecord;
 
 }

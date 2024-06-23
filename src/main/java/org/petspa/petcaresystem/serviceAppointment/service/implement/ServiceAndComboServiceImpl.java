@@ -1,13 +1,13 @@
-package org.petspa.petcaresystem.service_and_combo.service.implement;
+package org.petspa.petcaresystem.serviceAppointment.service.implement;
 
 import java.util.Collection;
 
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.service_and_combo.model.Combo;
-import org.petspa.petcaresystem.service_and_combo.model.Services;
-import org.petspa.petcaresystem.service_and_combo.repository.ComboRepository;
-import org.petspa.petcaresystem.service_and_combo.repository.ServicesRepository;
-import org.petspa.petcaresystem.service_and_combo.service.ServiceAndComboService;
+import org.petspa.petcaresystem.serviceAppointment.model.Combo;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.repository.ComboRepository;
+import org.petspa.petcaresystem.serviceAppointment.repository.ServicesRepository;
+import org.petspa.petcaresystem.serviceAppointment.service.ServiceAndComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceAndComboServiceImpl implements ServiceAndComboService{
