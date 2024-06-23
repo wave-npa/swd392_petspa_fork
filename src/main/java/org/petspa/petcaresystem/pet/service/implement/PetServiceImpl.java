@@ -69,7 +69,7 @@ public class PetServiceImpl implements PetService {
 
             pet.setStatus(Status.ACTIVE);
 
-            pet.setCustomer_id(customer);
+            pet.setOwner(customer);
 
             Pet createpet = petRepository.save(pet);
 
@@ -92,7 +92,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseObj> UpdatePetProflie(String pet_id, UpdatePetRequest petRequest) {
+    public ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest) {
         try {
             Optional<Pet> petOptional = petRepository.findById(pet_id).or(null);
 

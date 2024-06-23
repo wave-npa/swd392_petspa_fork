@@ -1,10 +1,10 @@
 package org.petspa.petcaresystem.boarding.repository;
 
-import org.petspa.petcaresystem.boarding.model.Boarding;
+import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BoardingRepository extends JpaRepository<Boarding, String>{
+public interface BoardingRepository extends JpaRepository<BoardingAppointment, Long>{
 
 }

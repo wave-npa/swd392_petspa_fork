@@ -1,19 +1,16 @@
-package org.petspa.petcaresystem.shelter.model;
+package org.petspa.petcaresystem.schedule.model;
 
-import java.util.Collection;
+import java.time.LocalDateTime;
 
-import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,21 +23,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Shelter {
+public class ScheduleDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "shelter_id")
-    private String shelterId;
+    @Column(name = "detail_id")
+    private Long detailId;
 
-    private String shelterName;
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     private Status status;
 
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
-    private Collection<BoardingAppointment> boarding;
+    private Schedule schedule;
 
 }

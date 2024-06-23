@@ -12,5 +12,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public interface PetService {
     ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest);
-    ResponseEntity<ResponseObj> UpdatePetProflie(String pet_id, UpdatePetRequest petRequest);
+    ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest);
 }

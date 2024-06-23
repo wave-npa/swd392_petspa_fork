@@ -1,9 +1,9 @@
-package org.petspa.petcaresystem.service_and_combo.service;
+package org.petspa.petcaresystem.serviceAppointment.service;
 
 import java.util.Collection;
 
-import org.petspa.petcaresystem.service_and_combo.model.Combo;
-import org.petspa.petcaresystem.service_and_combo.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.model.Combo;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.stereotype.Service;
 
 @Service

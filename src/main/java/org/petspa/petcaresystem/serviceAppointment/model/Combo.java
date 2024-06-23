@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.service_and_combo.model;
+package org.petspa.petcaresystem.serviceAppointment.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.enums.Status;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,14 +22,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Combo")
-public class Combo implements Serializable {
+public class Combo {
 
     @Id
-    @Column(name = "comboId")
-    private String ComboId;
+    @Column(name = "combo_id")
+    private String comboId;
 
     @Column(name = "comboName")
-    private String ComboName;
+    private String comboName;
 
     @Column(name = "description")
     private String description;
@@ -43,8 +44,11 @@ public class Combo implements Serializable {
     @Column(name = "status")
     private Status status;
 
-    // @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL)
-    // @PrimaryKeyJoinColumn
-    // @EqualsAndHashCode.Exclude
-    // private Collection<Appointment> appointment;
+    @ManyToMany
+    @JoinTable(
+        name = "service_combo", 
+        joinColumns = @JoinColumn(name = "combo_id"), 
+        inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private Collection<Services> services;
+
 }
