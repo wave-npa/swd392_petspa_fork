@@ -7,13 +7,13 @@ import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateMedicalRecordRequest {
     String desscription;
-    List<Medicine> medicines;
+    Collection<Medicine> medicines;
     LocalDateTime updateTime;
     Status status;
 }

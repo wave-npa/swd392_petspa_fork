@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.medicine.model.Medicine;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 
 @Entity
 @AllArgsConstructor

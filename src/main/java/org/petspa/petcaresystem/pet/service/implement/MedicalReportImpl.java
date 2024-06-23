@@ -40,7 +40,7 @@ public class MedicalReportImpl implements MedicalRecordService {
             }
             MedicalRecord medicalrecord = new MedicalRecord();
 
-            medicalrecord.setPetId(MedicalRecordRequest.getPet_id());
+            medicalrecord.setPet(MedicalRecordRequest.getPet_id());
 
             medicalrecord.setMedical_description(MedicalRecordRequest.getDesscription());
 
@@ -48,7 +48,7 @@ public class MedicalReportImpl implements MedicalRecordService {
 
             medicalrecord.setStatus(Status.ACTIVE);
 
-            medicalrecord.setMedicines(MedicalRecordRequest.getMedicines());
+            medicalrecord.setPetMedicine(MedicalRecordRequest.getMedicines());
 
             MedicalRecord createMedicalRecord = medicalRecordRepository.save(medicalrecord);
 
@@ -84,7 +84,7 @@ public class MedicalReportImpl implements MedicalRecordService {
 
             medicalrecord.setMedical_description(MedicalRecordRequest.getDesscription());
 
-            medicalrecord.setMedicines(MedicalRecordRequest.getMedicines());
+            medicalrecord.setPetMedicine(MedicalRecordRequest.getMedicines());
 
             medicalrecord.setLast_update(MedicalRecordRequest.getUpdateTime());
 

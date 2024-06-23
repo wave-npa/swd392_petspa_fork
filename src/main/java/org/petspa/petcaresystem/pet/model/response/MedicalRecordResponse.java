@@ -10,7 +10,7 @@ import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import org.petspa.petcaresystem.medicine.model.response.MedicineResponse;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class MedicalRecordResponse {
     String medicalRecord_id;
     String pet_id;
     String desscription;
-    List<Medicine> medicines;
+    Collection<Medicine> medicines;
     LocalDateTime createTime;
     Status status;
 }

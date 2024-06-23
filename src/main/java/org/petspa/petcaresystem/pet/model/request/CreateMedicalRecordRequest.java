@@ -8,14 +8,14 @@ import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateMedicalRecordRequest {
     Pet pet_id;
-    String desscription;
-    List<Medicine> medicines;
+    String description;
+    Collection<Medicine> medicines;
     LocalDateTime createTime;
     Status status;
 }

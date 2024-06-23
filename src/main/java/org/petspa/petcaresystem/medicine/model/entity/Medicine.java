@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.entity.MedicalRecord;
 
