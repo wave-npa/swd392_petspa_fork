@@ -58,7 +58,7 @@ public class PetServiceImpl implements PetService {
 
             pet.setStatus(Status.ACTIVE);
 
-            pet.setCustomer_id(customer);
+            pet.setOwner(customer);
 
             Pet createpet = petRepository.save(pet);
 

@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.service_and_combo.model;
+package org.petspa.petcaresystem.serviceAppointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -23,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Services")
-public class Services implements Serializable {
+public class Services {
 
     @Id
     @Column(name = "service_id")
@@ -35,8 +35,12 @@ public class Services implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    // @Column(name = "service_type", nullable = false)
-    // private int serviceType;
+    @ManyToMany
+    @JoinTable(
+        name = "type_service", 
+        joinColumns = @JoinColumn(name = "serviceType_id"), 
+        inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private Collection<ServiceType> typeOfService;
 
     @Column(name = "price", nullable = false)
     private float price;
@@ -48,8 +52,11 @@ public class Services implements Serializable {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    // @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
-    // @PrimaryKeyJoinColumn
-    // @EqualsAndHashCode.Exclude
-    // private Collection<Appointment> appointment;
+    @ManyToMany(mappedBy = "bookedService")
+    @JsonIgnore
+    private Collection<Appointment> appointment;
+
+    @ManyToMany(mappedBy = "services")
+    @JsonIgnore
+    private Collection<Combo> serviceCombo;
 }

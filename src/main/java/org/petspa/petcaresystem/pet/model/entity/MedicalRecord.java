@@ -1,19 +1,15 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -28,10 +24,6 @@ public class  MedicalRecord implements Serializable {
     @Column(name = "medicalrecord_id", nullable = false)
     private Long medicalrecord_id;
 
-    @OneToOne
-    @JoinColumn(name = "pet_id", nullable = false)
-    private Pet petId;
-
     @Column(name = "medical_description")
     private String medical_description;
 
@@ -42,11 +34,17 @@ public class  MedicalRecord implements Serializable {
     @Column(name = "status")
     private Status status;
 //    co the co them
+    @ManyToOne
+    @JoinColumn(name = "pet")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Pet pet;
+
     @ManyToMany
     @JoinTable(
-            name = "medicine",
-            joinColumns = { @JoinColumn(name = "record_id") },
-            inverseJoinColumns = { @JoinColumn(name = "medicine_id") }
-    )
-    private List<Medicine> medicines = new ArrayList<>();
+            name = "pet_medicine",
+            joinColumns = @JoinColumn(name = "medicine_id"),
+            inverseJoinColumns = @JoinColumn(name = "record_id"))
+    private Collection<Medicine> petMedicine;
+
 }

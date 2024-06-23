@@ -13,12 +13,15 @@ import lombok.ToString;
 
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
-import org.petspa.petcaresystem.service_and_combo.model.Combo;
-import org.petspa.petcaresystem.service_and_combo.model.Services;
+import org.petspa.petcaresystem.review.model.Review;
+import org.petspa.petcaresystem.serviceAppointment.model.Combo;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -31,7 +34,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Appointment")
-public class Appointment implements Serializable{
+public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,14 +42,17 @@ public class Appointment implements Serializable{
     private Long appointment_id;
 
     @ManyToMany
-    private Collection<AuthenUser> doctor;
+    @JoinTable(
+        name = "doctor_booked", 
+        joinColumns = @JoinColumn(name = "appointment_id"), 
+        inverseJoinColumns = @JoinColumn(name = "doctor_id"))
+    private Collection<Doctor> bookedDoctor;
 
-    // @ManyToOne
-    // @MapsId
-    // @JoinColumn(name = "pet")
-    // @EqualsAndHashCode.Exclude
-    // @ToString.Exclude
-    // private Pet pet;
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Pet pet;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -55,27 +61,36 @@ public class Appointment implements Serializable{
     @Column(name = "create_date")
     private Date create_date;
 
-    @Column(name = "appointment_type")
-    private String appointment_type;
 
-    @Column(name = "appointment_time", nullable = false)
-    private LocalDateTime appointmentTime;
+    @Column(name = "startTime", nullable = false)
+    private LocalDateTime startTime;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "serviceId", nullable = true)
-    @JsonIgnore
-    private Services service;
+    @Column(name = "endTime", nullable = false)
+    private LocalDateTime endTime;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "serviceId", nullable = true)
-    @JsonIgnore
-    private Combo combo;
+    @ManyToMany
+    @JoinTable(
+        name = "service_booked", 
+        joinColumns = @JoinColumn(name = "service_id"), 
+        inverseJoinColumns = @JoinColumn(name = "appointnment_id"))
+    private Collection<Services> bookedService;
 
     @OneToOne
     @MapsId
     @JsonIgnore
-    @JoinColumn(name = "userOrderId", nullable = true)
+    @JoinColumn(name = "userOrder_id", nullable = true)
     private UserOrder userOrder;
+
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "boardingAppointment_id", nullable = true)
+    private BoardingAppointment boardingAppointment;
+
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "review_id", nullable = true)
+    private Review review;
+
 }

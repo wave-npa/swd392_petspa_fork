@@ -14,6 +14,7 @@ import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
+import org.petspa.petcaresystem.review.model.Review;
 import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
@@ -30,12 +31,12 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "AuthenUser")
-public class AuthenUser implements Serializable {
+public class AuthenUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long user_id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "userId")
+    private Long userId;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -63,16 +64,27 @@ public class AuthenUser implements Serializable {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "role_id", nullable = false)
-    private String role_id;
-
-    @ManyToMany
-    @JsonIgnore
-    private Collection<Appointment> appointment;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Role role;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private Collection<UserOrder> order;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Collection<Pet> ownedPet;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Collection<Review> writtenReview;
 }
