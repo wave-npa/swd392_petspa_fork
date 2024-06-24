@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class MedicalReportImpl implements MedicalRecordService {
@@ -25,6 +27,63 @@ public class MedicalReportImpl implements MedicalRecordService {
     PetRepository petRepository;
     @Autowired
     MedicalRecordRepository medicalRecordRepository;
+
+    @Override
+    public ResponseEntity<ResponseObj> ViewListPetMedicalRecord(Long pet_id) {
+        try {
+            Pet pet = petRepository.findById(pet_id).orElse(null);
+
+            if (pet.getStatus() != Status.ACTIVE || pet.equals(null)) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("pet not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            List<MedicalRecord> medicalRecordrepo = medicalRecordRepository.findAllById(Collections.singleton(pet_id));
+            List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();
+            for (MedicalRecord record : medicalRecordrepo) {
+                if (record.getStatus() == Status.ACTIVE){
+                    medicalRecordList.add(record);
+                }
+            }
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Load Medical Record Successfully")
+                    .data(medicalRecordList)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> ViewListAllMedicalRecord() {
+        try {
+            List<MedicalRecord> medicalRecord = medicalRecordRepository.findAll();
+
+            ResponseObj responseObj = ResponseObj.builder()
+                .message("Load Medical Record Successfully")
+                .data(medicalRecord)
+                .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
 
     @Override
     public ResponseEntity<ResponseObj> CreateMedicalRecord(Long pet_id, CreateMedicalRecordRequest MedicalRecordRequest) {

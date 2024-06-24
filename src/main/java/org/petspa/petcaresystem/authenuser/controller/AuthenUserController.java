@@ -20,7 +20,4 @@ public class AuthenUserController {
         return authenUserService.UpdateProflie(id, profileRequest);
     }
 
-
-
-
 }
