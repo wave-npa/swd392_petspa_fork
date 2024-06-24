@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.department.model;
+package org.petspa.petcaresystem.department.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.doctor.model.Doctor;

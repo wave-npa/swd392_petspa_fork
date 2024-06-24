@@ -25,4 +25,10 @@ public class PetController {
                                                         @RequestBody UpdatePetRequest petRequest){
         return petService.UpdatePetProflie(pet_id, petRequest);
     }
+
+    @DeleteMapping(value = {"/pet/delete"})
+    public ResponseEntity<ResponseObj> DeletePetProflie(@PathVariable Long pet_id,
+                                                        @RequestBody UpdatePetRequest petRequest){
+        return petService.UpdatePetProflie(pet_id, petRequest);
+    }
 }

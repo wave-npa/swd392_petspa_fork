@@ -42,7 +42,7 @@ public class MedicalReportImpl implements MedicalRecordService {
 
             medicalrecord.setPet(MedicalRecordRequest.getPet_id());
 
-            medicalrecord.setMedical_description(MedicalRecordRequest.getDesscription());
+            medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
             medicalrecord.setLast_update(LocalDateTime.now());
 
@@ -82,13 +82,11 @@ public class MedicalReportImpl implements MedicalRecordService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            medicalrecord.setMedical_description(MedicalRecordRequest.getDesscription());
+            medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
             medicalrecord.setPetMedicine(MedicalRecordRequest.getMedicines());
 
             medicalrecord.setLast_update(MedicalRecordRequest.getUpdateTime());
-
-            medicalrecord.setStatus(MedicalRecordRequest.getStatus());
 
             MedicalRecord updateMedicalRecord = medicalRecordRepository.save(medicalrecord);
 
@@ -97,6 +95,35 @@ public class MedicalReportImpl implements MedicalRecordService {
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Update Medical Record Successfully")
                     .data(medicalRecordResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> DeleteMedicalRecord(Long medicalrecord_id, UpdateMedicalRecordRequest MedicalRecordRequest) {
+        try {
+            MedicalRecord medicalrecord = medicalRecordRepository.findById(medicalrecord_id).orElse(null);
+
+            if (medicalrecord.equals(null)) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("medical record not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            medicalrecord.setStatus(Status.INACTIVE);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Delete Medical Record Successfully")
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {

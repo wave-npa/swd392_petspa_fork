@@ -89,7 +89,6 @@ public class Appointment {
 
     @OneToOne
     @MapsId
-    @JsonIgnore
     @JoinColumn(name = "review_id", nullable = true)
     private Review review;
 

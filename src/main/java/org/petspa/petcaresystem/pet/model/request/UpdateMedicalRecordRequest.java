@@ -12,7 +12,7 @@ import java.util.Collection;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateMedicalRecordRequest {
-    String desscription;
+    String description;
     Collection<Medicine> medicines;
     LocalDateTime updateTime;
     Status status;

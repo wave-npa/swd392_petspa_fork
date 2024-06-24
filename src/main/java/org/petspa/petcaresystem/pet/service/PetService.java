@@ -11,4 +11,5 @@ import org.springframework.stereotype.Service;
 public interface PetService {
     ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest);
     ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest);
+    ResponseEntity<ResponseObj> DeletePetProflie(Long pet_id, UpdatePetRequest petRequest);
 }

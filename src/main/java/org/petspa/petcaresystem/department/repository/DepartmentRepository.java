@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.department.repository;
 
-import org.petspa.petcaresystem.department.model.Department;
+import org.petspa.petcaresystem.department.model.entity.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

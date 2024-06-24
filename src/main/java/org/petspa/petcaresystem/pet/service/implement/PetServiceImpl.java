@@ -125,4 +125,35 @@ public class PetServiceImpl implements PetService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> DeletePetProflie(Long pet_id, UpdatePetRequest petRequest) {
+        try {
+            Pet pet = petRepository.findById(pet_id).orElse(null);
+
+            if (pet.getPet_id().equals(null)) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Pet not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            pet.setStatus(Status.INACTIVE);
+
+            petRepository.save(pet);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Delete Pet Profile Successfully")
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load Pet Profile")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
 }

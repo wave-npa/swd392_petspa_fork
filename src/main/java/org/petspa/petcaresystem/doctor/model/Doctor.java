@@ -11,7 +11,7 @@ import lombok.ToString;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
-import org.petspa.petcaresystem.department.model.Department;
+import org.petspa.petcaresystem.department.model.entity.Department;
 import org.petspa.petcaresystem.schedule.model.Schedule;
 
 import java.io.Serializable;

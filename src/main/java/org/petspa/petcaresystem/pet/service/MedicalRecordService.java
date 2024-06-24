@@ -10,4 +10,5 @@ import org.springframework.stereotype.Service;
 public interface MedicalRecordService {
     ResponseEntity<ResponseObj> CreateMedicalRecord(Long pet_id, CreateMedicalRecordRequest MedicalRecordRequest);
     ResponseEntity<ResponseObj> UpdateMedicalRecord(Long medicalrecord_id, UpdateMedicalRecordRequest MedicalRecordRequest);
+    ResponseEntity<ResponseObj> DeleteMedicalRecord(Long medicalrecord_id, UpdateMedicalRecordRequest MedicalRecordRequest);
 }

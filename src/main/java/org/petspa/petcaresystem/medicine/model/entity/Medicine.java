@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.medicine.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Medicine implements Serializable {
     private Status status;
 
     @ManyToMany(mappedBy = "petMedicine")
+    @JsonIgnore
     private Collection<MedicalRecord> medicalRecord;
 
 }
