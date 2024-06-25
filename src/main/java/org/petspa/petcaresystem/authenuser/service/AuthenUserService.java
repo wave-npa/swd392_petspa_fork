@@ -1,15 +1,14 @@
 package org.petspa.petcaresystem.authenuser.service;
 
-import org.petspa.petcaresystem.authenuser.model.request.passwordRequest.UpdatePassword;
-import org.petspa.petcaresystem.authenuser.model.request.profileRequest.UpdateProfileRequest;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
-import org.springframework.http.ResponseEntity;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.ResponseAPI;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface AuthenUserService {
 
-    ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest);
-
-    ResponseEntity<ResponseObj> UpdatePassword(Long id, UpdatePassword updatePassword);
+    public List<AuthenUser> getUsers();
+    public ResponseAPI register(AuthenUser authenUser);
 }

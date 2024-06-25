@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model.entity;
+package org.petspa.petcaresystem.authenuser.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -21,9 +21,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 
-import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor

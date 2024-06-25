@@ -1,7 +1,5 @@
 package org.petspa.petcaresystem.pet.mapper;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.response.AuthenuserResponse;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.pet.model.response.PetResponse;
 

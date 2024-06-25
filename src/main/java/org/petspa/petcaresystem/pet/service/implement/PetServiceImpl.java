@@ -1,7 +1,7 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.mapper.PetMapper;

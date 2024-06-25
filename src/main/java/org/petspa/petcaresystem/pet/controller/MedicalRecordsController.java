@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.pet.controller;
 
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
+import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.pet.model.request.CreateMedicalRecordRequest;
 import org.petspa.petcaresystem.pet.model.request.UpdateMedicalRecordRequest;
 import org.petspa.petcaresystem.pet.service.MedicalRecordService;
