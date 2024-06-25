@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/petspa/service")
-//@Tag(name = "Service", description = "Service Management API")
 public class ServicesController {
 
-   @Autowired
    private ServiceAndComboService serviceAndComboService;
 
    @GetMapping("/getAll")

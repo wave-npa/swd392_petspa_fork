@@ -2,14 +2,17 @@ package org.petspa.petcaresystem.doctor.service.implement;
 
 import java.util.Collection;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DoctorServiceImpl implements DoctorService {
 
     @Autowired

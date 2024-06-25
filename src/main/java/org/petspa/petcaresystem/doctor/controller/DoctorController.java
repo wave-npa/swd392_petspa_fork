@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 public class DoctorController {
 
-   @Autowired
    private DoctorService doctorService;
 
    @GetMapping("/getAll")

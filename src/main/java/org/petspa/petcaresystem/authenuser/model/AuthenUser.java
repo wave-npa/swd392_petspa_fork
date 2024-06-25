@@ -20,9 +20,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Optional;
 
-import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
