@@ -9,6 +9,7 @@ import java.util.List;
 @Service
 public interface AuthenUserService {
 
-    public List<AuthenUser> getUsers();
+    public ResponseAPI getUsers();
     public ResponseAPI register(AuthenUser authenUser);
+
 }

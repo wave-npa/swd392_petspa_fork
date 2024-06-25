@@ -52,7 +52,7 @@ public class AuthenUser {
     private String address;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    private Long phone;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

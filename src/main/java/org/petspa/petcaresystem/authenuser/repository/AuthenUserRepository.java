@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthenUserRepository extends JpaRepository<AuthenUser, Long>{
+    public AuthenUser findByEmail(String email);
+    public AuthenUser findByPhone(Long phone);
 }
