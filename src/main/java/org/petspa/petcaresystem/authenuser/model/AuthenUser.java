@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model.entity;
+package org.petspa.petcaresystem.authenuser.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

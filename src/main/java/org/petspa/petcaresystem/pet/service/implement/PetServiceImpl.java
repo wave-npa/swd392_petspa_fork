@@ -1,15 +1,14 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
-import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.mapper.PetMapper;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.pet.model.request.CreatePetRequest;
 import org.petspa.petcaresystem.pet.model.request.UpdatePetRequest;
 import org.petspa.petcaresystem.pet.model.response.PetResponse;
+import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.pet.repository.MedicalRecordRepository;
 import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.pet.service.PetService;
@@ -18,8 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.petspa.petcaresystem.utils.AutoGenerateId;
-import java.util.List;
+
 import java.util.Optional;
 
 @Service

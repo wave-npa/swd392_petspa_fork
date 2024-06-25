@@ -1,9 +1,9 @@
 package org.petspa.petcaresystem.pet.controller;
 
 
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
 import org.petspa.petcaresystem.pet.model.request.CreatePetRequest;
 import org.petspa.petcaresystem.pet.model.request.UpdatePetRequest;
+import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.pet.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

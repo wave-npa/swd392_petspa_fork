@@ -1,6 +1,5 @@
 package org.petspa.petcaresystem.order.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,9 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
