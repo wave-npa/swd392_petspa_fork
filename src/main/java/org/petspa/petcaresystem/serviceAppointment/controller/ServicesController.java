@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.serviceAppointment.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
@@ -14,13 +15,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/petspa/service")
-//@Tag(name = "Service", description = "Service Management API")
+@CrossOrigin
+@Tag(name = "Service", description = "Service Management API")
+@ApiResponses(value = {
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Services.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
+    @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class ServicesController {
 
-   @Autowired
    private ServiceAndComboService serviceAndComboService;
+
+    @Hidden
+    @RequestMapping("/")
+    @CrossOrigin
+    public void redirect(HttpServletResponse response) throws IOException{
+        response.sendRedirect("/swagger-ui.html");
+    }
 
    @GetMapping("/getAll")
    @CrossOrigin
@@ -50,5 +70,11 @@ public class ServicesController {
    @CrossOrigin
    public Services deleteServiceById(@PathVariable String serviceId) {
        return serviceAndComboService.deleteService(serviceId);
+   }
+
+   @GetMapping("test")
+   @CrossOrigin
+   public String test(){
+    return "test";
    }
 }
