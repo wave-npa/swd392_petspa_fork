@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/pet-management")
+@RequestMapping("api")
 public class PetController {
     @Autowired
     PetService petService;
 
-    @GetMapping(value = {"/pet/viewPet"})
+        @GetMapping(value = {"/pet/viewPet"})
     public ResponseEntity<ResponseObj> ViewPetProfliebyId(@RequestParam Long pet_id){
         return petService.ViewPetProfliebyId(pet_id);
     }

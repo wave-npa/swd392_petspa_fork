@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Autowired
     AuthenUserRepository authenUserRepository;
-    private final PasswordEncoder passwordEncoder = null;
+//    private final PasswordEncoder passwordEncoder = null;
 
     @Override
     @Transactional
@@ -93,9 +92,9 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            if (!updatePassword.getPassword().equals(user.getPassword()) && updatePassword.getPassword().isEmpty()) {
-                user.setPassword(passwordEncoder.encode(updatePassword.getPassword()));
-            }
+//            if (!updatePassword.getPassword().equals(user.getPassword()) && updatePassword.getPassword().isEmpty()) {
+//                user.setPassword(passwordEncoder.encode(updatePassword.getPassword()));
+//            }
 
             authenUserRepository.save(user);
 
