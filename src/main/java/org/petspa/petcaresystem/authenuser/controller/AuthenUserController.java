@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class AuthenUserController {
 
     @Autowired
     AuthenUserService authenUserService;
 
-    @GetMapping("/getUsers")
+    @GetMapping("/login")
     public ResponseAPI getUsers(){
         ResponseAPI responseAPI = authenUserService.getUsers();
         return responseAPI;

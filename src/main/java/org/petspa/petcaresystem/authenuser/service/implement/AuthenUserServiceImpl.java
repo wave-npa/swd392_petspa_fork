@@ -4,15 +4,16 @@ import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.ResponseAPI;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
+import org.petspa.petcaresystem.config.MyUserDetails;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             message = "This phone number has already existed!Please try another";
             return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
         }
-        
+
         try{
             authenUserRepository.save(authenUser);
         }catch (Exception e){
@@ -94,5 +95,14 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+    }
+
+    @Override
+    public UserDetails loadUserByEmail(String email) throws Exception {
+        AuthenUser authenUser = authenUserRepository.findByEmail(email);
+        if(authenUserRepository == null){
+            throw new Exception("User not found!");
+        }
+        return new MyUserDetails(authenUser);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -18,6 +19,10 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
                         .anyRequest().authenticated());
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
