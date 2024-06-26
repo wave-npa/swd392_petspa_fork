@@ -145,7 +145,6 @@ public class PetServiceImpl implements PetService {
                     pet.setOwner(customer);
 
                     Pet createpet = petRepository.save(pet);
-
                     PetResponse petResponse = PetMapper.toPetResponse(createpet);
 
                     ResponseObj responseObj = ResponseObj.builder()
@@ -234,6 +233,39 @@ public class PetServiceImpl implements PetService {
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Delete Pet Profile Successfully")
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
+            }
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Pet not found")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load Pet Profile")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> RestorePetProflie(Long pet_id) {
+        try {
+            Pet petdelete = petRepository.getReferenceById(pet_id);
+            List<Pet> petlist = petRepository.findAll();
+
+            for (Pet pet : petlist) {
+                if (pet.equals(petdelete)) {
+                    pet.setStatus(Status.ACTIVE);
+                    petRepository.save(pet);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Restore Pet Profile Successfully")
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }

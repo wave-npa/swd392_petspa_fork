@@ -9,15 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/medicalrecord-management")
+@RequestMapping("api")
 public class MedicalRecordsController {
 
     @Autowired
     private MedicalRecordService medicalRecordService;
 
     @GetMapping(value = {"/medicalrecord/{pet_id}/viewMedicalrecord"})
-    public ResponseEntity<ResponseObj> ViewListPetMedicalRecord(@PathVariable Long pet_id){
-        return medicalRecordService.ViewListPetMedicalRecord(pet_id);
+    public ResponseEntity<ResponseObj> ViewListPetMedicalRecordbyPetId(@PathVariable Long pet_id){
+        return medicalRecordService.ViewListPetMedicalRecordbyPetId(pet_id);
     }
 
     @GetMapping(value = {"/medicalrecord/viewListMedicalrecord"})
@@ -40,5 +40,10 @@ public class MedicalRecordsController {
     @PutMapping("/medicalrecord/delete")
     public ResponseEntity<ResponseObj> DeleteMedicalRecord(@RequestParam Long medicalrecord_id) {
         return medicalRecordService.DeleteMedicalRecord(medicalrecord_id);
+    }
+
+    @PutMapping("/medicalrecord/restore")
+    public ResponseEntity<ResponseObj> RestoreMedicalRecord(@RequestParam Long medicalrecord_id) {
+        return medicalRecordService.RestoreMedicalRecord(medicalrecord_id);
     }
 }

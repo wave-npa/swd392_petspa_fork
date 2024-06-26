@@ -23,7 +23,7 @@ public class Medicine implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "medicine_id", nullable = false)
-    private String medicine_id;
+    private Long medicine_id;
 
     @Column(name = "medicine_name", nullable = false)
     private String medicine_name;

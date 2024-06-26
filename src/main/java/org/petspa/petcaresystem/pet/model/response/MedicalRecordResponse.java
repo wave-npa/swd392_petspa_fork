@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
-import org.petspa.petcaresystem.medicine.model.response.MedicineResponse;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -17,8 +17,8 @@ import java.util.Collection;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MedicalRecordResponse {
-    String medicalRecord_id;
-    String pet_id;
+    Long medicalRecord_id;
+    Pet pet;
     String desscription;
     Collection<Medicine> medicines;
     LocalDateTime createTime;

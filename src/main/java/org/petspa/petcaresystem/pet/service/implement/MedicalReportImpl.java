@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
+import org.petspa.petcaresystem.medicine.model.entity.Medicine;
+import org.petspa.petcaresystem.medicine.repository.MedicineRepository;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.mapper.MedicalRecordMapper;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,17 +30,18 @@ public class MedicalReportImpl implements MedicalRecordService {
     PetRepository petRepository;
     @Autowired
     MedicalRecordRepository medicalRecordRepository;
+    @Autowired
+    MedicineRepository medicineRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> ViewListPetMedicalRecord(Long pet_id) {
+    public ResponseEntity<ResponseObj> ViewListPetMedicalRecordbyPetId(Long pet_id) {
         try {
             Pet pet = petRepository.getReferenceById(pet_id);
             List<Pet> petList = petRepository.findAll();
             for (Pet pet1 : petList) {
                 if (pet1.getStatus().equals(Status.ACTIVE) && pet1.equals(pet)) {
 
-                    List<MedicalRecord> medicalRecordrepo = medicalRecordRepository.
-                            findAllById(Collections.singleton(pet1.getPet_id()));
+                    Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
                     List<MedicalRecord> medicalRecordList = new ArrayList<>();
                     for (MedicalRecord record : medicalRecordrepo) {
                         if (record.getStatus().equals(Status.ACTIVE)){
@@ -193,6 +197,42 @@ public class MedicalReportImpl implements MedicalRecordService {
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Delete Medical Record Successfully")
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+
+                }
+            }
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("medical record not found")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> RestoreMedicalRecord(Long medicalrecord_id) {
+        try {
+            MedicalRecord medicalrecordrestore = medicalRecordRepository.getReferenceById(medicalrecord_id);
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
+
+            for (MedicalRecord medicalrecord : medicalRecordList) {
+                if (medicalrecord.equals(medicalrecordrestore)) {
+
+                    medicalrecord.setStatus(Status.ACTIVE);
+                    medicalRecordRepository.save(medicalrecord);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Restore Medical Record Successfully")
                             .build();
                     return ResponseEntity.ok().body(responseObj);
 

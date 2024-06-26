@@ -8,6 +8,9 @@ import lombok.experimental.FieldDefaults;
 import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
+import org.petspa.petcaresystem.pet.model.entity.MedicalRecord;
+
+import java.util.Collection;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
