@@ -53,7 +53,7 @@ public class AuthenUser implements Serializable {
     private String address;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    private Long phone;
 
     @Column(name = "create_date", nullable = false)
     private LocalDateTime create_date;
