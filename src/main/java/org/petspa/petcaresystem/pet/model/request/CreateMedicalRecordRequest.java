@@ -13,7 +13,6 @@ import java.util.Collection;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateMedicalRecordRequest {
-    Pet pet_id;
     String description;
     Collection<Medicine> medicines;
     LocalDateTime createTime;
