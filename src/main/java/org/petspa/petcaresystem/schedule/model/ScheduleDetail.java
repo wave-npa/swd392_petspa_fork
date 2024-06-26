@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.schedule.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.petspa.petcaresystem.enums.Status;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ScheduleDetail {
+public class ScheduleDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

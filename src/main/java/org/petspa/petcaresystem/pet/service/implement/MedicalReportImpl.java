@@ -167,24 +167,30 @@ public class MedicalReportImpl implements MedicalRecordService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> DeleteMedicalRecord(Long medicalrecord_id, UpdateMedicalRecordRequest MedicalRecordRequest) {
+    public ResponseEntity<ResponseObj> DeleteMedicalRecord(Long medicalrecord_id) {
         try {
-            MedicalRecord medicalrecord = medicalRecordRepository.findById(medicalrecord_id).orElse(null);
+            MedicalRecord medicalrecorddelete = medicalRecordRepository.getReferenceById(medicalrecord_id);
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
 
-            if (medicalrecord.equals(null)) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("medical record not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            for (MedicalRecord medicalrecord : medicalRecordList) {
+                if (medicalrecord.equals(medicalrecorddelete)) {
+                    medicalrecord.setStatus(Status.INACTIVE);
+                    medicalRecordRepository.save(medicalrecord);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Delete Medical Record Successfully")
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+
+                }
             }
 
-            medicalrecord.setStatus(Status.INACTIVE);
-
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Delete Medical Record Successfully")
+                    .message("medical record not found")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.boarding_detail.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +30,7 @@ import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 @NoArgsConstructor
 @Setter
 @Getter
-public class BoardingDetail {
+public class BoardingDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 public class PetcaresystemApplication {
 
 	public static void main(String[] args) {
-			SpringApplication.run(PetcaresystemApplication.class, args);
+
+		SpringApplication.run(PetcaresystemApplication.class, args);
 	}
 }

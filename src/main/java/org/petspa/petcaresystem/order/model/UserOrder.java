@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "UserOrder")
-public class UserOrder {
+public class UserOrder implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -29,7 +29,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = "AuthenUser")
-public class AuthenUser {
+public class AuthenUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.doctor.model.Doctor;
@@ -18,12 +19,12 @@ import org.petspa.petcaresystem.doctor.model.Doctor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Department")
-public class Department {
+public class Departments implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "department_id")
-    private Long departmentId;
+    private Long department_id;
 
     @Column(name = "department_name", nullable = false)
     private String departmentName;

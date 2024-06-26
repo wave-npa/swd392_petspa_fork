@@ -15,7 +15,7 @@ public class PetController {
     @Autowired
     PetService petService;
 
-        @GetMapping(value = {"/pet/viewPet"})
+    @GetMapping(value = {"/pet/viewPet"})
     public ResponseEntity<ResponseObj> ViewPetProfliebyId(@RequestParam Long pet_id){
         return petService.ViewPetProfliebyId(pet_id);
     }
@@ -42,7 +42,7 @@ public class PetController {
         return petService.UpdatePetProflie(pet_id, petRequest);
     }
 
-    @DeleteMapping("/pet/delete")
+    @PutMapping("/pet/delete")
     public ResponseEntity<ResponseObj> DeletePetProflie(@RequestParam Long pet_id){
         return petService.DeletePetProflie(pet_id);
     }

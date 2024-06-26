@@ -37,9 +37,8 @@ public class MedicalRecordsController {
         return medicalRecordService.UpdateMedicalRecord(medicalrecord_id, MedicalRecordRequest);
     }
 
-    @DeleteMapping("/medicalrecord/delete")
-    public ResponseEntity<ResponseObj> DeleteMedicalRecord(@RequestParam Long medicalrecord_id,
-                                                           @RequestBody UpdateMedicalRecordRequest MedicalRecordRequest) {
-        return medicalRecordService.DeleteMedicalRecord(medicalrecord_id, MedicalRecordRequest);
+    @PutMapping("/medicalrecord/delete")
+    public ResponseEntity<ResponseObj> DeleteMedicalRecord(@RequestParam Long medicalrecord_id) {
+        return medicalRecordService.DeleteMedicalRecord(medicalrecord_id);
     }
 }

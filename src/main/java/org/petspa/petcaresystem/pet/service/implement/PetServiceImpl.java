@@ -34,21 +34,24 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> ViewPetProfliebyId(Long pet_id) {
         try {
-            Pet pet = petRepository.findById(pet_id).orElse(null);
+            Pet petfine = petRepository.getReferenceById(pet_id);
+            List<Pet> petlist = petRepository.findAll();
 
-            if (pet.getStatus() == Status.INACTIVE || pet.equals(null)){
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Pet not found or have not been removed")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            for (Pet pet : petlist) {
+                if (pet.equals(petfine) && pet.getStatus() == Status.ACTIVE) {
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Fine Pet Profile Successfully")
+                            .data(pet)
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
             }
-
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Find pet successfully")
-                    .data(pet)
+                    .message("Pet not found")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -64,7 +67,7 @@ public class PetServiceImpl implements PetService {
         try {
             AuthenUser customer = userRepository.findById(cus_id).orElse(null);
 
-            if (customer.getStatus() != Status.ACTIVE || customer.equals(null)) {
+            if (customer == null) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("Customer not found")
                         .data(null)
@@ -117,12 +120,13 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
 
         try {
-            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
+            AuthenUser customer = userRepository.getReferenceById(cus_id);
 
-            if (customer.getStatus() != Status.ACTIVE || customer.equals(null)) {
+            if ( customer.getStatus().equals(Status.INACTIVE)) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("Customer not found")
                         .data(null)
@@ -169,39 +173,42 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest) {
         try {
-            Pet pet = petRepository.findById(pet_id).orElse(null);
+            Pet petupdate = petRepository.getReferenceById(pet_id);
+            List<Pet> petlist = petRepository.findAll();
 
-            if (pet.getPet_id().equals(null)) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Pet not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            for (Pet pet : petlist) {
+                if (pet.equals(petupdate) && pet.getStatus() == Status.ACTIVE) {
+
+                    pet.setPet_name(petRequest.getPet_name());
+
+                    if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
+                        pet.setAge(petRequest.getAge());
+                    }
+
+                    pet.setGender(petRequest.getGender());
+
+                    pet.setSpecies(petRequest.getSpecies());
+
+                    pet.setType_of_species(petRequest.getType_of_species());
+
+                    pet.setStatus(petRequest.getStatus());
+
+                    Pet updatepet = petRepository.save(pet);
+
+                    PetResponse petResponse = PetMapper.toPetResponse(updatepet);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Update Pet Profile Successfully")
+                            .data(petResponse)
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
             }
-
-            pet.setPet_name(petRequest.getPet_name());
-
-            if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
-                pet.setAge(petRequest.getAge());
-            }
-
-            pet.setGender(petRequest.getGender());
-
-            pet.setSpecies(petRequest.getSpecies());
-
-            pet.setType_of_species(petRequest.getType_of_species());
-
-            pet.setStatus(petRequest.getStatus());
-
-            Pet updatepet = petRepository.save(pet);
-
-            PetResponse petResponse = PetMapper.toPetResponse(updatepet);
-
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Update Pet Profile Successfully")
-                    .data(petResponse)
+                    .message("Pet not found or have not been removed")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -215,24 +222,26 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> DeletePetProflie(Long pet_id) {
         try {
-            Pet pet = petRepository.findById(pet_id).orElse(null);
+            Pet petdelete = petRepository.getReferenceById(pet_id);
+            List<Pet> petlist = petRepository.findAll();
 
-            if (pet.getPet_id().equals(null)) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Pet not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            for (Pet pet : petlist) {
+                if (pet.equals(petdelete)) {
+                    pet.setStatus(Status.INACTIVE);
+                    petRepository.save(pet);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Delete Pet Profile Successfully")
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
             }
-
-            pet.setStatus(Status.INACTIVE);
-
-            petRepository.save(pet);
-
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Delete Pet Profile Successfully")
+                    .message("Pet not found")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

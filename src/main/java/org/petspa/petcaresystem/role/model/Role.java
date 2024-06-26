@@ -13,6 +13,7 @@ import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
@@ -21,7 +22,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = "Role")
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

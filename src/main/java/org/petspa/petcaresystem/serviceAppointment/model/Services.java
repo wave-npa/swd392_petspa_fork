@@ -23,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Services")
-public class Services {
+public class Services implements Serializable {
 
     @Id
     @Column(name = "service_id")
