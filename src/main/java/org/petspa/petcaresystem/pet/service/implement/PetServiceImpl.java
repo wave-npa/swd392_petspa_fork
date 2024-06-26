@@ -122,43 +122,45 @@ public class PetServiceImpl implements PetService {
     @Override
     @Transactional
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
-
         try {
             AuthenUser customer = userRepository.getReferenceById(cus_id);
-
-            if ( customer.getStatus().equals(Status.INACTIVE)) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Customer not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
+            List<AuthenUser> cusList = userRepository.findAll();
             Pet pet = new Pet();
+            for (AuthenUser cus : cusList) {
+                if (cus.getStatus().equals(Status.ACTIVE) && cus.equals(customer)) {
 
-            pet.setPet_name(petRequest.getPet_name());
+                    pet.setPet_name(petRequest.getPet_name());
 
-            if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
-                pet.setAge(petRequest.getAge());
+                    if (petRequest.getAge() >= 0 && petRequest.getAge() < 30) {
+                        pet.setAge(petRequest.getAge());
+                    }
+                    pet.setGender(petRequest.getGender());
+
+                    pet.setSpecies(petRequest.getSpecies());
+
+                    pet.setType_of_species(petRequest.getType_of_species());
+
+                    pet.setStatus(Status.ACTIVE);
+
+                    pet.setOwner(customer);
+
+                    Pet createpet = petRepository.save(pet);
+
+                    PetResponse petResponse = PetMapper.toPetResponse(createpet);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Create Pet Profile Successfully")
+                            .data(petResponse)
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
             }
-            pet.setGender(petRequest.getGender());
-
-            pet.setSpecies(petRequest.getSpecies());
-
-            pet.setType_of_species(petRequest.getType_of_species());
-
-            pet.setStatus(Status.ACTIVE);
-
-            pet.setOwner(customer);
-
-            Pet createpet = petRepository.save(pet);
-
-            PetResponse petResponse = PetMapper.toPetResponse(createpet);
 
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Create Pet Profile Successfully")
-                    .data(petResponse)
+                    .message("Customer not found")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

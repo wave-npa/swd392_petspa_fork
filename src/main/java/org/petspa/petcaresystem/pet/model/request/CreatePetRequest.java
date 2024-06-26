@@ -17,5 +17,4 @@ public class CreatePetRequest {
     Gender gender;
     Species species;
     String type_of_species;
-    AuthenUser customer;
 }
