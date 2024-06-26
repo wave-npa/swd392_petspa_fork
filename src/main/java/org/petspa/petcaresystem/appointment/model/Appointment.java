@@ -28,7 +28,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Appointment")
-public class Appointment {
+public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -83,7 +83,6 @@ public class Appointment {
 
     @OneToOne
     @MapsId
-    @JsonIgnore
     @JoinColumn(name = "review_id", nullable = true)
     private Review review;
 

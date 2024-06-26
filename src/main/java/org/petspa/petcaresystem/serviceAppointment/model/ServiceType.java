@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.serviceAppointment.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.enums.Status;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ServiceType {
+public class ServiceType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

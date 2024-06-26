@@ -19,6 +19,7 @@ import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 
@@ -28,7 +29,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = "AuthenUser")
-public class AuthenUser {
+public class AuthenUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +54,9 @@ public class AuthenUser {
 
     @Column(name = "phone", nullable = false)
     private Long phone;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime create_date;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
