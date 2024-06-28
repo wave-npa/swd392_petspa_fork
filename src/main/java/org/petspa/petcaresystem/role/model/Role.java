@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,7 +22,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = "Role")
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

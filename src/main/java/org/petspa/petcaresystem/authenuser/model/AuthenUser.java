@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model.entity;
+package org.petspa.petcaresystem.authenuser.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -19,10 +19,9 @@ import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 
-import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
@@ -30,7 +29,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "AuthenUser")
-public class AuthenUser {
+public class AuthenUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,7 +53,10 @@ public class AuthenUser {
     private String address;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    private Long phone;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime create_date;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

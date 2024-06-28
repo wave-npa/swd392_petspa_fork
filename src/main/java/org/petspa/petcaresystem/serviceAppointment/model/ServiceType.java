@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.serviceAppointment.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.enums.Status;

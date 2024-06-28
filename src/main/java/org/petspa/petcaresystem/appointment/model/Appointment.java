@@ -2,7 +2,6 @@ package org.petspa.petcaresystem.appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import io.swagger.v3.core.util.Json;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,16 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import org.apache.commons.lang3.builder.HashCodeExclude;
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
 import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.review.model.Review;
-import org.petspa.petcaresystem.serviceAppointment.model.Combo;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 
 import java.io.Serializable;
@@ -27,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -35,7 +29,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Appointment")
-public class Appointment {
+public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -90,7 +84,6 @@ public class Appointment {
 
     @OneToOne
     @MapsId
-    @JsonIgnore
     @JoinColumn(name = "review_id", nullable = true)
     private Review review;
 

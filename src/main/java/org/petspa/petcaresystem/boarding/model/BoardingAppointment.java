@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.boarding.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -32,7 +33,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BoardingAppointment {
+public class BoardingAppointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

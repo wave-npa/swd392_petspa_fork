@@ -1,12 +1,12 @@
 package org.petspa.petcaresystem.boarding_detail.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
 import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.medicine.model.Medicine;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,13 +23,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class BoardingDetail {
+public class BoardingDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

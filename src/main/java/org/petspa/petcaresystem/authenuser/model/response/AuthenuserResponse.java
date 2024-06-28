@@ -16,6 +16,7 @@ public class AuthenuserResponse {
     String full_name;
     Gender gender;
     String address;
+    String email;
     String phone;
 }
 

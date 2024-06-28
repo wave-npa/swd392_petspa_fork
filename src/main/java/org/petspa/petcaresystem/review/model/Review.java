@@ -1,7 +1,7 @@
 package org.petspa.petcaresystem.review.model;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.enums.Status;
 
 import jakarta.persistence.Column;
@@ -19,12 +19,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Review {
+public class Review implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

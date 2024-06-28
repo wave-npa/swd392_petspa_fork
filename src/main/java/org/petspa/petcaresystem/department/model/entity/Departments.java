@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.department.model;
+package org.petspa.petcaresystem.department.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,12 +19,12 @@ import org.petspa.petcaresystem.doctor.model.Doctor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Department")
-public class Department {
+public class Departments implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "department_id")
-    private Long departmentId;
+    private Long department_id;
 
     @Column(name = "department_name", nullable = false)
     private String departmentName;

@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.authenuser.mapper;
 
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.AuthenuserResponse;
 
 public class AuthenUserMapper {

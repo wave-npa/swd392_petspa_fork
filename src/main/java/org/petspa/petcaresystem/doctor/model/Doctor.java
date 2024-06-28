@@ -10,8 +10,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
-import org.petspa.petcaresystem.department.model.Department;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.department.model.entity.Departments;
 import org.petspa.petcaresystem.schedule.model.Schedule;
 
 import java.io.Serializable;
@@ -40,7 +40,7 @@ public class Doctor implements Serializable {
     @JoinColumn(name = "department_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Department department;
+    private Departments department;
 
     @ManyToMany(mappedBy = "bookedDoctor")
     @JsonIgnore

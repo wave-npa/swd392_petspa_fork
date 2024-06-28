@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.shelter.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Shelter {
+public class Shelter implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

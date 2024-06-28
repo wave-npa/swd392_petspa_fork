@@ -1,16 +1,10 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.authenuser.model.entity.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
@@ -24,12 +18,11 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Pet")
-public class Pet {
+public class Pet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "pet_id")
-    private Long petId;
+    private Long pet_id;
 
     @Column(name = "full_name")
     private String pet_name;
