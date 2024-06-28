@@ -9,4 +9,5 @@ import org.springframework.stereotype.Service;
 public interface AuthenUserService {
     ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest);
 
+    ResponseEntity<ResponseObj> FindAllCustomer(Long id);
 }

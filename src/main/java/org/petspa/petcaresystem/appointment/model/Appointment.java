@@ -23,6 +23,7 @@ import org.petspa.petcaresystem.serviceAppointment.model.Combo;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -59,7 +60,7 @@ public class Appointment {
     private Status status;
 
     @Column(name = "create_date")
-    private Date create_date;
+    private LocalDate create_date;
 
 
     @Column(name = "startTime", nullable = false)

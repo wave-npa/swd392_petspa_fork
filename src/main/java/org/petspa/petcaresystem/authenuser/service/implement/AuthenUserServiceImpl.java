@@ -72,4 +72,60 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> FindAllCustomer(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'FindAllCustomer'");
+    }
+
+//     @Override
+//     @Transactional
+//     public ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest){
+//         try {
+//             String cust_id = Long.toString(id);
+//             Optional<AuthenUser> authenUser = authenUserRepository.findById(id);
+
+//             if (!authenUser.isPresent()){
+//                 ResponseObj responseObj = ResponseObj.builder()
+//                         .message("Profile not found")
+//                         .data(null)
+//                         .build();
+//                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+//             }
+//             AuthenUser user = authenUser.get();
+// //            if (!profileRequest.getFull_name().equals(null)){
+// //                user.setFull_name(profileRequest.getFull_name());
+// //            }
+// //
+// ////            if (!profileRequest.getGender().equals(null)){
+// ////                user.setGender(profileRequest.getGender());
+// ////            }
+// //
+// //            if (!profileRequest.getAddress().equals(null)){
+// //                user.setAddress(profileRequest.getAddress());
+// //            }
+// //
+// //            if (!profileRequest.getPhone().equals(null) && isValidPhoneNumber(profileRequest.getPhone())){
+// //                user.setPhone(profileRequest.getPhone());
+// //            }
+
+//             AuthenUser updateauthenUser = authenUserRepository.save(user);
+
+//             AuthenuserResponse authenuserResponse = AuthenUserMapper.toAuthenUserResponse(updateauthenUser);
+
+//             ResponseObj responseObj = ResponseObj.builder()
+//                     .message("Update Profile Successfully")
+//                     .data(authenuserResponse)
+//                     .build();
+//             return ResponseEntity.ok().body(responseObj);
+//         }catch (Exception e){
+//             e.printStackTrace();
+//             ResponseObj responseObj = ResponseObj.builder()
+//                     .message("Fail to load Profile")
+//                     .data(null)
+//                     .build();
+//             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+//         }
+//     }
 }

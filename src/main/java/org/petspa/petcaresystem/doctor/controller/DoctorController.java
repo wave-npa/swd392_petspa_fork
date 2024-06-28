@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/petspa/doctor")
 @CrossOrigin
-@Tag(name = "Doctor", description = "SDoctor Management API")
+@Tag(name = "Doctor", description = "Doctor Management API")
 @ApiResponses(value = {
     @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Doctor.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
