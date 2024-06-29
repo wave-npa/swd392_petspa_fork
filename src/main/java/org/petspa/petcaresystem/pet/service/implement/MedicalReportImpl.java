@@ -18,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MedicalReportImpl implements MedicalRecordService {
@@ -93,6 +90,7 @@ public class MedicalReportImpl implements MedicalRecordService {
                         .build();
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
+
             ResponseObj responseObj = ResponseObj.builder()
                 .message("Load Medical Record Successfully")
                 .data(medicalRecordList)
@@ -166,7 +164,20 @@ public class MedicalReportImpl implements MedicalRecordService {
 
                     medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
-                    medicalrecord.setPetMedicine(MedicalRecordRequest.getMedicines());
+                    //liet ke list muon cap nhat va tao 1 list de cap nhat
+                    Collection<Medicine> medicineUpdate = MedicalRecordRequest.getMedicines();
+                    Collection<Medicine> medicineListUpdate = new ArrayList<>();
+                    //so sanh tat ca cac medicine muoon cap nhat voi bang medicine xem co ton tai hay ko
+                    Collection<Medicine> medicineList = medicineRepository.findAll();
+                    for (Medicine medicine : medicineUpdate) {
+                        for (Medicine medicine2 : medicineList) {
+                            if (medicine.equals(medicine2)){
+                                //neu co thi ca nhat vao list muon cap nhat
+                                medicineListUpdate.add(medicine);
+                            }
+                        }
+                    }
+                    medicalrecord.setPetMedicine(medicineListUpdate);
 
                     medicalrecord.setLast_update(MedicalRecordRequest.getUpdateTime());
 

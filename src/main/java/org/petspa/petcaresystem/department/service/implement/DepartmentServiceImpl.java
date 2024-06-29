@@ -8,17 +8,11 @@ import org.petspa.petcaresystem.department.model.response.DepartmentResponse;
 import org.petspa.petcaresystem.department.repository.DepartmentRepository;
 import org.petspa.petcaresystem.department.service.DepartmentService;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.medicine.mapper.MedicineMapper;
-import org.petspa.petcaresystem.medicine.model.entity.Medicine;
-import org.petspa.petcaresystem.medicine.model.response.MedicineResponse;
-import org.petspa.petcaresystem.pet.model.entity.MedicalRecord;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -32,7 +26,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ResponseEntity<ResponseObj> ViewAllDepartment() {
         try {
             List<Departments> departmentList = departmentRepository.findAll();
-
+            if (departmentList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Department List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Department Successfully")
                     .data(departmentList)

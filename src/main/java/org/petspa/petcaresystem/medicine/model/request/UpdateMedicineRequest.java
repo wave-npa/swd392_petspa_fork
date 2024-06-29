@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.pet.model.entity.MedicalRecord;
+
 import java.util.Collection;
 
 @Data
@@ -11,6 +13,6 @@ import java.util.Collection;
 public class UpdateMedicineRequest {
     private String medicineName;
     private float Price;
-    Long MedicalRecord_id;
+    Collection<MedicalRecord> MedicalRecord;
     private Status status;
 }

@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -67,6 +68,13 @@ public class MedicineServiceImpl implements MedicineService{
         try {
             List<Medicine> medicineList = medicineRepository.findAll();
 
+            if (medicineList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Medicine List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Medical Record Successfully")
                     .data(medicineList)
@@ -140,11 +148,23 @@ public class MedicineServiceImpl implements MedicineService{
 
                     medicine.setStatus(medicineRequest.getStatus());
 
-                    MedicalRecord record = recordRepository.getReferenceById(medicineRequest.getMedicalRecord_id());
-                    Collection<MedicalRecord> medicalRecordList = recordRepository.findAllById(Collections.singleton(medicine_id));
-                    medicalRecordList.add(record);
-
-                    medicine.setMedicalRecord(medicalRecordList);
+                    //tìm record muốn cập nhật
+                    Collection<MedicalRecord> recordUpdate = medicineRequest.getMedicalRecord();
+                    Collection<MedicalRecord> medicalrecordListUpdated = new ArrayList<>();
+                    //ban dau tao 1 list voi all record deu chung 1 medicine
+                    List<MedicalRecord> medicalRecordList = recordRepository.findAll();
+                    for (MedicalRecord record2 : medicalRecordList)
+                        if (record2.getPetMedicine().equals(medicine)) {
+                            medicalrecordListUpdated.add(record2);
+                        }
+                    //loc cai list muon cap nhat
+                    for (MedicalRecord record : recordUpdate) {
+                        if (record.getPetMedicine().equals(medicine)) {
+                            //add cái record mới được cập nhật vào
+                            medicalrecordListUpdated.add(record);
+                        }
+                    }
+                    medicine.setMedicalRecord(medicalrecordListUpdated);
 
                     Medicine updateMedicine = medicineRepository.save(medicine);
 
