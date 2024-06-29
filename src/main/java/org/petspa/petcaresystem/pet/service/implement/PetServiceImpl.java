@@ -17,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PetServiceImpl implements PetService {
@@ -65,37 +62,43 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(Long cus_id) {
         try {
-            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
+            AuthenUser customer = userRepository.getReferenceById(cus_id);
+            List<AuthenUser> userList = userRepository.findAll();
+            for (AuthenUser user : userList) {
+                if (user.getStatus().equals(Status.ACTIVE) && user.equals(customer)) {
 
-            if (customer == null) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Customer not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
+                    if (user.getOwnedPet().isEmpty()) {
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("Your pet list is empty")
+                                .data(null)
+                                .build();
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                    } else {
+                        Collection<Pet> petlistrepo = user.getOwnedPet();
+                        List<Pet> petlist = new ArrayList<>();
+                        for (Pet pet : petlistrepo) {
+                            if (pet.getStatus() == Status.ACTIVE){
+                                petlist.add(pet);
+                            }
+                        }
 
-            if (customer.getOwnedPet().isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Your pet list is empty")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("Load Pet Profiles Successfully")
+                                .data(petlist)
+                                .build();
+                        return ResponseEntity.ok().body(responseObj);
+                    }
 
-            List<Pet> petlistrepo = petRepository.findByOwnerId(customer.getUserId());
-            List<Pet> petlist = new ArrayList<Pet>();
-            for (Pet pet : petlistrepo) {
-                if (pet.getStatus() == Status.ACTIVE){
-                    petlist.add(pet);
+
                 }
             }
 
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Load Pet Profiles Successfully")
-                    .data(petlist)
+                    .message("Customer not found")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

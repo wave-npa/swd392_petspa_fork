@@ -40,19 +40,27 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<Pet> petList = petRepository.findAll();
             for (Pet pet1 : petList) {
                 if (pet1.getStatus().equals(Status.ACTIVE) && pet1.equals(pet)) {
-
-                    Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
-                    List<MedicalRecord> medicalRecordList = new ArrayList<>();
-                    for (MedicalRecord record : medicalRecordrepo) {
-                        if (record.getStatus().equals(Status.ACTIVE)){
-                            medicalRecordList.add(record);
+                    if (pet1.getMedicalRecord().isEmpty()) {
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("The pet's medical record list is empty")
+                                .data(null)
+                                .build();
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                    } else {
+                        Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
+                        List<MedicalRecord> medicalRecordList = new ArrayList<>();
+                        for (MedicalRecord record : medicalRecordrepo) {
+                            if (record.getStatus().equals(Status.ACTIVE)) {
+                                medicalRecordList.add(record);
+                            }
                         }
-                    }
 
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Load Medical Record Successfully")
-                            .data(medicalRecordList)
-                            .build();
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("Load Medical Record Successfully")
+                                .data(medicalRecordList)
+                                .build();
+                        return ResponseEntity.ok().body(responseObj);
+                    }
                 }
             }
 
