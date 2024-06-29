@@ -114,6 +114,13 @@ public class PetServiceImpl implements PetService {
         try {
 
             List<Pet> petlist = petRepository.findAll();
+            if (petlist.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Pet list is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
 
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Pet Profiles Successfully")

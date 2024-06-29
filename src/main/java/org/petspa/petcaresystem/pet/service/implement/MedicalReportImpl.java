@@ -83,11 +83,19 @@ public class MedicalReportImpl implements MedicalRecordService {
     @Override
     public ResponseEntity<ResponseObj> ViewListAllMedicalRecord() {
         try {
-            List<MedicalRecord> medicalRecord = medicalRecordRepository.findAll();
 
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
+
+            if (medicalRecordList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Medical Record List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                 .message("Load Medical Record Successfully")
-                .data(medicalRecord)
+                .data(medicalRecordList)
                 .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
