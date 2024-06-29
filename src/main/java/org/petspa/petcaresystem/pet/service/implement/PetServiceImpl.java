@@ -75,7 +75,15 @@ public class PetServiceImpl implements PetService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            List<Pet> petlistrepo = petRepository.findAllById(Collections.singleton(customer.getUserId()));
+            if (customer.getOwnedPet().isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Your pet list is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            List<Pet> petlistrepo = petRepository.findByOwnerId(customer.getUserId());
             List<Pet> petlist = new ArrayList<Pet>();
             for (Pet pet : petlistrepo) {
                 if (pet.getStatus() == Status.ACTIVE){
