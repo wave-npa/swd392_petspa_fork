@@ -11,5 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum Status {
     ACTIVE,
-    INACTIVE
+    INACTIVE,
+    IN_PROGRESS,
+    COMPLETED,
+    USING,
+    EMPTY;
 }

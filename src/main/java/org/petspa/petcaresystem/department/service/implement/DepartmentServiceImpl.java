@@ -109,7 +109,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .message("Department not found")
                     .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .message("Department not found")
                     .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,7 +161,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             Departments department = departmentRepository.getReferenceById(Department_id);
             List<Departments> departmentList = departmentRepository.findAll();
             for (Departments department1 : departmentList) {
-                if (department1.equals(department) && department1.getStatus().equals(Status.ACTIVE)) {
+                if (department1.equals(department) && department1.getStatus().equals(Status.INACTIVE)) {
 
                     department.setStatus(Status.ACTIVE);
 
@@ -177,10 +177,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
             }
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Department not found")
+                    .message("Department not exist")
                     .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
 
         } catch (Exception e) {
             e.printStackTrace();

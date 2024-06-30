@@ -3,18 +3,12 @@ package org.petspa.petcaresystem.shelter.model;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
+import jakarta.persistence.*;
+import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,8 +28,11 @@ public class Shelter implements Serializable {
     @Column(name = "shelter_id")
     private String shelterId;
 
+    @Column(name = "shelter_name")
     private String shelterName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)

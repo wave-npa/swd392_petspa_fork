@@ -42,7 +42,7 @@ public class MedicalReportImpl implements MedicalRecordService {
                                 .message("The pet's medical record list is empty")
                                 .data(null)
                                 .build();
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                        return ResponseEntity.ok().body(responseObj);
                     } else {
                         Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
                         List<MedicalRecord> medicalRecordList = new ArrayList<>();
@@ -88,7 +88,7 @@ public class MedicalReportImpl implements MedicalRecordService {
                         .message("Medical Record List is empty")
                         .data(null)
                         .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                return ResponseEntity.ok().body(responseObj);
             }
 
             ResponseObj responseObj = ResponseObj.builder()
@@ -218,7 +218,7 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
 
             for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecorddelete)) {
+                if (medicalrecord.equals(medicalrecorddelete) && medicalrecord.getStatus().equals(Status.ACTIVE)) {
 
                     medicalrecord.setStatus(Status.INACTIVE);
 
@@ -255,13 +255,13 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
 
             for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecordrestore)) {
+                if (medicalrecord.equals(medicalrecordrestore) && medicalrecord.getStatus().equals(Status.INACTIVE)) {
 
                     medicalrecord.setStatus(Status.ACTIVE);
 
                     MedicalRecord restoreMedicalRecord = medicalRecordRepository.save(medicalrecord);
-
-                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper.toMedicalRecordResponse(restoreMedicalRecord);
+                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper
+                            .toMedicalRecordResponse(restoreMedicalRecord);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Restore Medical Record Successfully")

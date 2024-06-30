@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.department.model.response;
+package org.petspa.petcaresystem.boarding.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

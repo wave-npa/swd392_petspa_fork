@@ -24,7 +24,6 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
-    @Autowired
     AuthenUserRepository userRepository;
 
 
@@ -72,7 +71,7 @@ public class PetServiceImpl implements PetService {
                                 .message("Your pet list is empty")
                                 .data(null)
                                 .build();
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                        return ResponseEntity.ok().body(responseObj);
                     } else {
                         Collection<Pet> petlistrepo = user.getOwnedPet();
                         List<Pet> petlist = new ArrayList<>();
@@ -88,8 +87,6 @@ public class PetServiceImpl implements PetService {
                                 .build();
                         return ResponseEntity.ok().body(responseObj);
                     }
-
-
                 }
             }
 
@@ -119,7 +116,7 @@ public class PetServiceImpl implements PetService {
                         .message("Pet list is empty")
                         .data(null)
                         .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                return ResponseEntity.ok().body(responseObj);
             }
 
             ResponseObj responseObj = ResponseObj.builder()
@@ -246,13 +243,14 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete)) {
+                if (pet.equals(petdelete) && pet.getStatus().equals(Status.ACTIVE)) {
                     pet.setStatus(Status.INACTIVE);
 
                     petRepository.save(pet);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Delete Pet Profile Successfully")
+                            .data(null)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
@@ -280,11 +278,10 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete)) {
+                if (pet.equals(petdelete) && pet.getStatus().equals(Status.INACTIVE)) {
                     pet.setStatus(Status.ACTIVE);
 
                     Pet restorePet = petRepository.save(pet);
-
                     PetResponse petResponse = PetMapper.toPetResponse(restorePet);
 
                     ResponseObj responseObj = ResponseObj.builder()

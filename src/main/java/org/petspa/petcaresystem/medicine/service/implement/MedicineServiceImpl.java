@@ -27,7 +27,6 @@ public class MedicineServiceImpl implements MedicineService{
 
     @Autowired
     private MedicineRepository medicineRepository;
-    @Autowired
     private MedicalRecordRepository recordRepository;
 
     @Override
@@ -73,7 +72,7 @@ public class MedicineServiceImpl implements MedicineService{
                         .message("Medicine List is empty")
                         .data(null)
                         .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                return ResponseEntity.ok().body(responseObj);
             }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Medical Record Successfully")
@@ -105,7 +104,9 @@ public class MedicineServiceImpl implements MedicineService{
 
                     medicine.setStatus(Status.ACTIVE);
 
-                    medicine.setMedicalRecord((Collection<MedicalRecord>) record);
+                    Collection<MedicalRecord> medicalRecords = new ArrayList<>();
+                    medicalRecords.add(record);
+                    medicine.setMedicalRecord(medicalRecords);
 
                     Medicine createMedicine = medicineRepository.save(medicine);
 
@@ -233,12 +234,11 @@ public class MedicineServiceImpl implements MedicineService{
             Medicine medicineDelete = medicineRepository.getReferenceById(medicine_id);
             List<Medicine> medicineList = medicineRepository.findAll();
             for (Medicine medicine : medicineList) {
-                if (medicine.getStatus().equals(Status.ACTIVE) && medicine.equals(medicineDelete)) {
+                if (medicine.getStatus().equals(Status.INACTIVE) && medicine.equals(medicineDelete)) {
 
                     medicine.setStatus(Status.ACTIVE);
 
                     Medicine restoreMedicine = medicineRepository.save(medicine);
-
                     MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(restoreMedicine);
 
                     ResponseObj responseObj = ResponseObj.builder()
