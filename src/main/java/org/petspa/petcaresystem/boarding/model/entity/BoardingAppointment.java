@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.shelter.model.Shelter;
+import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,9 +49,14 @@ public class BoardingAppointment implements Serializable {
     private Collection<BoardingDetail> boardingDetail;
 
     @ManyToOne
-    @JoinColumn(name = "shelter_id")
+    @JoinColumn(name = "shelter")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Shelter shelter;
 
+//    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<Shelter> shelter;
 }

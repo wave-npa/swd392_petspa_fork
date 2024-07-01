@@ -12,7 +12,7 @@ import org.petspa.petcaresystem.boarding.service.BoardingService;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
-import org.petspa.petcaresystem.shelter.model.Shelter;
+import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 import org.petspa.petcaresystem.shelter.repository.ShelterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -116,12 +116,14 @@ public class BoardingServiceImpl implements BoardingService{
                     boarding.setBoardingDetail(boardingDetailList);
 
                     List<Shelter> shelterList = shelterRepository.findAll();
+//                    Collection<Shelter> shelters = new ArrayList<>();
                     for (Shelter shelter : shelterList) {
                         if (shelter.getStatus().equals(Status.EMPTY)) {
-                            boarding.setShelter(shelter);
+                            boarding.setShelter( shelter);
+//                            boarding.setShelter((Collection<Shelter>) shelter);
                         }
                     }
-
+//                    boarding.setShelter(shelter);
                     boarding.setBoardingTime(LocalDateTime.now());
                     boarding.setStatus(Status.ACTIVE);
 
@@ -170,7 +172,11 @@ public class BoardingServiceImpl implements BoardingService{
                     List<Shelter> shelterList = shelterRepository.findAll();
                     for (Shelter shelter : shelterList) {
                         if (shelter.equals(boardingRequest.getShelter()) && shelter.getStatus().equals(Status.EMPTY)) {
+                            Shelter shelterUpdate = boarding1.getShelter();
+                            shelterUpdate.setStatus(Status.EMPTY);
+                            shelterRepository.save(shelterUpdate);
                             boarding1.setShelter(shelter);
+//                            boarding1.setShelter((Collection<Shelter>) shelter);
                         }
                     }
 

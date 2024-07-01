@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.shelter.model;
+package org.petspa.petcaresystem.shelter.model.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class Shelter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "shelter_id")
-    private String shelterId;
+    private Long shelter_id;
 
     @Column(name = "shelter_name")
     private String shelterName;
@@ -35,10 +35,15 @@ public class Shelter implements Serializable {
     @Column(name = "status")
     private Status status;
 
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "shelter")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
-    private Collection<BoardingAppointment> boarding;
+    private BoardingAppointment boarding;
+//    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<BoardingAppointment> boarding;
 
 }

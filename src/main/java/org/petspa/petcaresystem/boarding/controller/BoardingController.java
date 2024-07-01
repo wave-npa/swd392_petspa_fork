@@ -3,8 +3,6 @@ package org.petspa.petcaresystem.boarding.controller;
 import org.petspa.petcaresystem.boarding.model.request.CreateBoardingRequest;
 import org.petspa.petcaresystem.boarding.model.request.UpdateBoardingRequest;
 import org.petspa.petcaresystem.boarding.service.BoardingService;
-import org.petspa.petcaresystem.department.model.request.CreateDepartmentRequest;
-import org.petspa.petcaresystem.department.model.request.UpdateDepartmentRequest;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 public class BoardingController {
 
     @Autowired
-    BoardingService boardingService;
+    private BoardingService boardingService;
 
     @GetMapping(value = {"/boarding/ViewAllBoarding"})
     public ResponseEntity<ResponseObj> ViewAllBoarding(){
         return boardingService.ViewAllBoarding();
     }
 
-    @GetMapping(value = {"/boarding/{appointment_id}/ViewBoardingByAppoinmentId"})
+    @GetMapping(value = {"/boarding/{appointment_id}/ViewBoardingByAppoinment"})
     public ResponseEntity<ResponseObj> ViewABoardingbyAppointmentId(@PathVariable Long appointment_id){
         return boardingService.ViewABoardingbyAppointmentId(appointment_id);
     }
