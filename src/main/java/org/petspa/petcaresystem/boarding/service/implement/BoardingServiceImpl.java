@@ -43,9 +43,14 @@ public class BoardingServiceImpl implements BoardingService{
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             }
+            List<BoardingResponse> boardingResponseList = new ArrayList<>();
+            for (BoardingAppointment boardingAppointment : boardingList) {
+                BoardingResponse boardingResponse = BoardingMapper.toBoardingResponse(boardingAppointment);
+                boardingResponseList.add(boardingResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Department Successfully")
-                    .data(boardingList)
+                    .data(boardingResponseList)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
@@ -82,13 +87,11 @@ public class BoardingServiceImpl implements BoardingService{
                     }
                 }
             }
-
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Appointment not found")
                     .data(null)
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

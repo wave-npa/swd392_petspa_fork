@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,9 +35,14 @@ public class DepartmentServiceImpl implements DepartmentService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             }
+            List<DepartmentResponse> departmentResponseList = new ArrayList<>();
+            for (Departments department : departmentList) {
+                DepartmentResponse departmentResponse = DepartmentMapper.toDepartmentResponse(department);
+                departmentResponseList.add(departmentResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Department Successfully")
-                    .data(departmentList)
+                    .data(departmentResponseList)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {

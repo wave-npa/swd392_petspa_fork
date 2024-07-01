@@ -45,17 +45,17 @@ public class MedicalReportImpl implements MedicalRecordService {
                         return ResponseEntity.ok().body(responseObj);
                     } else {
                         Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
-                        List<MedicalRecord> medicalRecordList = new ArrayList<>();
+                        List<MedicalRecordResponse> medicalRecordList = new ArrayList<>();
                         for (MedicalRecord record : medicalRecordrepo) {
                             if (record.getStatus().equals(Status.ACTIVE)) {
-                                medicalRecordList.add(record);
+                                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record)
+                                medicalRecordList.add(recordResponse);
                             }
                         }
-
                         ResponseObj responseObj = ResponseObj.builder()
-                                .message("Load Medical Record Successfully")
-                                .data(medicalRecordList)
-                                .build();
+                                    .message("Load Medical Record Successfully")
+                                    .data(medicalRecordList)
+                                    .build();
                         return ResponseEntity.ok().body(responseObj);
                     }
                 }
@@ -90,12 +90,17 @@ public class MedicalReportImpl implements MedicalRecordService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             }
-
+            List<MedicalRecordResponse> medicalRecordResponseList = new ArrayList<>();
+            for (MedicalRecord record : medicalRecordList) {
+                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record);
+                medicalRecordResponseList.add(recordResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
-                .message("Load Medical Record Successfully")
-                .data(medicalRecordList)
-                .build();
+                        .message("Load Medical Record Successfully")
+                        .data(medicalRecordList)
+                        .build();
             return ResponseEntity.ok().body(responseObj);
+
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

@@ -37,16 +37,19 @@ public class MedicineServiceImpl implements MedicineService{
 
             for (MedicalRecord record : medicalRecordList) {
                 if (record.getStatus().equals(Status.ACTIVE) && record.equals(medicalRecord)) {
-
-                    Collection<Medicine> medicine = record.getPetMedicine();
+                    Collection<Medicine> medicines = record.getPetMedicine();
+                    List<MedicineResponse> medicineResponseList = new ArrayList<>();
+                    for (Medicine medicine : medicines) {
+                        MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(medicine);
+                        medicineResponseList.add(medicineResponse);
+                    }
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Load Medicine Successfully")
-                            .data(medicine)
+                            .data(medicineResponseList)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
             }
-
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Medical record not found")
                     .data(null)
@@ -74,9 +77,14 @@ public class MedicineServiceImpl implements MedicineService{
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             }
+            List<MedicineResponse> medicineResponseList = new ArrayList<>();
+            for (Medicine medicine : medicineList) {
+                MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(medicine);
+                medicineResponseList.add(medicineResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Medical Record Successfully")
-                    .data(medicineList)
+                    .data(medicineResponseList)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {

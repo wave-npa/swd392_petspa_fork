@@ -35,10 +35,10 @@ public class PetServiceImpl implements PetService {
 
             for (Pet pet : petlist) {
                 if (pet.equals(petfine) && pet.getStatus() == Status.ACTIVE) {
-
+                    PetResponse petResponse = PetMapper.toPetResponse(pet);
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Fine Pet Profile Successfully")
-                            .data(pet)
+                            .data(petResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
@@ -65,7 +65,6 @@ public class PetServiceImpl implements PetService {
             List<AuthenUser> userList = userRepository.findAll();
             for (AuthenUser user : userList) {
                 if (user.getStatus().equals(Status.ACTIVE) && user.equals(customer)) {
-
                     if (user.getOwnedPet().isEmpty()) {
                         ResponseObj responseObj = ResponseObj.builder()
                                 .message("Your pet list is empty")
@@ -74,28 +73,26 @@ public class PetServiceImpl implements PetService {
                         return ResponseEntity.ok().body(responseObj);
                     } else {
                         Collection<Pet> petlistrepo = user.getOwnedPet();
-                        List<Pet> petlist = new ArrayList<>();
+                        List<PetResponse> petResponseList = new ArrayList<>();
                         for (Pet pet : petlistrepo) {
                             if (pet.getStatus() == Status.ACTIVE){
-                                petlist.add(pet);
+                                PetResponse petResponse = PetMapper.toPetResponse(pet);
+                                petResponseList.add(petResponse);
                             }
                         }
-
                         ResponseObj responseObj = ResponseObj.builder()
                                 .message("Load Pet Profiles Successfully")
-                                .data(petlist)
+                                .data(petResponseList)
                                 .build();
                         return ResponseEntity.ok().body(responseObj);
                     }
                 }
             }
-
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Customer not found")
                     .data(null)
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -118,10 +115,14 @@ public class PetServiceImpl implements PetService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             }
-
+            List<PetResponse> petResponseList = new ArrayList<>();
+            for (Pet pet : petlist) {
+                PetResponse petResponse = PetMapper.toPetResponse(pet);
+                petResponseList.add(petResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Pet Profiles Successfully")
-                    .data(petlist)
+                    .data(petResponseList)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
