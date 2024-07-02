@@ -1,12 +1,6 @@
 package org.petspa.petcaresystem.shelter.service.implement;
 
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
-import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
-import org.petspa.petcaresystem.boarding.repository.BoardingRepository;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.pet.mapper.PetMapper;
-import org.petspa.petcaresystem.pet.model.entity.Pet;
-import org.petspa.petcaresystem.pet.model.response.PetResponse;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.shelter.mapper.ShelterMapper;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;

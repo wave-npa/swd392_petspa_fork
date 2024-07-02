@@ -48,7 +48,7 @@ public class MedicalReportImpl implements MedicalRecordService {
                         List<MedicalRecordResponse> medicalRecordList = new ArrayList<>();
                         for (MedicalRecord record : medicalRecordrepo) {
                             if (record.getStatus().equals(Status.ACTIVE)) {
-                                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record)
+                                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record);
                                 medicalRecordList.add(recordResponse);
                             }
                         }

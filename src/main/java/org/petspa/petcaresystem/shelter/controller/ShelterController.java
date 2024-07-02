@@ -32,22 +32,23 @@ public class ShelterController {
     }
 
     @PostMapping("/shelter/create" )
-    public ResponseEntity<ResponseObj> CreateShelter(CreateShelterRequest shelterRequest){
+    public ResponseEntity<ResponseObj> CreateShelter(@RequestBody CreateShelterRequest shelterRequest){
         return shelterService.CreateShelter(shelterRequest);
     }
 
     @PutMapping("/shelter/update" )
-    public ResponseEntity<ResponseObj> UpdateShelter(Long shelter_id, UpdateShelterRequest shelterRequest){
+    public ResponseEntity<ResponseObj> UpdateShelter(@RequestParam Long shelter_id,
+                                                     @RequestBody UpdateShelterRequest shelterRequest){
         return shelterService.UpdateShelter(shelter_id, shelterRequest);
     }
 
     @PutMapping("/shelter/delete" )
-    public ResponseEntity<ResponseObj> DeleteShelter(Long shelter_id){
+    ResponseEntity<ResponseObj> DeleteShelter(@RequestParam Long shelter_id){
         return shelterService.DeleteShelter(shelter_id);
     }
 
     @PutMapping("/shelter/restore" )
-    public ResponseEntity<ResponseObj> RestoreShelter(Long shelter_id){
+    public ResponseEntity<ResponseObj> RestoreShelter(@RequestParam Long shelter_id){
         return shelterService.RestoreShelter(shelter_id);
     }
 }
