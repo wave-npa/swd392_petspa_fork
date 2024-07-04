@@ -50,7 +50,7 @@ public class ServicesController {
 
    @GetMapping("/get/{serviceId}")
    @CrossOrigin
-   public Services getServiceById(@PathVariable String serviceId) {
+   public Services getServiceById(@PathVariable Long serviceId) {
        return serviceAndComboService.findServiceById(serviceId);
    }
 
@@ -68,7 +68,7 @@ public class ServicesController {
 
    @DeleteMapping("/delete/{serviceId}")
    @CrossOrigin
-   public Services deleteServiceById(@PathVariable String serviceId) {
+   public Services deleteServiceById(@PathVariable Long serviceId) {
        return serviceAndComboService.deleteService(serviceId);
    }
 
