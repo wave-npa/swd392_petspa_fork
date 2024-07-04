@@ -27,7 +27,7 @@ public class Services {
 
     @Id
     @Column(name = "service_id")
-    private String serviceId;
+    private Long serviceId;
 
     @Column(name = "service_name", nullable = false)
     private String serviceName;
