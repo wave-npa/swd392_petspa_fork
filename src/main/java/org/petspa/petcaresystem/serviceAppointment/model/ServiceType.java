@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ServiceType implements Serializable {
+public class ServiceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -22,11 +22,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Combo")
-public class Combo implements Serializable {
+public class Combo {
 
     @Id
     @Column(name = "combo_id")
-    private String comboId;
+    private Long comboId;
 
     @Column(name = "comboName")
     private String comboName;
