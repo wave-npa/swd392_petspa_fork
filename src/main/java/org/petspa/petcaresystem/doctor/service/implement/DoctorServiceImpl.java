@@ -2,7 +2,7 @@ package org.petspa.petcaresystem.doctor.service.implement;
 
 import java.util.Collection;
 
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;

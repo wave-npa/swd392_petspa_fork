@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.main.repository;
 
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.springframework.stereotype.Repository;
 
 @Repository

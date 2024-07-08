@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.authenuser.model;
+package org.petspa.petcaresystem.authenuser.model.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -21,6 +21,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -35,6 +37,9 @@ public class AuthenUser implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "userId")
     private Long userId;
+
+    @Column(name = "user_name")
+    private String userName;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -67,6 +72,7 @@ public class AuthenUser implements Serializable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Role role;
+//    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

@@ -2,7 +2,7 @@ package org.petspa.petcaresystem.pet.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;

@@ -1,9 +1,6 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import lombok.AllArgsConstructor;
@@ -12,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

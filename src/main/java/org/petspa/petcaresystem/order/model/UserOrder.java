@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.petspa.petcaresystem.appointment.model.Appointment;
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 
 import java.io.Serializable;
 import java.util.Date;

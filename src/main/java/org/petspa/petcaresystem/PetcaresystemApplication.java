@@ -11,7 +11,6 @@ import org.springframework.context.annotation.PropertySource;
 public class PetcaresystemApplication extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(PetcaresystemApplication.class, args);
 	}
 }
