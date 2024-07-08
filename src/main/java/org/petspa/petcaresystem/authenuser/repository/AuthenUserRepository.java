@@ -15,9 +15,9 @@ public interface AuthenUserRepository extends JpaRepository<AuthenUser, Long>{
     public AuthenUser findByEmail(String email);
     public AuthenUser findByPhone(Long phone);
     public AuthenUser findByEmailAndPassword(String email, String password);
-
     public AuthenUser findByRole(Role role);
-
+    public AuthenUser findByUserName(String userName);
+    public AuthenUser findByUserId(Long userId);
     //find amount of user by join date
 //    @Query("SELECT ALL FROM AuthenUser WHERE create_date BETWEEN :startTime AND :endTime")
 //    public List<AuthenUser> findAllUsersWithCreateDateRange(
