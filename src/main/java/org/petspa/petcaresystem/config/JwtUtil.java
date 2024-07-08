@@ -43,6 +43,10 @@ public class JwtUtil {
         return extractClaim(token, claims -> claims.get("userName", String.class));
     }
 
+    public Long extractUserId(String token){
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
+
     public Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
     }
@@ -53,11 +57,12 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSingingKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        // return Jwts.parser()
+                // .setSigningKey(getSingingKey())
+                // .build()
+                // .parseClaimsJws(token)
+                // .getBody();
+                return null;
     }
 
 
@@ -67,22 +72,24 @@ public class JwtUtil {
     }
 
     // create token with email
-    public String generateToken(String email, String role, String userName) {
+    public String generateToken(String email, String role, String userName, Long userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", "ROLE_" + role.toUpperCase());
         claims.put("userName", userName);
+        claims.put("userId", userId);
         return createToken(claims, email);
     }
 
     // create new token with claims and subject
     private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts
-                .builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+        // return Jwts
+        //         .builder()
+        //         .setClaims(claims)
+        //         .setSubject(subject)
+        //         .setIssuedAt(new Date(System.currentTimeMillis()))
+        //         .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+        //         .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+        return null;
     }
 
     // check token validate

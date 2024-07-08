@@ -35,14 +35,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         HttpSession session = request.getSession(false);
         String jwt = (session != null) ? (String) session.getAttribute("jwtToken") : null;
 
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7);
-            username = jwtUtil.extractUserName(token);
-        }
-
         if (jwt != null) {
             String email = jwtUtil.extractEmail(jwt);
             System.out.println("Email:---------------------------" + email + "---------------------------");

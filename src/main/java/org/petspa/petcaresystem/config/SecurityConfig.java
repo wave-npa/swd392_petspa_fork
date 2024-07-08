@@ -29,12 +29,6 @@ public class SecurityConfig {
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
-
-    @Bean
-    AuthenUserService authenUserService(){
-        return new AuthenUserServiceImpl();
-    }
-
     @Bean
     UserDetailsService userDetailsService(){
         return new UserDetailsService() {
@@ -50,12 +44,12 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request ->
                 request
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/petspa/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/swagger-ui/**", "/v3/api-docs/**", "/actuator/**",
+                                "/petspa/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/petspa/user/register").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()

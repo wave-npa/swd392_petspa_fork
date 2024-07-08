@@ -3,8 +3,7 @@ package org.petspa.petcaresystem.authenuser.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.response.JwtResponseDTO;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseAPI;
+import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.enums.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -43,21 +43,50 @@ public class AuthenUserController {
     }
 
     @PostMapping("/register")
-    public ResponseAPI register(@RequestParam(value = "address") String address,
-                                @RequestParam(value = "email") String email,
-                                @RequestParam(value = "full_name") String full_name,
-                                @RequestParam(value = "gender") Gender gender,
-                                @RequestParam(value = "password") String password,
-                                @RequestParam(value = "phone") Long phone){
+    public RegisterResponseDTO register(@RequestParam(value = "user_name") String userName,
+                                        @RequestParam(value = "address") String address,
+                                        @RequestParam(value = "email") String email,
+                                        @RequestParam(value = "full_name") String fullName,
+                                        @RequestParam(value = "gender") Gender gender,
+                                        @RequestParam(value = "password") String password,
+                                        @RequestParam(value = "phone") Long phone){
         AuthenUser authenUser = new AuthenUser();
+        authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
-        authenUser.setFull_name(full_name.trim());
+        authenUser.setFullName(fullName.trim());
         authenUser.setGender(gender);
         authenUser.setPassword(password.trim());
         authenUser.setPhone(phone);
-        ResponseAPI responseAPI = authenUserService.register(authenUser);
-        return responseAPI;
+        RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser);
+        return registerResponseDTO;
+    }
+
+    @PutMapping("/updateProfile")
+    public UpdateProfileResponseDTO updateProfile(@RequestParam(value = "user_name") String userName,
+                                        @RequestParam(value = "address") String address,
+                                        @RequestParam(value = "email") String email,
+                                        @RequestParam(value = "full_name") String fullName,
+                                        @RequestParam(value = "gender") Gender gender,
+                                        @RequestParam(value = "phone") Long phone){
+        AuthenUser authenUser = new AuthenUser();
+        authenUser.setUserName(userName);
+        authenUser.setAddress(address.trim());
+        authenUser.setEmail(email.trim());
+        authenUser.setFullName(fullName.trim());
+        authenUser.setGender(gender);
+        authenUser.setPhone(phone);
+        UpdateProfileResponseDTO updateProfileResponseDTO = authenUserService.updateProfile(authenUser);
+        return updateProfileResponseDTO;
+    }
+
+    @PutMapping("/updatePassword")
+    public UpdatePassowordResponseDTO updatePassoword(@RequestParam(value = "current_password") String current_password,
+                                                      @RequestParam(value = "new_password") String new_password,
+                                                      @RequestParam(value = "confirm_password") String confirm_password){
+        UpdatePassowordResponseDTO updatePassowordResponseDTO =
+                authenUserService.updatePassword(current_password.trim(), new_password.trim(), confirm_password.trim());
+        return updatePassowordResponseDTO;
     }
 
     @GetMapping("/getAllUser")
