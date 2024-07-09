@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/petspa/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/petspa/user/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/petspa/user/register", "/petspa/user/logout").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/**").permitAll()

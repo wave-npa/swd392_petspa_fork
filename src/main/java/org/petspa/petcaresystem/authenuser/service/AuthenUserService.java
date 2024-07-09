@@ -23,6 +23,7 @@ public interface AuthenUserService {
     public ResponseAPI getUserById(Long id);
     public UpdateProfileResponseDTO updateProfile(AuthenUser authenUser);
     public UpdatePassowordResponseDTO updatePassword(String current_password, String new_password, String confirm_password);
+    public UpdatePassowordResponseDTO logout();
     public ResponseAPI getUsersByRole(Role role);
     public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date);
 

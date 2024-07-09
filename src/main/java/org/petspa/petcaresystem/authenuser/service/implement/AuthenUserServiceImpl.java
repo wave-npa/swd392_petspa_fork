@@ -295,6 +295,26 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     }
 
     @Override
+    public UpdatePassowordResponseDTO logout() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Log out successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.invalidate();
+        }else{
+            message = "You haven't logged in yet!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+        }
+        return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+    }
+
+    @Override
     public UserDetails loadUserByEmail(String email) {
         AuthenUser authenUser = authenUserRepository.findByEmail(email);
         return new MyUserDetails(authenUser);

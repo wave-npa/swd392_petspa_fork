@@ -91,6 +91,12 @@ public class AuthenUserController {
         return updatePassowordResponseDTO;
     }
 
+    @PostMapping("/logout")
+    public UpdatePassowordResponseDTO logout(){
+        UpdatePassowordResponseDTO logoutResponse = authenUserService.logout();
+        return logoutResponse;
+    }
+
     @GetMapping("/getAllUser")
     public List<AuthenUser> getAllAccount(){
         return authenUserService.getAllUser();
