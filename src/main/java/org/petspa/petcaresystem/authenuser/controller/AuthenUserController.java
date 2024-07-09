@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.*;
+import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
+import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.enums.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.Session;
@@ -34,7 +36,6 @@ public class AuthenUserController {
     @Autowired
     private HttpServletRequest request;
 
-
     @GetMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
@@ -49,7 +50,7 @@ public class AuthenUserController {
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "password") String password,
-                                        @RequestParam(value = "phone") Long phone){
+                                        @RequestParam(value = "phone") String phone){
         AuthenUser authenUser = new AuthenUser();
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
@@ -68,7 +69,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "email") String email,
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
-                                        @RequestParam(value = "phone") Long phone){
+                                        @RequestParam(value = "phone") String phone)
+    {
         AuthenUser authenUser = new AuthenUser();
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());

@@ -17,5 +17,5 @@ public class CustomAuthenUserForUpdateProfile {
     private String fullName;
     private String gender;
     private String address;
-    private Long phone;
+    private String phone;
 }

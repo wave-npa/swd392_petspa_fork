@@ -54,8 +54,17 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Optional<AuthenUser> authenUser;
         String jwtToken = "";
 
+        authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
+        String encodedPassword = authenUser.get().getPassword();
+
+        if(!passwordEncoder.matches(password, encodedPassword)){
+            message = "Invalid email/password";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+        }
+
         try {
-            authenUser = Optional.ofNullable(authenUserRepository.findByEmailAndPassword(email, password));
             if(authenUser.isPresent()){
                 jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
                         authenUser.get().getRole().getRoleName(),
@@ -166,6 +175,12 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
         HttpSession session = request.getSession();
         String token = (String) session.getAttribute("jwtToken");
+        if(token == null || token.isEmpty()){
+            message = "You have to login to use this function!";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
         Long userId = jwtUtil.extractUserId(token);
 
         // check user name used?
@@ -195,11 +210,20 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
         }
 
+        // set new information
+        AuthenUser updatedUser = authenUserRepository.findByUserId(userId);
+        updatedUser.setUserName(authenUser.getUserName());
+        updatedUser.setAddress(authenUser.getAddress());
+        updatedUser.setEmail(authenUser.getEmail());
+        updatedUser.setFullName(authenUser.getFullName());
+        updatedUser.setGender(authenUser.getGender());
+        updatedUser.setPhone(authenUser.getPhone());
+
         CustomAuthenUserForUpdateProfile customAuthenUserForUpdateProfile = new CustomAuthenUserForUpdateProfile();
         try {
-            authenUserRepository.save(authenUser);
+            authenUserRepository.save(updatedUser);
             // handle data response
-            customAuthenUserForUpdateProfile.setUserId(authenUser.getUserId());
+            customAuthenUserForUpdateProfile.setUserId(userId);
             customAuthenUserForUpdateProfile.setUserName(authenUser.getUserName());
             customAuthenUserForUpdateProfile.setEmail(authenUser.getEmail());
             customAuthenUserForUpdateProfile.setFullName(authenUser.getFullName());
@@ -227,17 +251,25 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         // get token from session and extract userId
         HttpSession session = request.getSession();
         String token = (String) session.getAttribute("jwtToken");
+        // check user authorized
+        if(token == null || token.isEmpty()){
+            message = "You have to login to use this function!";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
+
+        // extract userId
         Long userId = jwtUtil.extractUserId(token);
 
         // check current password valid?
         AuthenUser authenUser = authenUserRepository.findByUserId(userId);
         String userPasswordStoredInDatabase = authenUser.getPassword();
-        if(!checkPassword(current_password, userPasswordStoredInDatabase)){
+        if(!passwordEncoder.matches(current_password, userPasswordStoredInDatabase)){
             message = "Incorrect current password! Use 'Forget Password' if you don't remember your password";
             return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
         }
 
-        // check confirm password match?
         // check confirm password match?
         if(!new_password.equals(confirm_password)){
             message = "Not match new password and confirm password! Please try again";
@@ -245,11 +277,14 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         }
 
         // encode new password
-        String encodedNewPassword = passwordEncoder.encode(authenUser.getPassword());
-        authenUser.setPassword(encodedNewPassword);
+        String encodedNewPassword = passwordEncoder.encode(new_password);
+
+        // set new pass
+        AuthenUser updatedPassUser = authenUserRepository.findByUserId(userId);
+        updatedPassUser.setPassword(encodedNewPassword);
 
         try{
-            authenUserRepository.save(authenUser);
+            authenUserRepository.save(updatedPassUser);
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
@@ -258,11 +293,6 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         }
         return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
     }
-
-    public boolean checkPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
 
     @Override
     public UserDetails loadUserByEmail(String email) {
