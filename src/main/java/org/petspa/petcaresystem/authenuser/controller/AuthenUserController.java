@@ -97,6 +97,12 @@ public class AuthenUserController {
         return logoutResponse;
     }
 
+    @GetMapping("/getUser")
+    public ResponseAPI getUserById(@RequestParam(value = "userId") Long userId){
+        ResponseAPI responseAPI = authenUserService.getUserById(userId);
+        return responseAPI;
+    }
+
     @GetMapping("/getAllUser")
     public List<AuthenUser> getAllAccount(){
         return authenUserService.getAllUser();

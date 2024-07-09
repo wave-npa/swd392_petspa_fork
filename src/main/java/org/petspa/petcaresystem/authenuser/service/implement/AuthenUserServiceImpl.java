@@ -338,12 +338,18 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Optional<AuthenUser> authenUser = Optional.ofNullable(new AuthenUser());
         try {
             authenUser = authenUserRepository.findById(id);
+            if(!authenUser.isPresent()){
+                message = "User not found!";
+                statusCode = HttpStatus.NO_CONTENT.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseAPI(message, timeStamp, statusCode, statusValue, (Optional<AuthenUser>) null);
+            }
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUser);
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUser);
     }
 
     @Override

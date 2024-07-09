@@ -1,7 +1,5 @@
 package org.petspa.petcaresystem.config;
 
-import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
-import org.petspa.petcaresystem.authenuser.service.implement.AuthenUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
