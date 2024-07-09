@@ -306,8 +306,8 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         HttpStatus statusValue = HttpStatus.OK;
         List<AuthenUser> authenUserList = new ArrayList<>();
         try {
-//            authenUserList = authenUserRepository.findByRole(role); // code cua An,
-            authenUserList = (List<AuthenUser>) authenUserRepository.findByRole(role);
+            authenUserList = authenUserRepository.findByRole(role); // code cua An,
+            // authenUserList = (List<AuthenUser>) authenUserRepository.findByRole(role);
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
@@ -316,22 +316,22 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
     }
 
-//    @Override
-//    public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date) {
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-//        String timeStamp = localDateTime.format(formatter);
-//        String message = "Get user successfully";
-//        int statusCode = HttpStatus.OK.value();
-//        HttpStatus statusValue = HttpStatus.OK;
-//        List<AuthenUser> authenUserList = new ArrayList<>();
-//        try {
-//            authenUserList = authenUserRepository.findAllUsersWithCreateDateRange(start_date, end_date);
-//        }catch (Exception e){
-//            logger.error(this.logging_message, e);
-//            message = "Something went wrong, server error!";
-//            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-//        }
-//        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
-//    }
+   @Override
+   public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date) {
+       LocalDateTime localDateTime = LocalDateTime.now();
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+       String timeStamp = localDateTime.format(formatter);
+       String message = "Get user successfully";
+       int statusCode = HttpStatus.OK.value();
+       HttpStatus statusValue = HttpStatus.OK;
+       List<AuthenUser> authenUserList = new ArrayList<>();
+       try {
+           authenUserList = authenUserRepository.findAllUsersWithCreateDateRange(start_date, end_date);
+       }catch (Exception e){
+           logger.error(this.logging_message, e);
+           message = "Something went wrong, server error!";
+           statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+       }
+       return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+   }
 }
