@@ -24,7 +24,7 @@ public class Pet implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pet_id;
 
-    @Column(name = "full_name")
+    @Column(name = "pet_name")
     private String pet_name;
 
     @Column(name = "age")

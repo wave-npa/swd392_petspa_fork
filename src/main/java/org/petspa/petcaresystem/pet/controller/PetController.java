@@ -1,6 +1,8 @@
 package org.petspa.petcaresystem.pet.controller;
 
 
+import org.petspa.petcaresystem.enums.Species;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.request.CreatePetRequest;
 import org.petspa.petcaresystem.pet.model.request.UpdatePetRequest;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
@@ -29,6 +31,21 @@ public class PetController {
     public ResponseEntity<ResponseObj> ViewListAllPetProflie(){
         return petService.ViewListAllPetProflie();
     }
+
+    @GetMapping(value = {"/pet/viewListPet/sortbySpecies"})
+    ResponseEntity<ResponseObj> SortPetbySpecies(@RequestParam Species species){
+        return petService.SortPetbySpecies(species);
+    };
+
+    @GetMapping(value = {"/pet/viewListPet/sortbyBreed"})
+    ResponseEntity<ResponseObj> SortPetbyBreed(@RequestParam String breed){
+        return petService.SortPetbyBreed(breed);
+    };
+
+    @GetMapping(value = {"/pet/viewListPet/sortbyStatus"})
+    ResponseEntity<ResponseObj> SortPetbyStatus(@RequestParam Status status){
+        return petService.SortPetbyStatus(status);
+    };
 
     @PostMapping("/pet/{cus_id}/create")
     public ResponseEntity<ResponseObj> CreatePetProflie(@PathVariable Long cus_id,

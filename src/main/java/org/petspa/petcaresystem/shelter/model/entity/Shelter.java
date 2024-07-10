@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
+import org.petspa.petcaresystem.enums.ShelterStatus;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,6 +31,10 @@ public class Shelter implements Serializable {
 
     @Column(name = "shelter_name")
     private String shelterName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "shelter_status")
+    private ShelterStatus shelterStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

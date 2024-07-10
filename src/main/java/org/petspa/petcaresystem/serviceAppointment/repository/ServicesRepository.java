@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServicesRepository extends JpaRepository<Services, Long> {
 
-   @Query(value = "SELECT ALL FROM services WHERE service_name LIKE :searchTerm% ORDER BY services_name ASC", nativeQuery=true)
+   @Query(value = "SELECT ALL FROM services WHERE service_name LIKE :searchTerm% ORDER BY service_name ASC", nativeQuery=true)
    public List<Services> searchByServiceName(
    @Param("searchTerm") String searchTerm);
 
