@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.boarding.service.implement;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.boarding.mapper.BoardingMapper;
 import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
