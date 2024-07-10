@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
-import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
+import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
 
 import jakarta.persistence.Column;

@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,6 @@ public class MedicineServiceImpl implements MedicineService{
 
     @Autowired
     private MedicineRepository medicineRepository;
-    @Autowired
     private MedicalRecordRepository recordRepository;
 
     @Override
@@ -37,16 +37,19 @@ public class MedicineServiceImpl implements MedicineService{
 
             for (MedicalRecord record : medicalRecordList) {
                 if (record.getStatus().equals(Status.ACTIVE) && record.equals(medicalRecord)) {
-
-                    Collection<Medicine> medicine = record.getPetMedicine();
+                    Collection<Medicine> medicines = record.getPetMedicine();
+                    List<MedicineResponse> medicineResponseList = new ArrayList<>();
+                    for (Medicine medicine : medicines) {
+                        MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(medicine);
+                        medicineResponseList.add(medicineResponse);
+                    }
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Load Medicine Successfully")
-                            .data(medicine)
+                            .data(medicineResponseList)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
             }
-
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Medical record not found")
                     .data(null)
@@ -67,9 +70,21 @@ public class MedicineServiceImpl implements MedicineService{
         try {
             List<Medicine> medicineList = medicineRepository.findAll();
 
+            if (medicineList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Medicine List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+            List<MedicineResponse> medicineResponseList = new ArrayList<>();
+            for (Medicine medicine : medicineList) {
+                MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(medicine);
+                medicineResponseList.add(medicineResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Medical Record Successfully")
-                    .data(medicineList)
+                    .data(medicineResponseList)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
@@ -97,11 +112,13 @@ public class MedicineServiceImpl implements MedicineService{
 
                     medicine.setStatus(Status.ACTIVE);
 
-                    medicine.setMedicalRecord((Collection<MedicalRecord>) record);
+                    Collection<MedicalRecord> medicalRecords = new ArrayList<>();
+                    medicalRecords.add(record);
+                    medicine.setMedicalRecord(medicalRecords);
 
-                    Medicine createmedicine = medicineRepository.save(medicine);
+                    Medicine createMedicine = medicineRepository.save(medicine);
 
-                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(createmedicine);
+                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(createMedicine);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Create Medicine Successfully")
@@ -140,15 +157,27 @@ public class MedicineServiceImpl implements MedicineService{
 
                     medicine.setStatus(medicineRequest.getStatus());
 
-                    MedicalRecord record = recordRepository.getReferenceById(medicineRequest.getMedicalRecord_id());
-                    Collection<MedicalRecord> medicalRecordList = recordRepository.findAllById(Collections.singleton(medicine_id));
-                    medicalRecordList.add(record);
+                    //tìm record muốn cập nhật
+                    Collection<MedicalRecord> recordUpdate = medicineRequest.getMedicalRecord();
+                    Collection<MedicalRecord> medicalrecordListUpdated = new ArrayList<>();
+                    //ban dau tao 1 list voi all record deu chung 1 medicine
+                    List<MedicalRecord> medicalRecordList = recordRepository.findAll();
+                    for (MedicalRecord record2 : medicalRecordList)
+                        if (record2.getPetMedicine().equals(medicine)) {
+                            medicalrecordListUpdated.add(record2);
+                        }
+                    //loc cai list muon cap nhat
+                    for (MedicalRecord record : recordUpdate) {
+                        if (record.getPetMedicine().equals(medicine)) {
+                            //add cái record mới được cập nhật vào
+                            medicalrecordListUpdated.add(record);
+                        }
+                    }
+                    medicine.setMedicalRecord(medicalrecordListUpdated);
 
-                    medicine.setMedicalRecord(medicalRecordList);
+                    Medicine updateMedicine = medicineRepository.save(medicine);
 
-                    Medicine createmedicine = medicineRepository.save(medicine);
-
-                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(createmedicine);
+                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(updateMedicine);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Update Medicine Successfully")
@@ -183,13 +212,10 @@ public class MedicineServiceImpl implements MedicineService{
 
                     medicine.setStatus(Status.INACTIVE);
 
-                    Medicine deletemedicine = medicineRepository.save(medicine);
-
-                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(deletemedicine);
+                    medicineRepository.save(medicine);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Delete Medicine Successfully")
-                            .data(medicineResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
@@ -216,13 +242,12 @@ public class MedicineServiceImpl implements MedicineService{
             Medicine medicineDelete = medicineRepository.getReferenceById(medicine_id);
             List<Medicine> medicineList = medicineRepository.findAll();
             for (Medicine medicine : medicineList) {
-                if (medicine.getStatus().equals(Status.ACTIVE) && medicine.equals(medicineDelete)) {
+                if (medicine.getStatus().equals(Status.INACTIVE) && medicine.equals(medicineDelete)) {
 
                     medicine.setStatus(Status.ACTIVE);
 
-                    Medicine deletemedicine = medicineRepository.save(medicine);
-
-                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(deletemedicine);
+                    Medicine restoreMedicine = medicineRepository.save(medicine);
+                    MedicineResponse medicineResponse = MedicineMapper.toMedicineResponse(restoreMedicine);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Restore Medicine Successfully")

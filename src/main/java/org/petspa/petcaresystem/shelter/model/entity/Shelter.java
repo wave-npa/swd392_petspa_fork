@@ -1,20 +1,14 @@
-package org.petspa.petcaresystem.shelter.model;
+package org.petspa.petcaresystem.shelter.model.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
+import jakarta.persistence.*;
+import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,16 +26,24 @@ public class Shelter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "shelter_id")
-    private String shelterId;
+    private Long shelter_id;
 
+    @Column(name = "shelter_name")
     private String shelterName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "shelter")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
-    private Collection<BoardingAppointment> boarding;
+    private BoardingAppointment boarding;
+//    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<BoardingAppointment> boarding;
 
 }

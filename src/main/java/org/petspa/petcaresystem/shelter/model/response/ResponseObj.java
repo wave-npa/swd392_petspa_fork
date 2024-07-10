@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.department.model.response;
+package org.petspa.petcaresystem.shelter.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResponseObj {
     String message;
-    //    String status;
+//    String status;
     Object data;
 }

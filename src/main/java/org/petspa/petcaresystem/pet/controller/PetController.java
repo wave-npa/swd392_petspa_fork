@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api")
 public class PetController {
     @Autowired
-    PetService petService;
+    private PetService petService;
 
     @GetMapping(value = {"/pet/viewPet"})
     public ResponseEntity<ResponseObj> ViewPetProfliebyId(@RequestParam Long pet_id){
