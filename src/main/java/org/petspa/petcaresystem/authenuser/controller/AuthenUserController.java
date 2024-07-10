@@ -58,7 +58,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "password") String password,
-                                        @RequestParam(value = "phone") String phone){
+                                        @RequestParam(value = "phone") String phone,
+                                        @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
@@ -67,6 +68,7 @@ public class AuthenUserController {
         authenUser.setGender(gender);
         authenUser.setPassword(password.trim());
         authenUser.setPhone(phone);
+        authenUser.setAge(age);
         RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser);
         return registerResponseDTO;
     }

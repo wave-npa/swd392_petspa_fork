@@ -3,6 +3,7 @@ package org.petspa.petcaresystem.appointment.controller;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,11 +43,12 @@ public class AppointmentController {
        return appointmentService.findAppointmentById(appointmentId);
    }
 
-//   @PostMapping("/save")
+   @PostMapping("/save")
 //   @CrossOrigin
-//   public Appointment saveAppointment(@RequestBody Appointment appointment) {
-//       return appointmentService.saveAppointment(appointment);
-//   }
+   public AppointmentResponseDTO createNewAppointment(@RequestBody Appointment appointment) {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.saveAppointment(appointment);
+       return appointmentResponseDTO;
+   }
 
    @PostMapping("/update")
    @CrossOrigin

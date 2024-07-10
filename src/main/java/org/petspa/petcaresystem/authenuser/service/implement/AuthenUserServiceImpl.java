@@ -160,10 +160,10 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         try {
             authenUserRepository.save(authenUser);
             // handle data response
-            customAuthenUserForRegister.setUserId(authenUser.getUserId());
             customAuthenUserForRegister.setUserName(authenUser.getUserName());
             customAuthenUserForRegister.setEmail(authenUser.getEmail());
             customAuthenUserForRegister.setFullName(authenUser.getFullName());
+            customAuthenUserForRegister.setAge(authenUser.getAge());
             customAuthenUserForRegister.setGender(String.valueOf(authenUser.getGender()));
             customAuthenUserForRegister.setAddress(authenUser.getAddress());
             customAuthenUserForRegister.setPhone(authenUser.getPhone());
