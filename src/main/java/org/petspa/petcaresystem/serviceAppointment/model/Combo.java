@@ -2,19 +2,13 @@ package org.petspa.petcaresystem.serviceAppointment.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.enums.Status;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -25,6 +19,7 @@ import java.util.Set;
 public class Combo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "combo_id")
     private Long comboId;
 

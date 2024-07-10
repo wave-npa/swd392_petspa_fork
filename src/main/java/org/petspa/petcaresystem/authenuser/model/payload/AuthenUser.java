@@ -11,21 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.review.model.Review;
 import org.petspa.petcaresystem.role.model.Role;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -54,6 +50,9 @@ public class AuthenUser implements Serializable {
 
     @Column(name = "fullName", nullable = false)
     private String fullName;
+
+    @Column(name = "age", nullable = false)
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)

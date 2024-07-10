@@ -6,6 +6,8 @@ import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.enums.Gender;
+import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,6 +32,12 @@ public class AuthenUserController {
     AuthenUserService authenUserService;
     @Autowired
     private HttpServletRequest request;
+
+    @PostMapping("/save")
+    @CrossOrigin
+    public AuthenUser saveUser(@RequestBody AuthenUser user) {
+       return authenUserService.createUser(user);
+    }
 
     @GetMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
@@ -86,6 +94,26 @@ public class AuthenUserController {
         return updatePassowordResponseDTO;
     }
 
+    @GetMapping("/searchUserTest")
+    public ResponseAPI searchUser(@RequestParam(value = "searchTerm", defaultValue = "", required = false) String searchTerm,
+                                  @RequestParam(value = "gender", required = false) Gender gender,
+                                  @RequestParam(value = "status", required = false) Status status,
+                                  @RequestParam(value = "orderBy", defaultValue = "user_id") String orderBy,
+                                  @RequestParam(value = "order", defaultValue = "ASC") String order)
+                                  //@RequestParam(value = "page", defaultValue = 1) Integer pageNumber
+                                  //@RequestParam(value = "rowsPerPage", defaultValue = 10) Integer pageRows 
+                                {
+        ResponseAPI userResponseAPI = authenUserService.searchByUserNameTEST(searchTerm.trim(), gender, status, orderBy.trim(), order.trim().toUpperCase());
+        return userResponseAPI;
+    }
+
+    @GetMapping("/findUserByAge")
+    public ResponseAPI findhUserByAge(@RequestParam(value = "startAge") Integer startAge,
+                                      @RequestParam(value = "endAge") Integer endAge) {
+        ResponseAPI userResponseAPI = authenUserService.findAllUsersWithAgeRange(startAge, endAge);
+        return userResponseAPI;
+    }    
+    
     @PostMapping("/logout")
     public UpdatePassowordResponseDTO logout(){
         UpdatePassowordResponseDTO logoutResponse = authenUserService.logout();

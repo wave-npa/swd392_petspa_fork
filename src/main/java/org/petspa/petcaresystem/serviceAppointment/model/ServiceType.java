@@ -5,8 +5,12 @@ import java.util.Collection;
 
 import org.petspa.petcaresystem.enums.Status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,9 +35,12 @@ public class ServiceType {
     @Column(name = "type_name")
     private String typeName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @ManyToMany(mappedBy = "typeOfService")
+    @JsonIgnore
     private Collection<Services> services;
 
 }

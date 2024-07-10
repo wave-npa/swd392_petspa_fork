@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.appointment.model;
+package org.petspa.petcaresystem.appointment.model.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -67,23 +67,23 @@ public class Appointment implements Serializable {
     @JoinTable(
         name = "service_booked", 
         joinColumns = @JoinColumn(name = "service_id"), 
-        inverseJoinColumns = @JoinColumn(name = "appointnment_id"))
+        inverseJoinColumns = @JoinColumn(name = "appointment_id"))
     private Collection<Services> bookedService;
 
     @OneToOne
-    @MapsId
+    // @MapsId
     @JsonIgnore
     @JoinColumn(name = "userOrder_id", nullable = true)
     private UserOrder userOrder;
 
     @OneToOne
-    @MapsId
+    // @MapsId
     @JsonIgnore
     @JoinColumn(name = "boardingAppointment_id", nullable = true)
     private BoardingAppointment boardingAppointment;
 
     @OneToOne
-    @MapsId
+    // @MapsId
     @JoinColumn(name = "review_id", nullable = true)
     private Review review;
 

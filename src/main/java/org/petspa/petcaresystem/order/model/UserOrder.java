@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -31,7 +32,7 @@ public class UserOrder implements Serializable {
     private float price;
 
     @Column(name = "order_date", nullable = false)
-    private Date userOrderDate;
+    private LocalDateTime userOrderDate;
 
     @OneToOne(mappedBy = "userOrder")
     private Appointment appointment;

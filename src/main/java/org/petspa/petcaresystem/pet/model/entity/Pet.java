@@ -3,7 +3,7 @@ package org.petspa.petcaresystem.pet.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;

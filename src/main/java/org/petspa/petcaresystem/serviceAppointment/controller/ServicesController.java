@@ -1,9 +1,14 @@
 package org.petspa.petcaresystem.serviceAppointment.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.petspa.petcaresystem.authenuser.model.response.ResponseAPI;
+import org.petspa.petcaresystem.enums.Gender;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.model.response.ServiceResponseAPI;
 import org.petspa.petcaresystem.serviceAppointment.service.ServiceAndComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -33,7 +39,8 @@ import jakarta.servlet.http.HttpServletResponse;
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class ServicesController {
 
-   private ServiceAndComboService serviceAndComboService;
+    @Autowired   
+    ServiceAndComboService serviceAndComboService;
 
     @Hidden
     @RequestMapping("/")
@@ -77,4 +84,19 @@ public class ServicesController {
    public String test(){
     return "test";
    }
+
+   @GetMapping("/searchServiceTest")
+    public ServiceResponseAPI searchService(@RequestParam(value = "searchTerm", defaultValue = " ", required = false) String searchTerm,
+                                  @RequestParam(value = "typeList", required = false) ArrayList<String> typeList,
+                                  @RequestParam(value = "minPrice", defaultValue = "0") float minPrice,
+                                  @RequestParam(value = "maxPrice", defaultValue = "0") float maxPrice,
+                                  @RequestParam(value = "status", required = false) Status status,
+                                  @RequestParam(value = "orderBy", defaultValue = "s.service_id") String orderBy,
+                                  @RequestParam(value = "order", defaultValue = "DESC") String order)
+                                  //@RequestParam(value = "page", defaultValue = 1) Integer pageNumber
+                                  //@RequestParam(value = "rowsPerPage", defaultValue = 10) Integer pageRows 
+                                {
+        ServiceResponseAPI serviceResponseAPI = serviceAndComboService.searchServiceTEST(searchTerm.trim(), typeList, minPrice, maxPrice, status, orderBy.trim(), order.trim().toUpperCase());
+        return serviceResponseAPI;
+    }
 }
