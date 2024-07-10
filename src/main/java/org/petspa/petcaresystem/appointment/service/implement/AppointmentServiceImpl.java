@@ -11,7 +11,10 @@ import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired

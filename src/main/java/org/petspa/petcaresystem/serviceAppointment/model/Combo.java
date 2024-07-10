@@ -25,6 +25,7 @@ import java.util.Set;
 public class Combo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "combo_id")
     private Long comboId;
 
