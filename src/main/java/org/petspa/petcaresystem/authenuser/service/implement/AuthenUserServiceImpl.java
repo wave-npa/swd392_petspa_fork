@@ -1,7 +1,10 @@
 package org.petspa.petcaresystem.authenuser.service.implement;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.persistence.Query;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForRegister;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForUpdateProfile;
@@ -10,6 +13,7 @@ import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.config.MyUserDetails;
+import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
 import org.slf4j.LoggerFactory;
@@ -18,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
@@ -36,12 +41,22 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Autowired
     AuthenUserRepository authenUserRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Autowired
     PasswordEncoder passwordEncoder;
+    
     @Autowired
     JwtUtil jwtUtil;
     @Autowired
     private HttpServletRequest request;
+
+    @Override
+    public AuthenUser createUser(AuthenUser authenUser) {
+        return authenUserRepository.save(authenUser);
+    }
 
     @Override
     public JwtResponseDTO login(String email, String password) {
@@ -362,8 +377,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         HttpStatus statusValue = HttpStatus.OK;
         List<AuthenUser> authenUserList = new ArrayList<>();
         try {
-            authenUserList = authenUserRepository.findByRole(role); // code cua An,
-            // authenUserList = (List<AuthenUser>) authenUserRepository.findByRole(role);
+            authenUserList = (List<AuthenUser>) authenUserRepository.findByRole(role);
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
@@ -389,5 +403,53 @@ public class AuthenUserServiceImpl implements AuthenUserService {
            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
        }
        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+   }
+
+   @Override
+   public ResponseAPI searchByUserNameTEST(String searchTerm, Gender gender, Status status, String orderBy, String order) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Get user successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+        List<AuthenUser> authenUserList = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM pet_spa.authen_user WHERE (full_name LIKE :searchTerm OR email LIKE :searchTerm OR phone LIKE :searchTerm) AND (:gender IS NULL OR gender = :gender) AND (:status IS NULL OR status = :status) ORDER BY " + orderBy + " " + order;
+            Query query = entityManager.createNativeQuery(sql, AuthenUser.class);
+            query.setParameter("searchTerm", "%" + searchTerm + "%");
+            query.setParameter("gender", null);
+            query.setParameter("status", null);
+            if (gender != null) {
+                query.setParameter("gender", gender.toString().toUpperCase());
+            }
+            if (status != null) {
+                query.setParameter("status", status.toString().toUpperCase());
+            }
+            authenUserList = query.getResultList();
+        }catch (Exception e){
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+   }
+
+   public ResponseAPI findAllUsersWithAgeRange(Integer startAge, Integer endAge) {
+    LocalDateTime localDateTime = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+    String timeStamp = localDateTime.format(formatter);
+    String message = "Get user successfully";
+    int statusCode = HttpStatus.OK.value();
+    HttpStatus statusValue = HttpStatus.OK;
+    List<AuthenUser> authenUserList = new ArrayList<>();
+    try {
+        authenUserList = authenUserRepository.findAllUsersWithAgeRange(startAge, endAge);
+    }catch (Exception e){
+        logger.error(this.logging_message, e);
+        message = "Something went wrong, server error!";
+        statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
    }
 }

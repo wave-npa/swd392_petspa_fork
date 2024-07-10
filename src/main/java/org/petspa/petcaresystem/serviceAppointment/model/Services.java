@@ -26,6 +26,7 @@ import java.util.Set;
 public class Services {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "service_id")
     private Long serviceId;
 
@@ -38,14 +39,14 @@ public class Services {
     @ManyToMany
     @JoinTable(
         name = "type_service", 
-        joinColumns = @JoinColumn(name = "serviceType_id"), 
-        inverseJoinColumns = @JoinColumn(name = "service_id"))
+        joinColumns = @JoinColumn(name = "service_id"), 
+        inverseJoinColumns = @JoinColumn(name = "serviceType_id"))
     private Collection<ServiceType> typeOfService;
 
     @Column(name = "price", nullable = false)
     private float price;
 
-    @Column(name = "discount_percent", nullable = false)
+    @Column(name = "discount_percent", nullable = true)
     private int discountPercent;
 
     @Enumerated(EnumType.STRING)

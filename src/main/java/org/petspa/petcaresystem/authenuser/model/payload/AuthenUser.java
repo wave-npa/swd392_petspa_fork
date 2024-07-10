@@ -55,6 +55,9 @@ public class AuthenUser implements Serializable {
     @Column(name = "fullName", nullable = false)
     private String fullName;
 
+    @Column(name = "age", nullable = false)
+    private Integer age;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
     private Gender gender;
