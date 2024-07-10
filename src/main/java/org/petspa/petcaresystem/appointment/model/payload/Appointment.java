@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.appointment.model;
+package org.petspa.petcaresystem.appointment.model.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

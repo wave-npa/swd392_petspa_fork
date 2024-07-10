@@ -2,7 +2,7 @@ package org.petspa.petcaresystem.boarding.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;

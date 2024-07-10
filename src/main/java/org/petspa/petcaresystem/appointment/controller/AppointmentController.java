@@ -2,10 +2,8 @@ package org.petspa.petcaresystem.appointment.controller;
 
 import java.util.Collection;
 
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
-import org.petspa.petcaresystem.doctor.model.Doctor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,11 +43,11 @@ public class AppointmentController {
        return appointmentService.findAppointmentById(appointmentId);
    }
 
-   @PostMapping("/save")
-   @CrossOrigin
-   public Appointment saveAppointment(@RequestBody Appointment appointment) {
-       return appointmentService.saveAppointment(appointment);
-   }
+//   @PostMapping("/save")
+//   @CrossOrigin
+//   public Appointment saveAppointment(@RequestBody Appointment appointment) {
+//       return appointmentService.saveAppointment(appointment);
+//   }
 
    @PostMapping("/update")
    @CrossOrigin

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 import jakarta.persistence.*;
-import org.petspa.petcaresystem.appointment.model.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;
