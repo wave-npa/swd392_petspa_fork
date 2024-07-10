@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class }, scanBasePackages = {"org.petspa.petcaresystem", "org.petspa.petcaresystem.serviceAppointment"})
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class }, scanBasePackages = {"org.petspa.petcaresystem", "org.springframework.security.crypto.password"})
 @PropertySource("classpath:application.properties")
 public class PetcaresystemApplication extends SpringBootServletInitializer{
 

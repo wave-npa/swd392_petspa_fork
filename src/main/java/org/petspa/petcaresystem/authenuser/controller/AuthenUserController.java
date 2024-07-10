@@ -4,10 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.*;
+import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
+import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.enums.StatusEnum;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.Session;
@@ -57,7 +58,7 @@ public class AuthenUserController {
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "password") String password,
-                                        @RequestParam(value = "phone") Long phone){
+                                        @RequestParam(value = "phone") String phone){
         AuthenUser authenUser = new AuthenUser();
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
@@ -76,7 +77,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "email") String email,
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
-                                        @RequestParam(value = "phone") Long phone){
+                                        @RequestParam(value = "phone") String phone)
+    {
         AuthenUser authenUser = new AuthenUser();
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
@@ -115,6 +117,18 @@ public class AuthenUserController {
                                       @RequestParam(value = "endAge") Integer endAge) {
         ResponseAPI userResponseAPI = authenUserService.findAllUsersWithAgeRange(startAge, endAge);
         return userResponseAPI;
+    }    
+    
+    @PostMapping("/logout")
+    public UpdatePassowordResponseDTO logout(){
+        UpdatePassowordResponseDTO logoutResponse = authenUserService.logout();
+        return logoutResponse;
+    }
+
+    @GetMapping("/getUser")
+    public ResponseAPI getUserById(@RequestParam(value = "userId") Long userId){
+        ResponseAPI responseAPI = authenUserService.getUserById(userId);
+        return responseAPI;
     }
 
     @GetMapping("/getAllUser")

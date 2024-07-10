@@ -20,7 +20,7 @@ import org.petspa.petcaresystem.enums.Status;
 @EnableJpaRepositories
 public interface AuthenUserRepository extends JpaRepository<AuthenUser, Long>{
     public AuthenUser findByEmail(String email);
-    public AuthenUser findByPhone(Long phone);
+    public AuthenUser findByPhone(String phone);
     public List<AuthenUser> findByRole(Role role);
     public AuthenUser findByEmailAndPassword(String email, String password);
     public AuthenUser findByUserName(String userName);

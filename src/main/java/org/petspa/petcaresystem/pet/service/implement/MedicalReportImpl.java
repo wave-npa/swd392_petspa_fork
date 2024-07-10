@@ -18,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MedicalReportImpl implements MedicalRecordService {
@@ -40,19 +37,27 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<Pet> petList = petRepository.findAll();
             for (Pet pet1 : petList) {
                 if (pet1.getStatus().equals(Status.ACTIVE) && pet1.equals(pet)) {
-
-                    Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
-                    List<MedicalRecord> medicalRecordList = new ArrayList<>();
-                    for (MedicalRecord record : medicalRecordrepo) {
-                        if (record.getStatus().equals(Status.ACTIVE)){
-                            medicalRecordList.add(record);
+                    if (pet1.getMedicalRecord().isEmpty()) {
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("The pet's medical record list is empty")
+                                .data(null)
+                                .build();
+                        return ResponseEntity.ok().body(responseObj);
+                    } else {
+                        Collection<MedicalRecord> medicalRecordrepo = pet1.getMedicalRecord();
+                        List<MedicalRecordResponse> medicalRecordList = new ArrayList<>();
+                        for (MedicalRecord record : medicalRecordrepo) {
+                            if (record.getStatus().equals(Status.ACTIVE)) {
+                                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record);
+                                medicalRecordList.add(recordResponse);
+                            }
                         }
+                        ResponseObj responseObj = ResponseObj.builder()
+                                    .message("Load Medical Record Successfully")
+                                    .data(medicalRecordList)
+                                    .build();
+                        return ResponseEntity.ok().body(responseObj);
                     }
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Load Medical Record Successfully")
-                            .data(medicalRecordList)
-                            .build();
                 }
             }
 
@@ -75,13 +80,27 @@ public class MedicalReportImpl implements MedicalRecordService {
     @Override
     public ResponseEntity<ResponseObj> ViewListAllMedicalRecord() {
         try {
-            List<MedicalRecord> medicalRecord = medicalRecordRepository.findAll();
 
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
+
+            if (medicalRecordList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Medical Record List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+            List<MedicalRecordResponse> medicalRecordResponseList = new ArrayList<>();
+            for (MedicalRecord record : medicalRecordList) {
+                MedicalRecordResponse recordResponse = MedicalRecordMapper.toMedicalRecordResponse(record);
+                medicalRecordResponseList.add(recordResponse);
+            }
             ResponseObj responseObj = ResponseObj.builder()
-                .message("Load Medical Record Successfully")
-                .data(medicalRecord)
-                .build();
+                        .message("Load Medical Record Successfully")
+                        .data(medicalRecordList)
+                        .build();
             return ResponseEntity.ok().body(responseObj);
+
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -150,13 +169,27 @@ public class MedicalReportImpl implements MedicalRecordService {
 
                     medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
-                    medicalrecord.setPetMedicine(MedicalRecordRequest.getMedicines());
+                    //liet ke list muon cap nhat va tao 1 list de cap nhat
+                    Collection<Medicine> medicineUpdate = MedicalRecordRequest.getMedicines();
+                    Collection<Medicine> medicineListUpdate = new ArrayList<>();
+                    //so sanh tat ca cac medicine muoon cap nhat voi bang medicine xem co ton tai hay ko
+                    Collection<Medicine> medicineList = medicineRepository.findAll();
+                    for (Medicine medicine : medicineUpdate) {
+                        for (Medicine medicine2 : medicineList) {
+                            if (medicine.equals(medicine2)){
+                                //neu co thi ca nhat vao list muon cap nhat
+                                medicineListUpdate.add(medicine);
+                            }
+                        }
+                    }
+                    medicalrecord.setPetMedicine(medicineListUpdate);
 
                     medicalrecord.setLast_update(MedicalRecordRequest.getUpdateTime());
 
                     MedicalRecord updateMedicalRecord = medicalRecordRepository.save(medicalrecord);
 
-                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper.toMedicalRecordResponse(updateMedicalRecord);
+                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper.
+                            toMedicalRecordResponse(updateMedicalRecord);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Update Medical Record Successfully")
@@ -190,9 +223,10 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
 
             for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecorddelete)) {
+                if (medicalrecord.equals(medicalrecorddelete) && medicalrecord.getStatus().equals(Status.ACTIVE)) {
 
                     medicalrecord.setStatus(Status.INACTIVE);
+
                     medicalRecordRepository.save(medicalrecord);
 
                     ResponseObj responseObj = ResponseObj.builder()
@@ -226,13 +260,17 @@ public class MedicalReportImpl implements MedicalRecordService {
             List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
 
             for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecordrestore)) {
+                if (medicalrecord.equals(medicalrecordrestore) && medicalrecord.getStatus().equals(Status.INACTIVE)) {
 
                     medicalrecord.setStatus(Status.ACTIVE);
-                    medicalRecordRepository.save(medicalrecord);
+
+                    MedicalRecord restoreMedicalRecord = medicalRecordRepository.save(medicalrecord);
+                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper
+                            .toMedicalRecordResponse(restoreMedicalRecord);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Restore Medical Record Successfully")
+                            .data(medicalRecordResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
 

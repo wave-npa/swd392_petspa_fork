@@ -8,7 +8,6 @@ import org.petspa.petcaresystem.authenuser.model.response.UpdatePassowordRespons
 import org.petspa.petcaresystem.authenuser.model.response.UpdateProfileResponseDTO;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.enums.StatusEnum;
 import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ public interface AuthenUserService {
     public ResponseAPI getUserById(Long id);
     public UpdateProfileResponseDTO updateProfile(AuthenUser authenUser);
     public UpdatePassowordResponseDTO updatePassword(String current_password, String new_password, String confirm_password);
+    public UpdatePassowordResponseDTO logout();
     public ResponseAPI getUsersByRole(Role role);
     public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date);
     public ResponseAPI searchByUserNameTEST(String searchTerm, Gender gender, Status status, String orderBy, String order);

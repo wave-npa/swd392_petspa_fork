@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.petspa.petcaresystem.boarding.model.BoardingAppointment;
+import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;

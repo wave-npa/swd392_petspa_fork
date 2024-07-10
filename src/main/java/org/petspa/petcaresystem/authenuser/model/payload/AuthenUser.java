@@ -67,7 +67,7 @@ public class AuthenUser implements Serializable {
 
     @Pattern(regexp = "\\d{10,11}", message = "Phone number must be 10-11 digits")
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "create_date", nullable = false)
     private LocalDateTime create_date;

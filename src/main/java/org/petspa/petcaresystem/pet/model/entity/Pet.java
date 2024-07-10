@@ -45,7 +45,7 @@ public class Pet implements Serializable {
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "owner")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private AuthenUser owner;

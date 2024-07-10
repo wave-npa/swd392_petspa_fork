@@ -116,12 +116,6 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
                 query.setParameter("status", status.toString().toUpperCase());
             }
             serviceList = query.getResultList();
-            // stringList = query.getResultList();
-            // for(int i = 0; i<stringList.size(); i++){
-            //     Optional<Services> optService = servicesRepository.findById(Long.parseLong(stringList.get(i)));
-            //     Services service = optService.get();
-            //     serviceList.add(service);
-            // }
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";

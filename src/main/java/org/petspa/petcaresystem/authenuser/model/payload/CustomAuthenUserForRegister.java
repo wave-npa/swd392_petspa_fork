@@ -16,7 +16,7 @@ public class CustomAuthenUserForRegister {
     private String fullName;
     private String gender;
     private String address;
-    private Long phone;
+    private String phone;
     private String create_date;
     private String status;
     private String role;

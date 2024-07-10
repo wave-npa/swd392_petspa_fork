@@ -13,6 +13,6 @@ import java.util.Collection;
 public class UpdateMedicineRequest {
     private String medicineName;
     private float Price;
-    Long MedicalRecord_id;
+    Collection<MedicalRecord> MedicalRecord;
     private Status status;
 }
