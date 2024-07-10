@@ -1,24 +1,24 @@
 package org.petspa.petcaresystem.authenuser.service.implement;
 
-import org.petspa.petcaresystem.authenuser.mapper.AuthenUserMapper;
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.ResponseAPI;
-import org.petspa.petcaresystem.authenuser.model.request.profileRequest.UpdateProfileRequest;
-import org.petspa.petcaresystem.authenuser.model.response.AuthenuserResponse;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseObj;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForRegister;
+import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForUpdateProfile;
+import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
+import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.config.MyUserDetails;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
@@ -38,28 +38,63 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     AuthenUserRepository authenUserRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    JwtUtil jwtUtil;
+    @Autowired
+    private HttpServletRequest request;
 
     @Override
-    public ResponseAPI getUsers() {
+    public JwtResponseDTO login(String email, String password) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
-        String message = "Get all users success";
+        String message = "Login success";
         int statusCode = HttpStatus.OK.value();
         HttpStatus statusValue = HttpStatus.OK;
-        List<AuthenUser> authenUserList = new ArrayList<>();
+        Optional<AuthenUser> authenUser;
+        String jwtToken = "";
+
+        authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
+        String encodedPassword = authenUser.get().getPassword();
+
+        if(!passwordEncoder.matches(password, encodedPassword)){
+            message = "Invalid email/password";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+        }
+
         try {
-            authenUserList = authenUserRepository.findAll();
-        }catch (Exception e){
-            logger.error(this.logging_message, e);
+            if(authenUser.isPresent()){
+                jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
+                        authenUser.get().getRole().getRoleName(),
+                        authenUser.get().getUserName(),
+                        authenUser.get().getUserId());
+                HttpSession session = request.getSession();
+                session.setAttribute("jwtToken", jwtToken);
+            }else{
+                message = "Invalid email/password";
+                statusCode = HttpStatus.UNAUTHORIZED.value();
+                statusValue = HttpStatus.UNAUTHORIZED;
+                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+            }
+        } catch (AuthenticationException e) {
+            message = "Invalid email/password";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+        } catch (Exception e) {
+            logger.error("Error occurred during login", e);
             message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+
+        return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
     }
 
+
     @Override
-    public ResponseAPI register(AuthenUser authenUser) {
+    public RegisterResponseDTO register(AuthenUser authenUser) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -71,6 +106,9 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         String encodedPassword = passwordEncoder.encode(authenUser.getPassword());
         authenUser.setPassword(encodedPassword);
 
+        // set create date
+        authenUser.setCreate_date(localDateTime);
+
         // set status value
         authenUser.setStatus(Status.valueOf("ACTIVE"));
 
@@ -79,30 +117,214 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         role.setRoleId(3L);
         authenUser.setRole(role);
 
-        List<AuthenUser> authenUserList = new ArrayList<>();
-        authenUserList.add(authenUser);
+        // check user name used?
+        if (authenUserRepository.findByUserName(authenUser.getUserName()) != null) {
+            message = "This user name has already used! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
 
         // check email exist?
-        if(authenUserRepository.findByEmail(authenUser.getEmail()) != null){
-            message = "This email has already existed!Please try another";
-            return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+        if (authenUserRepository.findByEmail(authenUser.getEmail()) != null) {
+            message = "This email has already existed! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, null);
         }
 
         // check phone number exist?
-        if(authenUserRepository.findByPhone(authenUser.getPhone()) != null){
-            message = "This phone number has already existed!Please try another";
-            return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+        if (authenUserRepository.findByPhone(authenUser.getPhone()) != null) {
+            message = "This phone number has already existed! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, null);
         }
 
-        try{
+        CustomAuthenUserForRegister customAuthenUserForRegister = new CustomAuthenUserForRegister();
+        try {
             authenUserRepository.save(authenUser);
+            // handle data response
+            customAuthenUserForRegister.setUserId(authenUser.getUserId());
+            customAuthenUserForRegister.setUserName(authenUser.getUserName());
+            customAuthenUserForRegister.setEmail(authenUser.getEmail());
+            customAuthenUserForRegister.setFullName(authenUser.getFullName());
+            customAuthenUserForRegister.setGender(String.valueOf(authenUser.getGender()));
+            customAuthenUserForRegister.setAddress(authenUser.getAddress());
+            customAuthenUserForRegister.setPhone(authenUser.getPhone());
+            customAuthenUserForRegister.setCreate_date(timeStamp);
+            customAuthenUserForRegister.setStatus("ACTIVE");
+            customAuthenUserForRegister.setRole("CUSTOMER");
+        } catch (Exception e) {
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, customAuthenUserForRegister);
+    }
+
+    @Override
+    public UpdateProfileResponseDTO updateProfile(AuthenUser authenUser) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Update profile successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("jwtToken");
+        if(token == null || token.isEmpty()){
+            message = "You have to login to use this function!";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
+        Long userId = jwtUtil.extractUserId(token);
+
+        // check user name used?
+        AuthenUser existingUserName = authenUserRepository.findByUserName(authenUser.getFullName());
+        if (existingUserName != null && !existingUserName.getUserId().equals(userId)) {
+            message = "This user name has already used! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
+
+        // check email exist?
+        AuthenUser existingEmail = authenUserRepository.findByEmail(authenUser.getEmail());
+        if (existingEmail != null && !existingEmail.getUserId().equals(userId)) {
+            message = "This email has already existed! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
+
+        // check phone number exist?
+        AuthenUser existingPhone = authenUserRepository.findByPhone(authenUser.getPhone());
+        if (existingPhone != null && !existingPhone.getUserId().equals(userId)) {
+            message = "This phone number has already existed! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
+
+        // set new information
+        AuthenUser updatedUser = authenUserRepository.findByUserId(userId);
+        updatedUser.setUserName(authenUser.getUserName());
+        updatedUser.setAddress(authenUser.getAddress());
+        updatedUser.setEmail(authenUser.getEmail());
+        updatedUser.setFullName(authenUser.getFullName());
+        updatedUser.setGender(authenUser.getGender());
+        updatedUser.setPhone(authenUser.getPhone());
+
+        CustomAuthenUserForUpdateProfile customAuthenUserForUpdateProfile = new CustomAuthenUserForUpdateProfile();
+        try {
+            authenUserRepository.save(updatedUser);
+            // handle data response
+            customAuthenUserForUpdateProfile.setUserId(userId);
+            customAuthenUserForUpdateProfile.setUserName(authenUser.getUserName());
+            customAuthenUserForUpdateProfile.setEmail(authenUser.getEmail());
+            customAuthenUserForUpdateProfile.setFullName(authenUser.getFullName());
+            customAuthenUserForUpdateProfile.setGender(String.valueOf(authenUser.getGender()));
+            customAuthenUserForUpdateProfile.setAddress(authenUser.getAddress());
+            customAuthenUserForUpdateProfile.setPhone(authenUser.getPhone());
+        } catch (Exception e) {
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, customAuthenUserForUpdateProfile);
+    }
+
+    @Override
+    public UpdatePassowordResponseDTO updatePassword(String current_password, String new_password, String confirm_password){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Update new password successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        // get token from session and extract userId
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("jwtToken");
+        // check user authorized
+        if(token == null || token.isEmpty()){
+            message = "You have to login to use this function!";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            statusValue = HttpStatus.UNAUTHORIZED;
+            return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
+
+        // extract userId
+        Long userId = jwtUtil.extractUserId(token);
+
+        // check current password valid?
+        AuthenUser authenUser = authenUserRepository.findByUserId(userId);
+        String userPasswordStoredInDatabase = authenUser.getPassword();
+        if(!passwordEncoder.matches(current_password, userPasswordStoredInDatabase)){
+            message = "Incorrect current password! Use 'Forget Password' if you don't remember your password";
+            return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
+
+        // check confirm password match?
+        if(!new_password.equals(confirm_password)){
+            message = "Not match new password and confirm password! Please try again";
+            return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
+
+        // encode new password
+        String encodedNewPassword = passwordEncoder.encode(new_password);
+
+        // set new pass
+        AuthenUser updatedPassUser = authenUserRepository.findByUserId(userId);
+        updatedPassUser.setPassword(encodedNewPassword);
+
+        try{
+            authenUserRepository.save(updatedPassUser);
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+        return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+    }
+
+    @Override
+    public UpdatePassowordResponseDTO logout() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Log out successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.invalidate();
+        }else{
+            message = "You haven't logged in yet!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+        }
+        return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
+    }
+
+    @Override
+    public UserDetails loadUserByEmail(String email) {
+        AuthenUser authenUser = authenUserRepository.findByEmail(email);
+        return new MyUserDetails(authenUser);
+    }
+
+
+    @Override
+    public List<AuthenUser> getAllUser(){
+        List<AuthenUser> authenUserList = authenUserRepository.findAll();
+        return authenUserList;
     }
 
     @Override
@@ -116,12 +338,18 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Optional<AuthenUser> authenUser = Optional.ofNullable(new AuthenUser());
         try {
             authenUser = authenUserRepository.findById(id);
+            if(!authenUser.isPresent()){
+                message = "User not found!";
+                statusCode = HttpStatus.NO_CONTENT.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseAPI(message, timeStamp, statusCode, statusValue, (Optional<AuthenUser>) null);
+            }
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUser);
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUser);
     }
 
     @Override
@@ -134,7 +362,8 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         HttpStatus statusValue = HttpStatus.OK;
         List<AuthenUser> authenUserList = new ArrayList<>();
         try {
-            authenUserList = authenUserRepository.findByRole(role);
+            authenUserList = authenUserRepository.findByRole(role); // code cua An,
+            // authenUserList = (List<AuthenUser>) authenUserRepository.findByRole(role);
         }catch (Exception e){
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
@@ -143,81 +372,22 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
     }
 
-    @Override
-    public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-        String timeStamp = localDateTime.format(formatter);
-        String message = "Get user successfully";
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus statusValue = HttpStatus.OK;
-        List<AuthenUser> authenUserList = new ArrayList<>();
-        try {
-            authenUserList = authenUserRepository.findAllUsersWithCreateDateRange(start_date, end_date);
-        }catch (Exception e){
-            logger.error(this.logging_message, e);
-            message = "Something went wrong, server error!";
-            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
-    }
-
-    @Override
-    public UserDetails loadUserByEmail(String email) throws Exception {
-        AuthenUser authenUser = authenUserRepository.findByEmail(email);
-        if(authenUserRepository == null){
-            throw new Exception("User not found!");
-        }
-        return new MyUserDetails(authenUser);
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<ResponseObj> UpdateProflie(Long id, UpdateProfileRequest profileRequest){
-        try {
-            String cust_id = Long.toString(id);
-            Optional<AuthenUser> authenUser = authenUserRepository.findById(id);
-
-            if (!authenUser.isPresent()){
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Profile not found")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            AuthenUser user = authenUser.get();
-//            if (!profileRequest.getFull_name().equals(null)){
-//                user.setFull_name(profileRequest.getFull_name());
-//            }
-//
-////            if (!profileRequest.getGender().equals(null)){
-////                user.setGender(profileRequest.getGender());
-////            }
-//
-//            if (!profileRequest.getAddress().equals(null)){
-//                user.setAddress(profileRequest.getAddress());
-//            }
-//
-//            if (!profileRequest.getPhone().equals(null) && isValidPhoneNumber(profileRequest.getPhone())){
-//                user.setPhone(profileRequest.getPhone());
-//            }
-
-            AuthenUser updateauthenUser = authenUserRepository.save(user);
-
-            AuthenuserResponse authenuserResponse = AuthenUserMapper.toAuthenUserResponse(updateauthenUser);
-
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Update Profile Successfully")
-                    .data(authenuserResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
-        }catch (Exception e){
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load Profile")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
-    }
+   @Override
+   public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date) {
+       LocalDateTime localDateTime = LocalDateTime.now();
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+       String timeStamp = localDateTime.format(formatter);
+       String message = "Get user successfully";
+       int statusCode = HttpStatus.OK.value();
+       HttpStatus statusValue = HttpStatus.OK;
+       List<AuthenUser> authenUserList = new ArrayList<>();
+       try {
+           authenUserList = authenUserRepository.findAllUsersWithCreateDateRange(start_date, end_date);
+       }catch (Exception e){
+           logger.error(this.logging_message, e);
+           message = "Something went wrong, server error!";
+           statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+       }
+       return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
+   }
 }

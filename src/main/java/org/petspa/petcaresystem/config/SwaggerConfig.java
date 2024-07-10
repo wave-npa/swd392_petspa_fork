@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.configuration;
+package org.petspa.petcaresystem.config;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;

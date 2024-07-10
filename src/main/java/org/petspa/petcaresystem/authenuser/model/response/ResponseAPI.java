@@ -1,9 +1,9 @@
-package org.petspa.petcaresystem.authenuser.model;
+package org.petspa.petcaresystem.authenuser.model.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +34,4 @@ public class ResponseAPI {
         this.statusValue = statusValue;
         this.data = data;
     }
-
 }

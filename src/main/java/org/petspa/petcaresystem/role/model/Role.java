@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

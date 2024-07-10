@@ -25,9 +25,10 @@ public class ServiceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "serviceType_id")
+    @Column(name = "service_type_id")
     private Long serviceTypeId;
 
+    @Column(name = "type_name")
     private String typeName;
 
     private Status status;

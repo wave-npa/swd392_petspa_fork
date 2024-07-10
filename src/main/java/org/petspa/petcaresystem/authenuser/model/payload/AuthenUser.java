@@ -1,7 +1,9 @@
-package org.petspa.petcaresystem.authenuser.model;
+package org.petspa.petcaresystem.authenuser.model.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,10 +19,13 @@ import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.review.model.Review;
 import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -29,6 +34,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = "AuthenUser")
+@Transactional
 public class AuthenUser implements Serializable {
 
     @Id
@@ -36,14 +42,18 @@ public class AuthenUser implements Serializable {
     @Column(name = "userId")
     private Long userId;
 
+    @Column(name = "user_name")
+    private String userName;
+
+    @Email(message = "Invalid email format")
     @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "full_name", nullable = false)
-    private String full_name;
+    @Column(name = "fullName", nullable = false)
+    private String fullName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
@@ -52,8 +62,9 @@ public class AuthenUser implements Serializable {
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Pattern(regexp = "\\d{10,11}", message = "Phone number must be 10-11 digits")
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "create_date", nullable = false)
     private LocalDateTime create_date;
@@ -67,6 +78,7 @@ public class AuthenUser implements Serializable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Role role;
+//    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

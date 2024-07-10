@@ -56,7 +56,7 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
 
     @Override
     public List<Services> searchService(String searchTerm) {
-        return servicesRepository.searchByServiceName(searchTerm); 
+       return servicesRepository.searchByServiceName(searchTerm);
     }
 
     //Type service
@@ -64,7 +64,9 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
     public List<Services> searchServiceByType(String typeName) {
         List<ServiceType> serviceType = serviceTypeRepository.findByTypeName(typeName);
         String typeId = String.valueOf(serviceType.get(0).getServiceTypeId());
+
         List<Long> serviceId = servicesRepository.searchByServiceType(typeId);
+
         List<Services> serviceList = new ArrayList<>();
         for(int i = 0; i<serviceId.size(); i++) {
             serviceList.add(servicesRepository.findById(serviceId.get(i)).orElse(null));

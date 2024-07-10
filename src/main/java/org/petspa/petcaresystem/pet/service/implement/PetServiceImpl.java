@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.pet.service.implement;
 
-import org.petspa.petcaresystem.authenuser.model.AuthenUser;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.enums.Status;
@@ -17,13 +17,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
+    @Autowired
     AuthenUserRepository userRepository;
 
 
@@ -35,10 +39,10 @@ public class PetServiceImpl implements PetService {
 
             for (Pet pet : petlist) {
                 if (pet.equals(petfine) && pet.getStatus() == Status.ACTIVE) {
-                    PetResponse petResponse = PetMapper.toPetResponse(pet);
+
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Fine Pet Profile Successfully")
-                            .data(petResponse)
+                            .data(pet)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
@@ -61,38 +65,29 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(Long cus_id) {
         try {
-            AuthenUser customer = userRepository.getReferenceById(cus_id);
-            List<AuthenUser> userList = userRepository.findAll();
-            for (AuthenUser user : userList) {
-                if (user.getStatus().equals(Status.ACTIVE) && user.equals(customer)) {
-                    if (user.getOwnedPet().isEmpty()) {
-                        ResponseObj responseObj = ResponseObj.builder()
-                                .message("Your pet list is empty")
-                                .data(null)
-                                .build();
-                        return ResponseEntity.ok().body(responseObj);
-                    } else {
-                        Collection<Pet> petlistrepo = user.getOwnedPet();
-                        List<PetResponse> petResponseList = new ArrayList<>();
-                        for (Pet pet : petlistrepo) {
-                            if (pet.getStatus() == Status.ACTIVE){
-                                PetResponse petResponse = PetMapper.toPetResponse(pet);
-                                petResponseList.add(petResponse);
-                            }
-                        }
-                        ResponseObj responseObj = ResponseObj.builder()
-                                .message("Load Pet Profiles Successfully")
-                                .data(petResponseList)
-                                .build();
-                        return ResponseEntity.ok().body(responseObj);
-                    }
+            AuthenUser customer = userRepository.findById(cus_id).orElse(null);
+
+            if (customer == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Customer not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            List<Pet> petlistrepo = petRepository.findAllById(Collections.singleton(customer.getUserId()));
+            List<Pet> petlist = new ArrayList<Pet>();
+            for (Pet pet : petlistrepo) {
+                if (pet.getStatus() == Status.ACTIVE){
+                    petlist.add(pet);
                 }
             }
+
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Customer not found")
-                    .data(null)
+                    .message("Load Pet Profiles Successfully")
+                    .data(petlist)
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -108,21 +103,10 @@ public class PetServiceImpl implements PetService {
         try {
 
             List<Pet> petlist = petRepository.findAll();
-            if (petlist.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Pet list is empty")
-                        .data(null)
-                        .build();
-                return ResponseEntity.ok().body(responseObj);
-            }
-            List<PetResponse> petResponseList = new ArrayList<>();
-            for (Pet pet : petlist) {
-                PetResponse petResponse = PetMapper.toPetResponse(pet);
-                petResponseList.add(petResponse);
-            }
+
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Load Pet Profiles Successfully")
-                    .data(petResponseList)
+                    .data(petlist)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
@@ -160,9 +144,8 @@ public class PetServiceImpl implements PetService {
 
                     pet.setOwner(customer);
 
-                    Pet createPet = petRepository.save(pet);
-
-                    PetResponse petResponse = PetMapper.toPetResponse(createPet);
+                    Pet createpet = petRepository.save(pet);
+                    PetResponse petResponse = PetMapper.toPetResponse(createpet);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Create Pet Profile Successfully")
@@ -211,9 +194,9 @@ public class PetServiceImpl implements PetService {
 
                     pet.setStatus(petRequest.getStatus());
 
-                    Pet updatePet = petRepository.save(pet);
+                    Pet updatepet = petRepository.save(pet);
 
-                    PetResponse petResponse = PetMapper.toPetResponse(updatePet);
+                    PetResponse petResponse = PetMapper.toPetResponse(updatepet);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Update Pet Profile Successfully")
@@ -244,14 +227,12 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete) && pet.getStatus().equals(Status.ACTIVE)) {
+                if (pet.equals(petdelete)) {
                     pet.setStatus(Status.INACTIVE);
-
                     petRepository.save(pet);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Delete Pet Profile Successfully")
-                            .data(null)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
@@ -279,15 +260,12 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete) && pet.getStatus().equals(Status.INACTIVE)) {
+                if (pet.equals(petdelete)) {
                     pet.setStatus(Status.ACTIVE);
-
-                    Pet restorePet = petRepository.save(pet);
-                    PetResponse petResponse = PetMapper.toPetResponse(restorePet);
+                    petRepository.save(pet);
 
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Restore Pet Profile Successfully")
-                            .data(petResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
