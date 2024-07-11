@@ -1,15 +1,12 @@
 package org.petspa.petcaresystem.enums;
 
-
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum Status {
-    ACTIVE,
-    INACTIVE;
+public enum ProcessStatus {
+    IN_PROGRESS,
+    COMPLETED;
 }

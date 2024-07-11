@@ -330,13 +330,6 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     }
 
     @Override
-    public UserDetails loadUserByEmail(String email) {
-        AuthenUser authenUser = authenUserRepository.findByEmail(email);
-        return new MyUserDetails(authenUser);
-    }
-
-
-    @Override
     public List<AuthenUser> getAllUser(){
         List<AuthenUser> authenUserList = authenUserRepository.findAll();
         return authenUserList;

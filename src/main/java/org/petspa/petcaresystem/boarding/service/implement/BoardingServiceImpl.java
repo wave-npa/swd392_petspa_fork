@@ -10,6 +10,7 @@ import org.petspa.petcaresystem.boarding.model.response.BoardingResponse;
 import org.petspa.petcaresystem.boarding.repository.BoardingRepository;
 import org.petspa.petcaresystem.boarding.service.BoardingService;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
+import org.petspa.petcaresystem.enums.ShelterStatus;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;
@@ -119,14 +120,12 @@ public class BoardingServiceImpl implements BoardingService{
                     boarding.setBoardingDetail(boardingDetailList);
 
                     List<Shelter> shelterList = shelterRepository.findAll();
-//                    Collection<Shelter> shelters = new ArrayList<>();
                     for (Shelter shelter : shelterList) {
-                        if (shelter.getStatus().equals(Status.EMPTY)) {
+                        if (shelter.getStatus().equals(Status.ACTIVE) &&
+                                shelter.getShelterStatus().equals(ShelterStatus.EMPTY)) {
                             boarding.setShelter( shelter);
-//                            boarding.setShelter((Collection<Shelter>) shelter);
                         }
                     }
-//                    boarding.setShelter(shelter);
                     boarding.setBoardingTime(LocalDateTime.now());
                     boarding.setStatus(Status.ACTIVE);
 
@@ -174,12 +173,14 @@ public class BoardingServiceImpl implements BoardingService{
 
                     List<Shelter> shelterList = shelterRepository.findAll();
                     for (Shelter shelter : shelterList) {
-                        if (shelter.equals(boardingRequest.getShelter()) && shelter.getStatus().equals(Status.EMPTY)) {
+                        if (shelter.equals(boardingRequest.getShelter()) && shelter.getStatus().equals(Status.ACTIVE)
+                                                    && shelter.getShelterStatus().equals(ShelterStatus.EMPTY)) {
+                            //thu tuc truoc khi doi long moi
                             Shelter shelterUpdate = boarding1.getShelter();
-                            shelterUpdate.setStatus(Status.EMPTY);
+                            shelterUpdate.setShelterStatus(ShelterStatus.EMPTY);
                             shelterRepository.save(shelterUpdate);
+
                             boarding1.setShelter(shelter);
-//                            boarding1.setShelter((Collection<Shelter>) shelter);
                         }
                     }
 

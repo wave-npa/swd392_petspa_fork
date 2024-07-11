@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
+import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +26,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
-    private AuthenUserService authenUserService;
+    private AuthenUserRepository authenUserRepository;
 
 
     @Override
@@ -39,7 +41,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             System.out.println("Role:---------------------------" + role + "---------------------------");
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = authenUserService.loadUserByEmail(email);
+                AuthenUser authenUser = authenUserRepository.findByEmail(email);
+                UserDetails userDetails = new MyUserDetails(authenUser);
                 System.out.println("User name:---------------------------" + userDetails.getUsername() + "---------------------------");
                 if (jwtUtil.validateToken(jwt, userDetails)) {
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));

@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.shelter.service.implement;
 
+import org.petspa.petcaresystem.enums.ShelterStatus;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.shelter.mapper.ShelterMapper;
@@ -10,6 +11,7 @@ import org.petspa.petcaresystem.shelter.model.response.ShelterResponse;
 import org.petspa.petcaresystem.shelter.repository.ShelterRepository;
 import org.petspa.petcaresystem.shelter.service.ShelterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class ShelterServiceImpl implements ShelterService{
     @Override
     public ResponseEntity<ResponseObj> ViewAllShelter() {
         try {
-            List<Shelter> shelterList = shelterRepository.findAll();
+            List<Shelter> shelterList = shelterRepository.findAll(Sort.by(Sort.Direction.ASC, "shelterName"));
             if (shelterList.isEmpty()) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("shelter list is empty")
@@ -59,7 +61,7 @@ public class ShelterServiceImpl implements ShelterService{
     @Override
     public ResponseEntity<ResponseObj> ViewShelterAvailable() {
         try {
-            List<Shelter> shelterList = shelterRepository.findAll();
+            List<Shelter> shelterList = shelterRepository.findAll(Sort.by(Sort.Direction.ASC, "shelterName"));
             if (shelterList.isEmpty()) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("shelter list is empty")
@@ -69,14 +71,14 @@ public class ShelterServiceImpl implements ShelterService{
             } else {
                 List<ShelterResponse> shelterResponseList = new ArrayList<>();
                 for (Shelter shelter : shelterList) {
-                    if (shelter.getStatus() == Status.EMPTY) {
+                    if (shelter.getShelterStatus().equals(ShelterStatus.EMPTY)) {
                         ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(shelter);
                         shelterResponseList.add(shelterResponse);
                     }
                 }
                 if (shelterResponseList.isEmpty()) {
                     ResponseObj responseObj = ResponseObj.builder()
-                            .message("shelter empty list is empty")
+                            .message("shelter available list is empty")
                             .data(null)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
@@ -101,7 +103,7 @@ public class ShelterServiceImpl implements ShelterService{
     @Override
     public ResponseEntity<ResponseObj> ViewShelterUsing() {
         try {
-            List<Shelter> shelterList = shelterRepository.findAll();
+            List<Shelter> shelterList = shelterRepository.findAll(Sort.by(Sort.Direction.ASC, "shelterName"));
             if (shelterList.isEmpty()) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("shelter list is empty")
@@ -111,7 +113,7 @@ public class ShelterServiceImpl implements ShelterService{
             } else {
                 List<ShelterResponse> shelterResponseList = new ArrayList<>();
                 for (Shelter shelter : shelterList) {
-                    if (shelter.getStatus() == Status.USING) {
+                    if (shelter.getShelterStatus() == ShelterStatus.USING) {
                         ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(shelter);
                         shelterResponseList.add(shelterResponse);
                     }
@@ -145,7 +147,7 @@ public class ShelterServiceImpl implements ShelterService{
         try {
             Shelter shelter = new Shelter();
             shelter.setShelterName(shelterRequest.getShelterName());
-            shelter.setStatus(Status.EMPTY);
+            shelter.setShelterStatus(ShelterStatus.EMPTY);
 
             Shelter createShelter = shelterRepository.save(shelter);
             ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(createShelter);
@@ -173,10 +175,8 @@ public class ShelterServiceImpl implements ShelterService{
             for (Shelter shelter : shelterList) {
                 if (shelter.equals(shelterUpdate) && shelter.getStatus().equals(Status.ACTIVE)) {
                     shelter.setShelterName(shelterRequest.getShelterName());
-                    if (shelterRequest.getStatus().equals(Status.USING) ||
-                            shelterRequest.getStatus().equals(Status.EMPTY)){
-                        shelter.setStatus(shelterRequest.getStatus());
-                    }
+
+                    shelter.setShelterStatus(shelterRequest.getShelterStatus());
 
                     Shelter updateShelter = shelterRepository.save(shelter);
                     ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(updateShelter);
