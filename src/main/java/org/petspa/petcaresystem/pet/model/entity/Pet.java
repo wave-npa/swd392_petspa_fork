@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,16 +49,19 @@ public class Pet implements Serializable {
     @JoinColumn(name = "owner")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private AuthenUser owner;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<Appointment> appointment;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<MedicalRecord> medicalRecord;
 
 }

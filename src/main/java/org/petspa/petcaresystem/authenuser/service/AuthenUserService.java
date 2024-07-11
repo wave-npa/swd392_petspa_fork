@@ -20,7 +20,6 @@ public interface AuthenUserService {
 
     public JwtResponseDTO login(String email, String password);
     public RegisterResponseDTO register(AuthenUser authenUser);
-    public UserDetails loadUserByEmail(String email);
     public List<AuthenUser> getAllUser();
     public ResponseAPI getUserById(Long id);
     public UpdateProfileResponseDTO updateProfile(AuthenUser authenUser);
