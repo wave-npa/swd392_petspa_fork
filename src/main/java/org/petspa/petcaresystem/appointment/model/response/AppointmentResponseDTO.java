@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
@@ -18,5 +19,5 @@ public class AppointmentResponseDTO {
     private String timeStamp;
     private int statusCode;
     private HttpStatus statusValue;
-    private Optional<Appointment> data;
+    private CreateAppointmentRequestDTO data;
 }

@@ -3,6 +3,7 @@ package org.petspa.petcaresystem.appointment.service;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public interface AppointmentService {
 
     Appointment findAppointmentById(Long appointmentId);
 
-    AppointmentResponseDTO saveAppointment(Appointment appointment);
+    AppointmentResponseDTO saveAppointment(CreateAppointmentRequestDTO createAppointmentRequestDTO);
 
     Appointment updateAppointment(Appointment appointment);
 

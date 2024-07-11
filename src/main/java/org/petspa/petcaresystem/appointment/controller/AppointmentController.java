@@ -3,8 +3,10 @@ package org.petspa.petcaresystem.appointment.controller;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class AppointmentController {
 
+   @Autowired
    AppointmentService appointmentService;
 
    @GetMapping("/getAll")
@@ -45,8 +48,8 @@ public class AppointmentController {
 
    @PostMapping("/save")
 //   @CrossOrigin
-   public AppointmentResponseDTO createNewAppointment(@RequestBody Appointment appointment) {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.saveAppointment(appointment);
+   public AppointmentResponseDTO createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO) {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.saveAppointment(createAppointmentRequestDTO);
        return appointmentResponseDTO;
    }
 

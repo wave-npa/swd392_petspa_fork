@@ -86,5 +86,4 @@ public class Appointment implements Serializable {
     // @MapsId
     @JoinColumn(name = "review_id", nullable = true)
     private Review review;
-
 }

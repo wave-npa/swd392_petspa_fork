@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
@@ -69,7 +70,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseDTO saveAppointment(Appointment appointment) {
+    public AppointmentResponseDTO saveAppointment(CreateAppointmentRequestDTO requestDTO) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -90,74 +91,98 @@ public class AppointmentServiceImpl implements AppointmentService {
         // get token extract userId
         HttpSession session =request.getSession();
         String token = (String) session.getAttribute("jwtToken");
-        Long userId = jwtUtil.extractUserId(token);
-
-        //------------guess book appointment------------------
-        authenUser = authenUserRepository.findByUserId(userId);
-        if(token.isEmpty() || token== null){
-            reviewRepository.save(review);
-            // appointment param
-            appointmentSaveForGuess.setCreate_date(LocalDate.from(localDateTime));
-            appointmentSaveForGuess.setStartTime(appointment.getStartTime());
-            appointmentSaveForGuess.setStatus(Status.valueOf("INACTIVE"));
-            // service
-            appointmentSaveForGuess.setBookedService((Collection<Services>) service);
-            // review
-            appointmentSaveForGuess.setReview(review);
-            appointmentRepository.save(appointmentSaveForGuess);
-            appointmentRepository.save(appointmentSaveForGuess);
-
-            // user order
-            Long price = (long) servicesRepository.findById(service.getServiceId()).get().getPrice();
-            userOrder.setPrice(price);
-            userOrder.setUserOrderDate(localDateTime);
-        }
-
-        //------------user logged in----------------
-        if(!token.isEmpty() || token != null) {
-            // review
-            review.setAuthor(authenUser);
-            reviewRepository.save(review);
-
-            // doctor
-            appointmentSaveForUser.setBookedDoctor((Collection<Doctor>) bookedDoctor);
-
-            // pet
-            pet = petRepository.findByOwner(authenUser);
-            appointmentSaveForUser.setPet(pet);
-
-            // appointment param
-            appointmentSaveForUser.setCreate_date(LocalDate.from(localDateTime));
-            appointmentSaveForUser.setStartTime(appointmentSaveForUser.getStartTime());
-            appointmentSaveForUser.setStatus(Status.valueOf("INACTIVE"));
-
-            // service
-            appointmentSaveForGuess.setBookedService((Collection<Services>) service);
-
-            // review
-            appointmentSaveForUser.setReview(review);
-
-            // user order
-            Long price = (long) servicesRepository.findById(service.getServiceId()).get().getPrice();
-            userOrder.setPrice(price);
-            userOrder.setUserOrderDate(localDateTime);
-        }
 
         try {
-            if(token.isEmpty() || token== null) {
+            //------------guess book appointment------------------
+            if (token == null && token.isEmpty()) {
+
+                // doctor
+
+
+
+
+                // review
+                reviewRepository.save(review);
+
+                // create date
+                appointmentSaveForGuess.setCreate_date(LocalDate.from(localDateTime));
+                //start time
+                appointmentSaveForGuess.setStartTime(requestDTO.getStartTime());
+                // status
+                appointmentSaveForGuess.setStatus(Status.valueOf("INACTIVE"));
+
+                // service
+
+
+
+
+                // review
+                appointmentSaveForGuess.setReview(review);
                 appointmentRepository.save(appointmentSaveForGuess);
-                ordersRepository.save(userOrder);
-            }else {
-                appointmentRepository.save(appointmentSaveForUser);
+                appointmentRepository.save(appointmentSaveForGuess);
+
+                // user order
+                Long price = (long) servicesRepository.findById(service.getServiceId()).get().getPrice();
+                userOrder.setPrice(price);
+                userOrder.setUserOrderDate(localDateTime);
+
+                // create appointment
+                appointmentRepository.save(appointmentSaveForGuess);
+
+                // create order
                 ordersRepository.save(userOrder);
             }
+
+            //------------user logged in----------------
+            if (!token.isEmpty() && token != null) {
+                Long userId = jwtUtil.extractUserId(token);
+                authenUser = authenUserRepository.findByUserId(userId);
+
+
+                // review
+                review.setAuthor(authenUser);
+                reviewRepository.save(review);
+
+                // doctor
+
+
+
+
+                // pet
+                pet = petRepository.findByOwner(authenUser);
+                appointmentSaveForUser.setPet(pet);
+
+                // appointment param
+                appointmentSaveForUser.setCreate_date(LocalDate.from(localDateTime));
+                appointmentSaveForUser.setStartTime(appointmentSaveForUser.getStartTime());
+                appointmentSaveForUser.setStatus(Status.valueOf("INACTIVE"));
+
+                // service
+
+
+
+
+                // review
+                appointmentSaveForUser.setReview(review);
+
+                // user order
+                Long price = (long) servicesRepository.findById(service.getServiceId()).get().getPrice();
+                userOrder.setPrice(price);
+                userOrder.setUserOrderDate(localDateTime);
+
+                // create appointment
+                appointmentRepository.save(appointmentSaveForUser);
+                // create order
+                ordersRepository.save(userOrder);
+            }
+
         } catch (Exception e) {
 //            logger.error("Error occurred during create appointment", e);
             message = "Something went wrong, server error!";
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new AppointmentResponseDTO(message, timeStamp, statusCode, statusValue, Optional.ofNullable(appointment));
+        return new AppointmentResponseDTO(message, timeStamp, statusCode, statusValue, null);
     }
 
     @Override
