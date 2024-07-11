@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -156,7 +157,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return null;
+        return new AppointmentResponseDTO(message, timeStamp, statusCode, statusValue, Optional.ofNullable(appointment));
     }
 
     @Override

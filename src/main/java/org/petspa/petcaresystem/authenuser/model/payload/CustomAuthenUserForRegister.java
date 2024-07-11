@@ -10,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomAuthenUserForRegister {
-    private Long userId;
     private String userName;
     private String email;
     private String fullName;
+    private int age;
     private String gender;
     private String address;
     private String phone;
