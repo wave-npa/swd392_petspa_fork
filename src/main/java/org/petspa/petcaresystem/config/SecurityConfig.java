@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableJpaRepositories(basePackages="org.petspa.petcaresystem")
+//@EnableJpaRepositories(basePackages="org.petspa.petcaresystem")
 public class SecurityConfig {
 
      @Autowired

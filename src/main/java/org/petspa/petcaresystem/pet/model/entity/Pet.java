@@ -35,6 +35,7 @@ public class Pet implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "species")
     private Species species;
 

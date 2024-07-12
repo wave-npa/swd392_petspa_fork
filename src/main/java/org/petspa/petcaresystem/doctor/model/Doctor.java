@@ -46,9 +46,10 @@ public class Doctor implements Serializable {
     @JsonIgnore
     private Collection<Appointment> appointment;
 
-    @OneToOne
-    @MapsId
-    @JsonIgnore
+
+//    @MapsId
     @JoinColumn(name = "schedule_id", nullable = true)
+    @OneToOne
+    @JsonIgnore
     private Schedule schedule;
 }

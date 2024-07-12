@@ -40,11 +40,12 @@ public class Shelter implements Serializable {
     @Column(name = "status")
     private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "shelter")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private BoardingAppointment boarding;
+//    @ManyToOne
+//    @JoinColumn(name = "boardingId")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private BoardingAppointment boarding;
+
 //    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
 //    @EqualsAndHashCode.Exclude
 //    @ToString.Exclude

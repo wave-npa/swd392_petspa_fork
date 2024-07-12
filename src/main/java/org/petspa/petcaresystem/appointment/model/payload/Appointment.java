@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.appointment.model.payload;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -38,9 +39,9 @@ public class Appointment implements Serializable {
 
     @ManyToMany
     @JoinTable(
-        name = "doctor_booked", 
-        joinColumns = @JoinColumn(name = "appointment_id"), 
-        inverseJoinColumns = @JoinColumn(name = "doctor_id"))
+            name = "doctor_booked",
+            joinColumns = @JoinColumn(name = "appointment_id"),
+            inverseJoinColumns = @JoinColumn(name = "doctor_id"))
     private Collection<Doctor> bookedDoctor;
 
     @ManyToOne
@@ -56,34 +57,40 @@ public class Appointment implements Serializable {
     @Column(name = "create_date")
     private LocalDate create_date;
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     @Column(name = "startTime", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "endTime", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @Column(name = "endTime", nullable = true)
     private LocalDateTime endTime;
 
     @ManyToMany
     @JoinTable(
-        name = "service_booked", 
-        joinColumns = @JoinColumn(name = "service_id"), 
-        inverseJoinColumns = @JoinColumn(name = "appointment_id"))
+            name = "service_booked",
+            joinColumns = @JoinColumn(name = "service_id"),
+            inverseJoinColumns = @JoinColumn(name = "appointment_id"))
     private Collection<Services> bookedService;
 
     @OneToOne
     // @MapsId
-    @JsonIgnore
     @JoinColumn(name = "userOrder_id", nullable = true)
+    @JsonIgnore
+//    @OneToOne(mappedBy = "appointment")
     private UserOrder userOrder;
 
-    @OneToOne
+
     // @MapsId
-    @JsonIgnore
+    @OneToOne
     @JoinColumn(name = "boardingAppointment_id", nullable = true)
+    @JsonIgnore
+//    @OneToOne(mappedBy = "appointment")
     private BoardingAppointment boardingAppointment;
 
-    @OneToOne
     // @MapsId
+    @OneToOne
     @JoinColumn(name = "review_id", nullable = true)
+//    @OneToOne(mappedBy = "appointment")
+    @JsonIgnore
     private Review review;
 }

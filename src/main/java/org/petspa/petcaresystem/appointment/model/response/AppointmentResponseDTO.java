@@ -19,5 +19,4 @@ public class AppointmentResponseDTO {
     private String timeStamp;
     private int statusCode;
     private HttpStatus statusValue;
-    private CreateAppointmentRequestDTO data;
 }
