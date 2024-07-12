@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
+import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.enums.Option;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,24 +36,26 @@ public class AppointmentController {
        return appointmentService.findAllAppointment();
    }
 
-   @GetMapping("/get/{appointmentId}")
+   @GetMapping("/getAppointment/{appointmentId}")
    @CrossOrigin
-   public Appointment getAppointmentById(@PathVariable Long appointmentId) {
-       return appointmentService.findAppointmentById(appointmentId);
+   public AppointmentResponseDTO getAppointmentById(@PathVariable Long appointmentId) {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAppointmentById(appointmentId);
+       return appointmentResponseDTO;
    }
 
    @PostMapping("/save")
    @CrossOrigin
-   public AppointmentResponseDTO createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
-                                                      @RequestParam(value = "hospitalize")Option option) {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.saveAppointment(createAppointmentRequestDTO, option);
-       return appointmentResponseDTO;
+   public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
+                                                        @RequestParam(value = "hospitalize")Option option) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option);
+       return appointmentResponseInfor;
    }
 
-   @PostMapping("/update")
+   @PutMapping("/update")
    @CrossOrigin
-   public Appointment updateAppointment(@RequestBody Appointment appointment) {
-       return appointmentService.updateAppointment(appointment);
+   public AppointmentResponseInfor updateAppointment(@RequestBody UpdateAppointmentRequestDTO updateAppointmentRequestDTO) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.updateAppointment(updateAppointmentRequestDTO);
+       return appointmentResponseInfor;
    }
 
    @DeleteMapping("/delete/{appointmentId}")

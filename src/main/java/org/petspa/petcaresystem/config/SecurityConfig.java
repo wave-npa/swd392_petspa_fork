@@ -45,13 +45,39 @@ public class SecurityConfig {
           httpSecurity
                   .authorizeHttpRequests(request ->
                   request
-                          .requestMatchers(HttpMethod.GET,"/swagger-ui/**", "/v3/api-docs/**", "/actuator/**",
-                                  "/petspa/user/login").permitAll()
-                          .requestMatchers(HttpMethod.GET, "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
-                          .requestMatchers(HttpMethod.POST, "/petspa/user/register", "/petspa/appointment/save").permitAll()
-                          .requestMatchers(HttpMethod.PUT, "/**").permitAll()
-                          .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
-                          .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
+                          //------------------------ get method---------------------------
+                          .requestMatchers(HttpMethod.GET,
+                                  "/swagger-ui/**",
+                                  "/v3/api-docs/**",
+                                  "/actuator/**",
+                                  "/petspa/user/login",
+                                  "/petspa/appointment/getAppointment/{appointmentId}")
+                          .permitAll()
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
+                          //---------------------------------------------------------------
+
+
+
+                          // ------------------------ post method---------------------------
+                          .requestMatchers(HttpMethod.POST,
+
+                                  "/petspa/user/register",
+                                  "/petspa/appointment/save")
+                          .permitAll()
+                          //---------------------------------------------------------------
+
+
+
+
+                          // ------------------------ put method---------------------------
+                          .requestMatchers(HttpMethod.PUT,
+
+                                  "/petspa/appointment/save")
+                          .permitAll()
+                          //---------------------------------------------------------------
+
+
                           .anyRequest().authenticated());
 
           httpSecurity.csrf(AbstractHttpConfigurer::disable);

@@ -13,4 +13,5 @@ import java.util.Optional;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
     public Pet findByOwner(AuthenUser authenUser);
+    public Pet findByPetId(Long petId);
 }

@@ -4,13 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Logger;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
+import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseData;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
@@ -77,12 +79,90 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment findAppointmentById(Long appointmentId) {
-        return appointmentRepository.findById(appointmentId).orElse(null);
+    public AppointmentResponseDTO findAppointmentById(Long appointmentId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Create new appointment successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+
+        AppointmentResponseInfor infor = new AppointmentResponseInfor();
+        AppointmentResponseData data = new AppointmentResponseData();
+        Appointment appointment = new Appointment();
+
+
+        try{
+            appointment = appointmentRepository.findByAppointmentId(appointmentId);
+            if(appointment == null){
+                message = "Appointment not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                infor.setMessage(message);
+                infor.setStatusCode(statusCode);
+                infor.setStatusValue(statusValue);
+                return new AppointmentResponseDTO(infor, data);
+            }
+
+            // status
+            data.setStatus(appointment.getStatus());
+
+            // create date
+            data.setCreate_date(appointment.getCreate_date());
+
+            // start time
+            data.setStartTime(appointment.getStartTime());
+
+            // end time
+            data.setEndTime(appointment.getEndTime());
+
+            // find booked doctor
+            Collection<Doctor> bookedDoctors = appointment.getBookedDoctor();
+            List<Doctor> doctorList = new ArrayList<>(bookedDoctors);
+            for (Doctor doctor : doctorList) {
+                data.setBookedDoctor(doctor);
+            }
+
+            // find booked service
+            Collection<Services> bookedServices = appointment.getBookedService();
+            List<Services> serviceList = new ArrayList<>(bookedServices);
+            for (Services service : serviceList) {
+                data.setBookedService(service);
+            }
+
+            // find pet
+            Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+            data.setPet(pet);
+
+            // user order
+            UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
+            data.setUserOrder(userOrder);
+
+            // review
+            Review review = reviewRepository.findByReviewId(appointment.getReview().getReviewId());
+            data.setReview(review);
+
+            // boarding appointment
+            BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
+            data.setBoardingAppointment(boardingAppointment);
+
+        }catch (Exception e){
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+            infor.setMessage(message);
+            infor.setStatusCode(statusCode);
+            infor.setStatusValue(statusValue);
+        }
+
+        infor.setTimeStamp(timeStamp);
+
+        return new AppointmentResponseDTO(infor, data);
     }
 
     @Override
-    public AppointmentResponseDTO saveAppointment(CreateAppointmentRequestDTO appointment, Option option) {
+    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -146,7 +226,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         shelter = shelterRepository.findByShelterStatus(ShelterStatus.EMPTY);
 
         // boarding: check shelter status, set boarding date, status, shelter id
-        if(shelter.getStatus() == Status.ACTIVE) {
+        if (shelter.getStatus() == Status.ACTIVE) {
             boardingAppointment.setBoardingTime(localDateTime);
             boardingAppointment.setStatus(Status.ACTIVE);
             boardingAppointment.setShelter(shelter);
@@ -173,8 +253,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentSaveForUser.setReview(review);
 
                 // pet: find bet by user, set pet id for appointment
+                AuthenUser owner = authenUserRepository.findByUserId(userId);
                 pet = petRepository.findByOwner(authenUser);
-                appointmentSaveForUser.setPet(pet);
+                if (pet != null) {
+                    appointmentSaveForUser.setPet(pet);
+                } else {
+                    message = "Pet ID not found! Pet ID invalid or user hasn't added a pet to profile yet!";
+                    statusCode = HttpStatus.NOT_FOUND.value();
+                    statusValue = HttpStatus.NOT_FOUND;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                }
 
                 // order: set price, date, user id for user order
                 userOrder.setPrice(price);
@@ -212,7 +300,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentSaveForUser.setUserOrder(userOrder);
 
             // create boarding & boarding detail
-            if(option == Option.YES) {
+            if (option == Option.YES) {
                 boardingRepository.save(boardingAppointment);
                 boardingDetailRepository.save(boardingDetail);
                 appointmentSaveForGuess.setBoardingAppointment(boardingAppointment);
@@ -232,23 +320,114 @@ public class AppointmentServiceImpl implements AppointmentService {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new AppointmentResponseDTO(message, timeStamp, statusCode, statusValue);
+        return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 
     @Override
-    public Appointment updateAppointment(Appointment appointment) {
-        Appointment existingAppointment = appointmentRepository.findById(appointment.getAppointment_id()).orElse(null);
-        if (appointment.getBookedDoctor().isEmpty()) {
-            // automatically pick doctor based on their schedule
-        } else {
-            existingAppointment.setBookedDoctor(appointment.getBookedDoctor());
+    public AppointmentResponseInfor updateAppointment(UpdateAppointmentRequestDTO updateAppointmentRequestDTO) {
+
+        //----------------------------------- response------------------------------------
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Create new appointment successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        // --------------------------------model--------------------------------------------
+        AuthenUser authenUser = new AuthenUser();
+        Appointment appointmentSaveForGuess = new Appointment();
+        Appointment appointmentSaveForUser = new Appointment();
+        Review review = new Review();
+        List<Doctor> bookedDoctors = new ArrayList<>();
+        Pet pet = new Pet();
+        List<Services> bookedService = new ArrayList<>();
+        UserOrder userOrder = new UserOrder();
+        BoardingAppointment boardingAppointment = new BoardingAppointment();
+        Shelter shelter = new Shelter();
+        BoardingDetail boardingDetail = new BoardingDetail();
+
+        //---------------------------------------token-------------------------------------------
+        // get token extract userId
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("jwtToken");
+
+        // ------------------------------handle and prepare data-------------------------------
+
+        // get appointment by id
+        Appointment appointment = appointmentRepository.findByAppointmentId(updateAppointmentRequestDTO.getAppointmentId());
+        if (appointment == null) {
+            message = "Appointment not found!";
+            statusCode = HttpStatus.NOT_FOUND.value();
+            statusValue = HttpStatus.NOT_FOUND;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
         }
-        existingAppointment.setBookedService(appointment.getBookedService());
-        existingAppointment.setCreate_date(LocalDate.now());
-        existingAppointment.setStartTime(appointment.getStartTime());
-        existingAppointment.setEndTime(appointment.getEndTime());
-        existingAppointment.setPet(appointment.getPet());
-        return appointmentRepository.save(existingAppointment);
+
+
+        // appointment id
+        appointment.setAppointmentId(updateAppointmentRequestDTO.getAppointmentId());
+
+        // doctor
+        Doctor doctor = doctorRepository.findByDoctorId(updateAppointmentRequestDTO.getDoctorId());
+        bookedDoctors.add(doctor);
+        appointment.setBookedDoctor(bookedDoctors);
+
+        // service
+        Services services = servicesRepository.findByServiceId(updateAppointmentRequestDTO.getServiceId());
+        bookedService.add(services);
+        appointment.setBookedService(bookedService);
+
+
+        // start time
+        appointment.setStartTime(updateAppointmentRequestDTO.getStartTime());
+
+        // end time
+        appointment.setEndTime(updateAppointmentRequestDTO.getEndTime());
+
+        // status
+        appointment.setStatus(updateAppointmentRequestDTO.getStatus());
+
+        try {
+
+            // --------------------------------user logged in------------------------------------
+            if (token != null) {
+
+                // extract user id, find user by id
+                Long userId = jwtUtil.extractUserId(token);
+                authenUser = authenUserRepository.findByUserId(userId);
+
+                // pet: find pet by user id
+                AuthenUser owner = authenUserRepository.findByUserId(userId);
+                pet = petRepository.findByOwner(owner);
+
+                // check owner's pet
+                Long ownerId = pet.getOwner().getUserId();
+
+                if (pet != null && ownerId == userId) {
+                    appointmentSaveForUser.setPet(pet);
+                } else if (pet == null) {
+                    message = "Pet not found! Invalid pet or user hasn't added a pet to profile yet!";
+                    statusCode = HttpStatus.NOT_FOUND.value();
+                    statusValue = HttpStatus.NOT_FOUND;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                } else if (ownerId != userId) {
+                    message = "This pet is not belongs to this account user!";
+                    statusCode = HttpStatus.NOT_FOUND.value();
+                    statusValue = HttpStatus.NOT_FOUND;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                }
+
+                // update appointment
+                appointmentRepository.save(appointment);
+
+            }
+        } catch (Exception e) {
+//            logger.error("Error occurred during create appointment", e);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 
     @Override
