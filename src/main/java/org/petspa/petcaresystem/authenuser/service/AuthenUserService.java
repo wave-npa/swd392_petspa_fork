@@ -1,15 +1,10 @@
 package org.petspa.petcaresystem.authenuser.service;
 
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
-import org.petspa.petcaresystem.authenuser.model.response.JwtResponseDTO;
-import org.petspa.petcaresystem.authenuser.model.response.RegisterResponseDTO;
-import org.petspa.petcaresystem.authenuser.model.response.ResponseAPI;
-import org.petspa.petcaresystem.authenuser.model.response.UpdatePassowordResponseDTO;
-import org.petspa.petcaresystem.authenuser.model.response.UpdateProfileResponseDTO;
+import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,4 +25,6 @@ public interface AuthenUserService {
     public ResponseAPI searchByUserNameTEST(String searchTerm, Gender gender, Status status, String orderBy, String order);
     public ResponseAPI findAllUsersWithAgeRange(Integer startAge, Integer endAge);
     public AuthenUser createUser(AuthenUser authenUser);
+
+    public InforResponseDTO verifyRegister(String userEnterCode);
 }

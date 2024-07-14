@@ -54,7 +54,8 @@ public class SecurityConfig {
                                   "/actuator/**",
                                   "/petspa/user/login",
                                   "/petspa/user/logout",
-                                  "/petspa/appointment/getById/{appointmentId}")
+                                  "/petspa/appointment/getById/{appointmentId}",
+                                  "/petspa/user/vertify")
                           .permitAll()
 
                           // ADMIN

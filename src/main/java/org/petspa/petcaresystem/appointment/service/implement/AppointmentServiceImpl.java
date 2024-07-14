@@ -255,8 +255,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             data.setBookedServiceId(servicesData.getServiceId());
 
             // pet id
-            Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-            data.setPetId(appointment.getPet().getPetId());
+            if(appointment.getPet() != null) {
+                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                data.setPetId(appointment.getPet().getPetId());
+            }else{
+                data.setPetId(null);
+            }
+
+
 
             // user order id
             UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
@@ -341,7 +347,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentSaveForUser.setStatus(Status.valueOf("INACTIVE"));
 
         // user order: get price, set price, set order date
-        Long price = (long) servicesRepository.findByServiceId(appointment.getServiceId()).getPrice();
+        services = servicesRepository.findByServiceId(appointment.getServiceId());
+        Long price = (long) services.getPrice();
         userOrder.setPrice(price);
         userOrder.setUserOrderDate(localDateTime);
 
