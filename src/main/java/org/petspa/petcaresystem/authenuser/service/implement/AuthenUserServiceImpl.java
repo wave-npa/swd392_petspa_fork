@@ -69,8 +69,19 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Optional<AuthenUser> authenUser;
         String jwtToken = "";
 
+        // check session
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("jwtToken");
+        if(token != null && !token.isEmpty()){
+            message = "You have already logged in!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+        }
+        
         authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
         String encodedPassword = authenUser.get().getPassword();
+
 
         if(!passwordEncoder.matches(password, encodedPassword)){
             message = "Invalid email/password";
@@ -85,7 +96,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                         authenUser.get().getRole().getRoleName(),
                         authenUser.get().getUserName(),
                         authenUser.get().getUserId());
-                HttpSession session = request.getSession();
+                session = request.getSession();
                 session.setAttribute("jwtToken", jwtToken);
             }else{
                 message = "Invalid email/password";

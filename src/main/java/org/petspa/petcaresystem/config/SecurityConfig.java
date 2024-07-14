@@ -46,16 +46,35 @@ public class SecurityConfig {
                   .authorizeHttpRequests(request ->
                   request
                           //------------------------ get method---------------------------
+
+                          // GUESS
                           .requestMatchers(HttpMethod.GET,
                                   "/swagger-ui/**",
                                   "/v3/api-docs/**",
                                   "/actuator/**",
                                   "/petspa/user/login",
-                                  "/petspa/appointment/getAppointment/{appointmentId}",
-                                  "/petspa/appointment/getAllAppointment")
+                                  "/petspa/user/logout",
+                                  "/petspa/appointment/getById/{appointmentId}")
                           .permitAll()
+
+                          // ADMIN
                           .requestMatchers(HttpMethod.GET,
-                                  "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
+                                  "/petspa/user/getAllUser",
+                                  "/petspa/user/getUserById/{userId}",
+                                  "/petspa/user/findUserByAge",
+                                  "/petspa/user/searchUserTest",
+                                  "/petspa/appointment/getById/{appointmentId}",
+                                  "/petspa/appointment/getAll")
+                          .hasAuthority("ROLE_ADMIN")
+
+                          // STAFF
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
+
+                          // CUSTOMER
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
+
                           //---------------------------------------------------------------
 
 
@@ -66,17 +85,30 @@ public class SecurityConfig {
                                   "/petspa/user/register",
                                   "/petspa/appointment/save")
                           .permitAll()
+
+                          .requestMatchers(HttpMethod.POST,
+
+                                  "/petspa/user/save")
+                          .hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF")
                           //---------------------------------------------------------------
 
 
 
 
                           // ------------------------ put method---------------------------
+
+                          // GUESS
                           .requestMatchers(HttpMethod.PUT,
 
-                                  "/petspa/appointment/save",
-                                  "/petspa/appointment/updateAppointmentStatus")
+                                  "/petspa/appointment/save")
                           .permitAll()
+
+                          // STAFF
+                          .requestMatchers(HttpMethod.PUT,
+                                  "/petspa/appointment/updateStatus",
+                                  "/petspa/appointment/update")
+                          .hasAuthority("ROLE_STAFF")
+
                           //---------------------------------------------------------------
 
 

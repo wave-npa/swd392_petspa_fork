@@ -25,4 +25,6 @@ public interface AppointmentService {
 
     public AppointmentResponseInfor updateAppointmentStatus(Long appointmentId, Status status);
 
+    public AppointmentResponseDTO getAppointmentByUserId();
+
 }

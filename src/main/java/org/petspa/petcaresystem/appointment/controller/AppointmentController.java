@@ -31,14 +31,14 @@ public class AppointmentController {
    @Autowired
    AppointmentService appointmentService;
 
-   @GetMapping("/getAllAppointment")
+   @GetMapping("/getAll")
    @CrossOrigin
    public AppointmentResponseDTO getAllAppointment() {
       AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAllAppointment();
        return appointmentResponseDTO;
    }
 
-   @GetMapping("/getAppointment/{appointmentId}")
+   @GetMapping("/getById/{appointmentId}")
    @CrossOrigin
    public AppointmentResponseDTO getAppointmentById(@PathVariable Long appointmentId) {
       AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAppointmentById(appointmentId);
@@ -60,10 +60,16 @@ public class AppointmentController {
        return appointmentResponseInfor;
    }
 
-   @PutMapping("/updateAppointmentStatus")
+   @PutMapping("/updateStatus")
    @CrossOrigin
    public AppointmentResponseInfor updateAppointmentStatus(@RequestParam Long appointmentId, @RequestParam Status status) {
       AppointmentResponseInfor appointmentResponseInfor = appointmentService.updateAppointmentStatus(appointmentId, status);
        return appointmentResponseInfor;
+   }
+
+   @GetMapping("/getByUserId")
+   private AppointmentResponseDTO getAppointmentByUserId(){
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.getAppointmentByUserId();
+      return appointmentResponseDTO;
    }
 }

@@ -122,8 +122,8 @@ public class AuthenUserController {
         return logoutResponse;
     }
 
-    @GetMapping("/getUser")
-    public ResponseAPI getUserById(@RequestParam(value = "userId") Long userId){
+    @GetMapping("/getUserById/{userId}")
+    public ResponseAPI getUserById(@PathVariable Long userId){
         ResponseAPI responseAPI = authenUserService.getUserById(userId);
         return responseAPI;
     }
@@ -131,21 +131,5 @@ public class AuthenUserController {
     @GetMapping("/getAllUser")
     public List<AuthenUser> getAllAccount(){
         return authenUserService.getAllUser();
-    }
-
-    @GetMapping("/getSession")
-    public String getSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String jwtToken = (String) session.getAttribute("jwtToken");
-
-        if (jwtToken != null) {
-            if (!jwtToken.isEmpty()) {
-                return "JWT Token: " + jwtToken;
-            } else {
-                return "JWT Token do not exist or it empty";
-            }
-        } else {
-            return "Session don't have JWT Token";
-        }
     }
 }
