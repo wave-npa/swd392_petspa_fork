@@ -19,7 +19,7 @@ public interface AppointmentService {
 
     public AppointmentResponseDTO findAppointmentById(Long appointmentId);
 
-    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO createAppointmentRequestDTO, Option option);
+    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO createAppointmentRequestDTO, Option option, String phone, String email);
 
     public AppointmentResponseInfor updateAppointment(UpdateAppointmentRequestDTO updateAppointmentRequestDTO);
 
