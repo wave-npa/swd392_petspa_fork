@@ -3,6 +3,7 @@ package org.petspa.petcaresystem.serviceAppointment.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.petspa.petcaresystem.authenuser.model.response.ResponseAPI;
 import org.petspa.petcaresystem.enums.Gender;
@@ -87,7 +88,7 @@ public class ServicesController {
 
    @GetMapping("/searchServiceTest")
     public ServiceResponseAPI searchService(@RequestParam(value = "searchTerm", defaultValue = " ", required = false) String searchTerm,
-                                  @RequestParam(value = "typeList", required = false) ArrayList<String> typeList,
+                                  @RequestParam(value = "typeList", required = false) String typeList,
                                   @RequestParam(value = "minPrice", defaultValue = "0") float minPrice,
                                   @RequestParam(value = "maxPrice", defaultValue = "0") float maxPrice,
                                   @RequestParam(value = "status", required = false) Status status,
