@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableJpaRepositories(basePackages="org.petspa.petcaresystem")
+//@EnableJpaRepositories(basePackages="org.petspa.petcaresystem")
 public class SecurityConfig {
 
      @Autowired
@@ -45,14 +45,73 @@ public class SecurityConfig {
           httpSecurity
                   .authorizeHttpRequests(request ->
                   request
-                          .requestMatchers(HttpMethod.GET,"/swagger-ui/**", "/v3/api-docs/**", "/actuator/**",
-                                  "/petspa/user/login").permitAll()
-                          .requestMatchers(HttpMethod.GET, "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
-//                          .requestMatchers(HttpMethod.POST, "/petspa/user/register", "/petspa/appointment/save").permitAll()
-//                          .requestMatchers(HttpMethod.PUT, "/**").permitAll()
-//                          .requestMatchers(HttpMethod.GET,"petspa/shelter/viewAllShelter").permitAll()
-                          .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
-                          .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
+                          //------------------------ get method---------------------------
+
+                          // GUESS
+                          .requestMatchers(HttpMethod.GET,
+                                  "/swagger-ui/**",
+                                  "/v3/api-docs/**",
+                                  "/actuator/**",
+                                  "/petspa/user/login",
+                                  "/petspa/user/logout",
+                                  "/petspa/appointment/getById/{appointmentId}")
+                          .permitAll()
+
+                          // ADMIN
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/user/getAllUser",
+                                  "/petspa/user/getUserById/{userId}",
+                                  "/petspa/user/findUserByAge",
+                                  "/petspa/user/searchUserTest",
+                                  "/petspa/appointment/getById/{appointmentId}",
+                                  "/petspa/appointment/getAll")
+                          .hasAuthority("ROLE_ADMIN")
+
+                          // STAFF
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
+
+                          // CUSTOMER
+                          .requestMatchers(HttpMethod.GET,
+                                  "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
+
+                          //---------------------------------------------------------------
+
+
+
+                          // ------------------------ post method---------------------------
+                          .requestMatchers(HttpMethod.POST,
+
+                                  "/petspa/user/register",
+                                  "/petspa/appointment/save")
+                          .permitAll()
+
+                          .requestMatchers(HttpMethod.POST,
+
+                                  "/petspa/user/save")
+                          .hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF")
+                          //---------------------------------------------------------------
+
+
+
+
+                          // ------------------------ put method---------------------------
+
+                          // GUESS
+                          .requestMatchers(HttpMethod.PUT,
+
+                                  "/petspa/appointment/save")
+                          .permitAll()
+
+                          // STAFF
+                          .requestMatchers(HttpMethod.PUT,
+                                  "/petspa/appointment/updateStatus",
+                                  "/petspa/appointment/update")
+                          .hasAuthority("ROLE_STAFF")
+
+                          //---------------------------------------------------------------
+
+
                           .anyRequest().authenticated());
 
           httpSecurity.csrf(AbstractHttpConfigurer::disable);

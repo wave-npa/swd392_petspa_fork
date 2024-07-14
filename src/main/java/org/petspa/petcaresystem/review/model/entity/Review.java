@@ -1,18 +1,10 @@
 package org.petspa.petcaresystem.review.model.entity;
 
+import jakarta.persistence.*;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
-import org.petspa.petcaresystem.enums.ReviewRating;
 import org.petspa.petcaresystem.enums.Status;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,8 +30,9 @@ public class Review implements Serializable {
     private String description;
 
     @Column(name = "rating")
-    private ReviewRating rating;
+    private Float rating;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 

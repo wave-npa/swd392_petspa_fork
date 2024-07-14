@@ -12,4 +12,5 @@ public class CreateAppointmentRequestDTO {
     private Long doctorId;
     private LocalDateTime startTime;
     private Long serviceId;
+    private Long petId;
 }

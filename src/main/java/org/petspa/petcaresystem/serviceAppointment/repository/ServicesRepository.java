@@ -37,5 +37,7 @@ public interface ServicesRepository extends JpaRepository<Services, Long> {
    public List<ServiceRevenueRequestDTO> findMostUsedService(
    @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
 
+   public Services findByServiceId(Long serviceId);
+
 
 }

@@ -4,20 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.petspa.petcaresystem.appointment.model.payload.Appointment;
-import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
-import org.springframework.http.HttpStatus;
 
-import java.util.Optional;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class AppointmentResponseDTO {
-    private String message;
-    private String timeStamp;
-    private int statusCode;
-    private HttpStatus statusValue;
-    private CreateAppointmentRequestDTO data;
+    private AppointmentResponseInfor responseInfor;
+    private AppointmentResponseData data;
+    private List<AppointmentResponseData> listData;
+
+    public AppointmentResponseDTO(AppointmentResponseInfor responseInfor, AppointmentResponseData data) {
+        this.responseInfor = responseInfor;
+        this.data = data;
+    }
+
+    public AppointmentResponseDTO(AppointmentResponseInfor responseInfor, List<AppointmentResponseData> listData) {
+        this.responseInfor = responseInfor;
+        this.listData = listData;
+    }
 }

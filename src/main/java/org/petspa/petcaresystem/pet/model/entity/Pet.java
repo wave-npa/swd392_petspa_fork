@@ -23,7 +23,8 @@ public class Pet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long pet_id;
+    @Column(name = "pet_id")
+    private Long petId;
 
     @Column(name = "pet_name")
     private String pet_name;
@@ -35,6 +36,7 @@ public class Pet implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "species")
     private Species species;
 

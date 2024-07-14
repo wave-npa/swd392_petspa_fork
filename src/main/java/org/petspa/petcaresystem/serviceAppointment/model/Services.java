@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.serviceAppointment.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,7 +50,8 @@ public class Services {
     private Status status;
 
     @ManyToMany(mappedBy = "bookedService")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference("appointment-services")
     private Collection<Appointment> appointment;
 
     @ManyToMany(mappedBy = "services")

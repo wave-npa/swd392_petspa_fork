@@ -15,6 +15,5 @@ public enum Species {
     DOG("Dog"),
     CAT("Cat"),
     HAMSTER("Hamster");
-
     String species;
 }

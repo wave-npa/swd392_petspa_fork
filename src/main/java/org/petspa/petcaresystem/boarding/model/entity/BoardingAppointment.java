@@ -49,7 +49,7 @@ public class BoardingAppointment implements Serializable {
     private Collection<BoardingDetail> boardingDetail;
 
     @ManyToOne
-    @JoinColumn(name = "shelter")
+    @JoinColumn(name = "shelterId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Shelter shelter;

@@ -33,7 +33,7 @@ public interface ServiceAndComboService {
 
     public List<Services> searchService(String searchTerm);
 
-    public ServiceResponseAPI searchServiceTEST(String searchTerm, ArrayList<String> typeList, float minPrice, float maxPrice, Status status, String orderBy, String order);
+    public ServiceResponseAPI searchServiceTEST(String searchTerm, String typeList, float minPrice, float maxPrice, Status status, String orderBy, String order);
 
     public ServiceResponseAPI findAverageRatingService(Long service_id);
 

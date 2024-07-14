@@ -5,18 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
+import jakarta.persistence.*;
 import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.enums.Status;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,6 +34,7 @@ public class BoardingDetail implements Serializable {
 
     private Date date;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne
