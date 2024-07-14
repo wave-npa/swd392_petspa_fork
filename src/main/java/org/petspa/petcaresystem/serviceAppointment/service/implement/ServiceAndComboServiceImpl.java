@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,19 +91,48 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
     }
 
     @Override
-   public ServiceResponseAPI searchServiceTEST(String searchTerm, ArrayList<String> typeList, float minPrice, float maxPrice, Status status, String orderBy, String order) {
+    public ServiceResponseAPI searchServiceTEST(String searchTerm, String typeList, float minPrice, float maxPrice, Status status, String orderBy, String order) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
         String message = "Get user successfully";
         int statusCode = HttpStatus.OK.value();
         HttpStatus statusValue = HttpStatus.OK;
+        List<String> stringList = new ArrayList<>();
+        String[] splitArray = typeList.split(",");
+        for (int i = 0; i < splitArray.length; i++) {
+            splitArray[i] = splitArray[i].trim();
+            stringList.add(splitArray[i]);
+        }
         List<Services> serviceList = new ArrayList<>();
         try {
-            String sql = "SELECT DISTINCT s.service_id, s.service_name, s.description, s.discount_percent, s.price, s.status FROM pet_spa.services s JOIN pet_spa.type_service ts ON s.service_id = ts.service_id JOIN pet_spa.service_type st ON ts.service_type_id = st.service_type_id WHERE s.service_name LIKE :searchTerm AND (:typeList IS NULL OR st.type_name IN(:typeList)) AND ((:minPrice = 0 OR :maxPrice = 0) OR s.price BETWEEN :minPrice AND :maxPrice) AND (:status IS NULL OR s.status = :status) ORDER BY " + orderBy + " " + order;
+            String sql = "SELECT DISTINCT s.service_id, s.service_name, s.description, s.discount_percent, s.price, s.status FROM pet_spa.services s JOIN pet_spa.type_service ts ON s.service_id = ts.service_id JOIN pet_spa.service_type st ON ts.service_type_id = st.service_type_id WHERE s.service_name LIKE :searchTerm AND ((:minPrice = 0 OR :maxPrice = 0) OR s.price BETWEEN :minPrice AND :maxPrice) AND (:status IS NULL OR s.status = :status)";
+            if (stringList != null && !stringList.isEmpty()) {
+                // String inClause = String.join(",", Collections.nCopies(typeList.size(), "?"));
+                String test = " AND st.type_name IN (";
+                String test2 = "";
+                for(int i = 1;i<=stringList.size();i++){
+                    if(i == 1){
+                        test2 += "?"+String.valueOf(i);
+                    }
+                    else{
+                        test2 += ",?"+String.valueOf(i);
+                    }
+                }
+                test += test2 + ")";
+                sql += test;
+            }
+            String sql2 = " ORDER BY " + orderBy + " " + order;
+            sql += sql2;
+            System.out.println("sql statement: " + sql);
             Query query = entityManager.createNativeQuery(sql, Services.class);
             query.setParameter("searchTerm", "%" + searchTerm + "%");
-            query.setParameter("typeList", typeList);
+            int paramIndex = 1; // Start index for parameters
+            if (stringList != null && !stringList.isEmpty()) {
+                for (String type : stringList) {
+                    query.setParameter(paramIndex++, type);
+                }
+            }
             query.setParameter("minPrice", 0);
             query.setParameter("maxPrice", 0);
             if(minPrice != 0) {
