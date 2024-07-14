@@ -9,6 +9,7 @@ import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDT
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.enums.Option;
+import org.petspa.petcaresystem.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +31,11 @@ public class AppointmentController {
    @Autowired
    AppointmentService appointmentService;
 
-   @GetMapping("/getAll")
+   @GetMapping("/getAllAppointment")
    @CrossOrigin
-   public Collection<Appointment> getAllAppointment() {
-       return appointmentService.findAllAppointment();
+   public AppointmentResponseDTO getAllAppointment() {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAllAppointment();
+       return appointmentResponseDTO;
    }
 
    @GetMapping("/getAppointment/{appointmentId}")
@@ -58,10 +60,10 @@ public class AppointmentController {
        return appointmentResponseInfor;
    }
 
-   @DeleteMapping("/delete/{appointmentId}")
+   @PutMapping("/updateAppointmentStatus")
    @CrossOrigin
-   public Appointment deleteAppointmentById(@PathVariable Long appointmentId) {
-       return appointmentService.deleteAppointment(appointmentId);
+   public AppointmentResponseInfor updateAppointmentStatus(@RequestParam Long appointmentId, @RequestParam Status status) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.updateAppointmentStatus(appointmentId, status);
+       return appointmentResponseInfor;
    }
-
 }

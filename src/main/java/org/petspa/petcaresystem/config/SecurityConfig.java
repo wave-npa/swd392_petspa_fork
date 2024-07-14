@@ -51,7 +51,8 @@ public class SecurityConfig {
                                   "/v3/api-docs/**",
                                   "/actuator/**",
                                   "/petspa/user/login",
-                                  "/petspa/appointment/getAppointment/{appointmentId}")
+                                  "/petspa/appointment/getAppointment/{appointmentId}",
+                                  "/petspa/appointment/getAllAppointment")
                           .permitAll()
                           .requestMatchers(HttpMethod.GET,
                                   "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
@@ -73,7 +74,8 @@ public class SecurityConfig {
                           // ------------------------ put method---------------------------
                           .requestMatchers(HttpMethod.PUT,
 
-                                  "/petspa/appointment/save")
+                                  "/petspa/appointment/save",
+                                  "/petspa/appointment/updateAppointmentStatus")
                           .permitAll()
                           //---------------------------------------------------------------
 

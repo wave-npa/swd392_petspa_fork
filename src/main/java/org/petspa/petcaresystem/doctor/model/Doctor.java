@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.doctor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,8 @@ public class Doctor implements Serializable {
     private Departments department;
 
     @ManyToMany(mappedBy = "bookedDoctor")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference("appointment-doctor")
     private Collection<Appointment> appointment;
 
 

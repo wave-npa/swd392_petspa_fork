@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
-import org.petspa.petcaresystem.doctor.model.Doctor;
+import org.petspa.petcaresystem.doctor.model.DoctorData;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.review.model.Review;
-import org.petspa.petcaresystem.serviceAppointment.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,10 +25,10 @@ public class AppointmentResponseData {
     private LocalDate create_date;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Doctor bookedDoctor;
-    private Services bookedService;
-    private Pet pet;
-    private UserOrder userOrder;
-    private Review review;
-    private BoardingAppointment boardingAppointment;
+    private Long bookedDoctorId;
+    private Long bookedServiceId;
+    private Long petId;
+    private Long reviewId;
+    private Long boardingAppointmentId;
+    private Long userOrderId;
 }

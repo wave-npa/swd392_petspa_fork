@@ -3,6 +3,7 @@ package org.petspa.petcaresystem.appointment.model.payload;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,12 +18,10 @@ import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.review.model.Review;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -38,6 +37,8 @@ public class Appointment implements Serializable {
     private Long appointmentId;
 
     @ManyToMany
+    @JsonManagedReference("appointment-doctor")
+//    @JsonIgnore
     @JoinTable(
             name = "doctor_booked",
             joinColumns = @JoinColumn(name = "appointment_id"),
@@ -66,6 +67,8 @@ public class Appointment implements Serializable {
     private LocalDateTime endTime;
 
     @ManyToMany
+    @JsonManagedReference("appointment-services")
+//    @JsonIgnore
     @JoinTable(
             name = "service_booked",
             joinColumns = @JoinColumn(name = "service_id"),
