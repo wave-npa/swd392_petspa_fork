@@ -48,8 +48,9 @@ public class SecurityConfig {
                           .requestMatchers(HttpMethod.GET,"/swagger-ui/**", "/v3/api-docs/**", "/actuator/**",
                                   "/petspa/user/login").permitAll()
                           .requestMatchers(HttpMethod.GET, "/petspa/user/getAllUser").hasAuthority("ROLE_ADMIN")
-                          .requestMatchers(HttpMethod.POST, "/petspa/user/register", "/petspa/appointment/save").permitAll()
-                          .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+//                          .requestMatchers(HttpMethod.POST, "/petspa/user/register", "/petspa/appointment/save").permitAll()
+//                          .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+//                          .requestMatchers(HttpMethod.GET,"petspa/shelter/viewAllShelter").permitAll()
                           .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                           .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
                           .anyRequest().authenticated());

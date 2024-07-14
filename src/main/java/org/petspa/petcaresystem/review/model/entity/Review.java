@@ -1,7 +1,8 @@
-package org.petspa.petcaresystem.review.model;
+package org.petspa.petcaresystem.review.model.entity;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
+import org.petspa.petcaresystem.enums.ReviewRating;
 import org.petspa.petcaresystem.enums.Status;
 
 import jakarta.persistence.Column;
@@ -33,10 +34,13 @@ public class Review implements Serializable {
     @Column(name = "review_id")
     private Long reviewId;
 
+    @Column(name = "description")
     private String description;
 
-    private Float rating;
+    @Column(name = "rating")
+    private ReviewRating rating;
 
+    @Column(name = "status")
     private Status status;
 
     @OneToOne(mappedBy = "review")
