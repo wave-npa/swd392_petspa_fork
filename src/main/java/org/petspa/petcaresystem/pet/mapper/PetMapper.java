@@ -6,7 +6,7 @@ import org.petspa.petcaresystem.pet.model.response.PetResponse;
 public class PetMapper {
     public static PetResponse toPetResponse(Pet pet){
         return PetResponse.builder()
-                .pet_id(pet.getPet_id())
+                .pet_id(pet.getPetId())
                 .pet_name(pet.getPet_name())
                 .age(pet.getAge())
                 .gender(pet.getGender())

@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
@@ -41,6 +42,7 @@ public class  MedicalRecord implements Serializable {
     @JoinColumn(name = "pet")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+//    @JsonIgnore
     private Pet pet;
 
     @ManyToMany

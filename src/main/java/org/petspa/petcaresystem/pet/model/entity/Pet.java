@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,9 +23,10 @@ public class Pet implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long pet_id;
+    @Column(name = "pet_id")
+    private Long petId;
 
-    @Column(name = "full_name")
+    @Column(name = "pet_name")
     private String pet_name;
 
     @Column(name = "age")
@@ -34,6 +36,7 @@ public class Pet implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "species")
     private Species species;
 
@@ -48,16 +51,19 @@ public class Pet implements Serializable {
     @JoinColumn(name = "owner")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private AuthenUser owner;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<Appointment> appointment;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<MedicalRecord> medicalRecord;
 
 }

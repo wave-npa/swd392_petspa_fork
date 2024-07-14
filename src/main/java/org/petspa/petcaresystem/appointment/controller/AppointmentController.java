@@ -3,16 +3,15 @@ package org.petspa.petcaresystem.appointment.controller;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
+import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.petspa.petcaresystem.enums.Option;
+import org.petspa.petcaresystem.enums.Status;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,36 +28,48 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class AppointmentController {
 
+   @Autowired
    AppointmentService appointmentService;
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public Collection<Appointment> getAllAppointment() {
-       return appointmentService.findAllAppointment();
+   public AppointmentResponseDTO getAllAppointment() {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAllAppointment();
+       return appointmentResponseDTO;
    }
 
-   @GetMapping("/get/{appointmentId}")
+   @GetMapping("/getById/{appointmentId}")
    @CrossOrigin
-   public Appointment getAppointmentById(@PathVariable Long appointmentId) {
-       return appointmentService.findAppointmentById(appointmentId);
+   public AppointmentResponseDTO getAppointmentById(@PathVariable Long appointmentId) {
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAppointmentById(appointmentId);
+       return appointmentResponseDTO;
    }
 
-//   @PostMapping("/save")
-//   @CrossOrigin
-//   public Appointment saveAppointment(@RequestBody Appointment appointment) {
-//       return appointmentService.saveAppointment(appointment);
-//   }
-
-   @PostMapping("/update")
+   @PostMapping("/save")
    @CrossOrigin
-   public Appointment updateAppointment(@RequestBody Appointment appointment) {
-       return appointmentService.updateAppointment(appointment);
+   public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
+                                                        @RequestParam(value = "hospitalize")Option option) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option);
+       return appointmentResponseInfor;
    }
 
-   @DeleteMapping("/delete/{appointmentId}")
+   @PutMapping("/update")
    @CrossOrigin
-   public Appointment deleteAppointmentById(@PathVariable Long appointmentId) {
-       return appointmentService.deleteAppointment(appointmentId);
+   public AppointmentResponseInfor updateAppointment(@RequestBody UpdateAppointmentRequestDTO updateAppointmentRequestDTO) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.updateAppointment(updateAppointmentRequestDTO);
+       return appointmentResponseInfor;
    }
 
+   @PutMapping("/updateStatus")
+   @CrossOrigin
+   public AppointmentResponseInfor updateAppointmentStatus(@RequestParam Long appointmentId, @RequestParam Status status) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.updateAppointmentStatus(appointmentId, status);
+       return appointmentResponseInfor;
+   }
+
+   @GetMapping("/getByUserId")
+   private AppointmentResponseDTO getAppointmentByUserId(){
+      AppointmentResponseDTO appointmentResponseDTO = appointmentService.getAppointmentByUserId();
+      return appointmentResponseDTO;
+   }
 }
