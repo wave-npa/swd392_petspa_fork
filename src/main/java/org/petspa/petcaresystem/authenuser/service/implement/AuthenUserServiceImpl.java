@@ -134,13 +134,21 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
 
     @Override
-    public RegisterResponseDTO register(AuthenUser authenUser) {
+    public RegisterResponseDTO register(AuthenUser authenUser, String passwordConfirm) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
         String message = "Create new account successfully";
         int statusCode = HttpStatus.OK.value();
         HttpStatus statusValue = HttpStatus.OK;
+
+        // confirm password
+        if(!authenUser.getPassword().equals(passwordConfirm)){
+            message = "Password confirm not match!";
+            statusCode = HttpStatus.UNPROCESSABLE_ENTITY.value();
+            statusValue = HttpStatus.UNPROCESSABLE_ENTITY;
+            return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
 
         // encode password
         String encodedPassword = passwordEncoder.encode(authenUser.getPassword());
