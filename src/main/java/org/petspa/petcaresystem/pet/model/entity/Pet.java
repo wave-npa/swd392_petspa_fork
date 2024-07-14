@@ -9,6 +9,8 @@ import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Species;
 import org.petspa.petcaresystem.enums.Status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -48,11 +50,13 @@ public class Pet implements Serializable {
     @JoinColumn(name = "owner")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private AuthenUser owner;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<Appointment> appointment;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
