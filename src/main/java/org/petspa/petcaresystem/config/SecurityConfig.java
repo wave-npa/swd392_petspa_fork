@@ -45,6 +45,8 @@ public class SecurityConfig {
                                         "/v3/api-docs/**",
                                         "/actuator/**",
                                         "/petspa/user/logout",
+                                        "petspa/user/login",
+                                        "/currentUser/**",
                                         "/petspa/appointment/getById/{appointmentId}",
                                         "/petspa/user/vertify")
                                 .permitAll()

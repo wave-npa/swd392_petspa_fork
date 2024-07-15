@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 public class JwtUtil {
 
     public static String SECRET_KEY = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
+    //sáng nay deprecated chạy bth
 
 
     private SecretKey getSingingKey(){

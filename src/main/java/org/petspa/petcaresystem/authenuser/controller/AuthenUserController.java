@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/petspa/user")
 @Tag(name = "User", description = "User Management API")
 @ApiResponses(value = {
@@ -65,6 +66,11 @@ public class AuthenUserController {
         authenUser.setAge(age);
         RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser, confirmPassword);
         return registerResponseDTO;
+    }
+
+    @GetMapping("/currentUser/{token}")
+    public AuthenUser getCurrentUser(@RequestParam(value = "token") String token) {
+        return authenUserService.getCurrentUser(token);
     }
 
     @PutMapping("/updateProfile")

@@ -529,4 +529,10 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
         return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
     }
+
+    @Override
+    public AuthenUser getCurrentUser(String token) {
+        Long userId = jwtUtil.extractUserId(token);
+        return authenUserRepository.findById(userId).orElse(null);
+    }
 }
