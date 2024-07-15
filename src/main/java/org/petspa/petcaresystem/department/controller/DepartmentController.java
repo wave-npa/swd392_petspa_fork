@@ -61,8 +61,8 @@ public class DepartmentController {
         return departmentService.UpdateDepartment(departmentId, departmentName, address, status);
     }
 
-    @GetMapping("/getDeparment")
-    ResponseEntity<ResponseObj> getDepartment(@RequestParam Long Department_id){
+    @GetMapping("/getDeparment/{departmentId}")
+    ResponseEntity<ResponseObj> getDepartment(@RequestParam(value = "departmentId") Long Department_id){
         return departmentService.getDepartment(Department_id);
     }
 
