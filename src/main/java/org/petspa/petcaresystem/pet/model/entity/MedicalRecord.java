@@ -1,9 +1,11 @@
 package org.petspa.petcaresystem.pet.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,12 +39,12 @@ public class  MedicalRecord implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-//    co the co them
+    
     @ManyToOne
     @JoinColumn(name = "pet")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-//    @JsonIgnore
+    @JsonIgnore
     private Pet pet;
 
     @ManyToMany

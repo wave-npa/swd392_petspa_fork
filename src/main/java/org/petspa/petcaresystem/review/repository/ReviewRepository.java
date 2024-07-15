@@ -1,6 +1,6 @@
 package org.petspa.petcaresystem.review.repository;
 
-import org.petspa.petcaresystem.review.model.Review;
+import org.petspa.petcaresystem.review.model.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

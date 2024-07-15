@@ -50,7 +50,7 @@ public class Services {
     private Status status;
 
     @ManyToMany(mappedBy = "bookedService")
-//    @JsonIgnore
+    @JsonIgnore
     @JsonBackReference("appointment-services")
     private Collection<Appointment> appointment;
 

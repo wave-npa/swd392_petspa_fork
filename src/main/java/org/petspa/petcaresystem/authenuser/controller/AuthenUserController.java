@@ -95,14 +95,12 @@ public class AuthenUserController {
         return updatePassowordResponseDTO;
     }
 
-    @GetMapping("/searchUserTest")
+    @GetMapping("/searchUser")
     public ResponseAPI searchUser(@RequestParam(value = "searchTerm", defaultValue = "", required = false) String searchTerm,
                                   @RequestParam(value = "gender", required = false) Gender gender,
                                   @RequestParam(value = "status", required = false) Status status,
                                   @RequestParam(value = "orderBy", defaultValue = "user_id") String orderBy,
                                   @RequestParam(value = "order", defaultValue = "ASC") String order)
-                                  //@RequestParam(value = "page", defaultValue = 1) Integer pageNumber
-                                  //@RequestParam(value = "rowsPerPage", defaultValue = 10) Integer pageRows 
                                 {
         ResponseAPI userResponseAPI = authenUserService.searchByUserNameTEST(searchTerm.trim(), gender, status, orderBy.trim(), order.trim().toUpperCase());
         return userResponseAPI;
