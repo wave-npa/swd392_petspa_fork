@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
-import org.petspa.petcaresystem.department.model.entity.Departments;
-import org.petspa.petcaresystem.schedule.model.Schedule;
 
 @AllArgsConstructor
 @NoArgsConstructor

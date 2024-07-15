@@ -56,6 +56,45 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public ResponseEntity<ResponseObj> ViewDepartmentById(Long Department_id) {
+        try {
+            Departments viewdepartment = departmentRepository.getById(Department_id);
+            List<Departments> departmentList = departmentRepository.findAll();
+            if (departmentList.isEmpty()) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Department List is empty")
+                        .data(null)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+
+            for (Departments department : departmentList) {
+                if (department.equals(viewdepartment) && department.getStatus() == Status.ACTIVE) {
+                    DepartmentResponse departmentResponse = DepartmentMapper.toDepartmentResponse(department);
+
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .message("Load Department Successfully")
+                            .data(departmentResponse)
+                            .build();
+                    return ResponseEntity.ok().body(responseObj);
+                }
+            }
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Department not fount")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .message("Fail to load")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+        }
+    }
+
+    @Override
     public ResponseEntity<ResponseObj> CreateDepartment(CreateDepartmentRequest departmentRequest) {
         try {
 
