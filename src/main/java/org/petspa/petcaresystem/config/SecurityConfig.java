@@ -30,24 +30,14 @@ public class SecurityConfig {
      @Autowired
      private JwtRequestFilter jwtRequestFilter;
 
-//     @Bean
-//     UserDetailsService userDetailsService(){
-//         return new UserDetailsService() {
-//             @Override
-//             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//                 return null;
-//             }
-//         };
-//     }
-
      @Bean
-     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+      public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
           httpSecurity
                   .authorizeHttpRequests(request ->
                   request
                           //------------------------ get method---------------------------
 
-                          // GUESS
+                          // GUEST
                           .requestMatchers(HttpMethod.GET,
                                   "/swagger-ui/**",
                                   "/v3/api-docs/**",
@@ -84,7 +74,8 @@ public class SecurityConfig {
                           .requestMatchers(HttpMethod.POST,
 
                                   "/petspa/user/register",
-                                  "/petspa/appointment/save")
+                                  "/petspa/appointment/save",
+                                  "/petspa/user/login")
                           .permitAll()
 
                           .requestMatchers(HttpMethod.POST,
@@ -98,7 +89,7 @@ public class SecurityConfig {
 
                           // ------------------------ put method---------------------------
 
-                          // GUESS
+                          // GUEST
                           .requestMatchers(HttpMethod.PUT,
 
                                   "/petspa/appointment/save")
@@ -126,17 +117,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//     @Bean
-//     public AuthenticationProvider authenticationProvider() {
-//         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//         authenticationProvider.setUserDetailsService(userDetailsService());
-//         authenticationProvider.setPasswordEncoder(passwordEncoder());
-//         return authenticationProvider;
-//
-//     }
-//
-//     @Bean
-//     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-//         return config.getAuthenticationManager();
-//     }
 }
