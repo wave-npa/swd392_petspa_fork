@@ -55,7 +55,6 @@ public class AuthenUserController {
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
         Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
-        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
@@ -141,4 +140,10 @@ public class AuthenUserController {
         InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(vertifyCode.trim());
         return inforResponseDTO;
     }
+
+//    @PostMapping("/forgetPassword")
+//    public InforResponseDTO forgetPassword(@RequestParam(value = "email") String email){
+//        InforResponseDTO inforResponseDTO = authenUserService.forgetPassword(email);
+//        return inforResponseDTO;
+//    }
 }

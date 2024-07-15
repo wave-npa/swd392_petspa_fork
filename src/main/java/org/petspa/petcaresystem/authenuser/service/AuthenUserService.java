@@ -28,4 +28,5 @@ public interface AuthenUserService {
 
     public InforResponseDTO verifyRegister(String userEnterCode);
     public AuthenUser getCurrentUser(String token);
+    public InforResponseDTO forgetPassword(String email);
 }
