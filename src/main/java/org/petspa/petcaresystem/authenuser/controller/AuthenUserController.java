@@ -55,8 +55,6 @@ public class AuthenUserController {
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
-        Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
-        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
