@@ -26,9 +26,7 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
-    @Autowired
     AuthenUserRepository userRepository;
-
 
     @Override
     public ResponseEntity<ResponseObj> ViewPetProfliebyId(Long pet_id) {
@@ -348,7 +346,7 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete)) {
+                if (pet.equals(petdelete) && pet.getStatus() == Status.ACTIVE) {
                     pet.setStatus(Status.INACTIVE);
                     petRepository.save(pet);
 
@@ -381,12 +379,15 @@ public class PetServiceImpl implements PetService {
             List<Pet> petlist = petRepository.findAll();
 
             for (Pet pet : petlist) {
-                if (pet.equals(petdelete)) {
+                if (pet.equals(petdelete) && pet.getStatus() == Status.INACTIVE) {
                     pet.setStatus(Status.ACTIVE);
                     petRepository.save(pet);
 
+                    PetResponse petResponse = PetMapper.toPetResponse(pet);
+
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Restore Pet Profile Successfully")
+                            .data(petResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }

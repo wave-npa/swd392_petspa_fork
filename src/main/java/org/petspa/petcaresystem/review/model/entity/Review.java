@@ -1,4 +1,4 @@
-package org.petspa.petcaresystem.review.model;
+package org.petspa.petcaresystem.review.model.entity;
 
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;

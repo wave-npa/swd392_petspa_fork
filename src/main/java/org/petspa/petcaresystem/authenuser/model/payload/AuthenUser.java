@@ -15,7 +15,7 @@ import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
-import org.petspa.petcaresystem.review.model.Review;
+import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.transaction.annotation.Transactional;
 
