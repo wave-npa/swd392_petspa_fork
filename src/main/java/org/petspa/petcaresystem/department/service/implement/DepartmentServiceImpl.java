@@ -95,16 +95,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> CreateDepartment(CreateDepartmentRequest departmentRequest) {
+    public ResponseEntity<ResponseObj> CreateDepartment(String departmentName, String departmentAddress, Status status) {
         try {
 
             Departments department = new Departments();
 
-            department.setDepartmentName(departmentRequest.getDepartmentName());
+            department.setDepartmentName(departmentName);
 
-            department.setAddress(departmentRequest.getAddress());
+            department.setAddress(departmentAddress);
 
-            department.setStatus(Status.ACTIVE);
+            department.setStatus(status);
 
             Departments createDepartment = departmentRepository.save(department);
 
@@ -127,18 +127,30 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> UpdateDepartment(Long Department_id, UpdateDepartmentRequest departmentRequest) {
+    public ResponseEntity<ResponseObj> UpdateDepartment(Long departmentId, String departmentName, String address, Status status) {
         try {
-            Departments department = departmentRepository.getReferenceById(Department_id);
-            List<Departments> departmentList = departmentRepository.findAll();
-            for (Departments department1 : departmentList) {
-                if (department1.equals(department) && department1.getStatus().equals(Status.ACTIVE)) {
+                Departments department = departmentRepository.findByDepartmentId(departmentId);
 
-                    department.setDepartmentName(departmentRequest.getDepartmentName());
+                if(department == null){
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
 
-                    department.setAddress(departmentRequest.getAddress());
+                Departments checkNameExist= departmentRepository.findByDepartmentName(departmentName);
+                if(checkNameExist != null){
+                    if(!department.getDepartmentName().equals(departmentName)) {
+                        ResponseObj responseObj = ResponseObj.builder()
+                                .message("Department's name existed!")
+                                .data(null)
+                                .build();
+                        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObj);
+                    }
+                }
 
-                    department.setStatus(departmentRequest.getStatus());
+                    department.setDepartmentName(departmentName);
+
+                    department.setAddress(address);
+
+                    department.setStatus(status);
 
                     Departments updateDepartment = departmentRepository.save(department);
 
@@ -149,14 +161,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                             .data(departmentResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Department not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -168,28 +172,22 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> DeleteDepartment(Long Department_id) {
+    public ResponseEntity<ResponseObj> getDepartment(Long departmentId) {
         try {
-            Departments department = departmentRepository.getReferenceById(Department_id);
-            List<Departments> departmentList = departmentRepository.findAll();
-            for (Departments department1 : departmentList) {
-                if (department1.equals(department) && department1.getStatus().equals(Status.ACTIVE)) {
 
-                    department.setStatus(Status.INACTIVE);
-
-                    departmentRepository.save(department);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Delete Department Successfully")
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
+            Departments department = departmentRepository.findByDepartmentId(departmentId);
+            if(department == null){
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Department not found!")
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
+
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Department not found")
-                    .data(null)
+                    .message("Department found")
+                    .data(department)
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            return ResponseEntity.status(HttpStatus.OK).body(responseObj);
 
         } catch (Exception e) {
             e.printStackTrace();

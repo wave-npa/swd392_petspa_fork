@@ -1,6 +1,8 @@
 package org.petspa.petcaresystem.shelter.service;
 
 
+import org.petspa.petcaresystem.enums.ShelterStatus;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.shelter.model.request.CreateShelterRequest;
 import org.petspa.petcaresystem.shelter.model.request.UpdateShelterRequest;
@@ -12,8 +14,7 @@ public interface ShelterService {
     ResponseEntity<ResponseObj> ViewAllShelter();
     ResponseEntity<ResponseObj> ViewShelterAvailable();
     ResponseEntity<ResponseObj> ViewShelterUsing();
-    ResponseEntity<ResponseObj> CreateShelter(CreateShelterRequest shelterRequest);
-    ResponseEntity<ResponseObj> UpdateShelter(Long shelter_id, UpdateShelterRequest shelterRequest);
-    ResponseEntity<ResponseObj> DeleteShelter(Long shelter_id);
-    ResponseEntity<ResponseObj> RestoreShelter(Long shelter_id);
+    ResponseEntity<ResponseObj> CreateShelter(String shelterName, Status status);
+    ResponseEntity<ResponseObj> UpdateShelter(Long shelter_id, String name, Status status, ShelterStatus shelterStatus);
+    ResponseEntity<ResponseObj> getShelterById(Long shelterId);
 }

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class ShelterServiceImpl implements ShelterService{
+public class ShelterServiceImpl implements ShelterService {
 
     @Autowired
     ShelterRepository shelterRepository;
@@ -82,7 +82,7 @@ public class ShelterServiceImpl implements ShelterService{
                             .data(null)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
-                }else {
+                } else {
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Load shelter List Successfully")
                             .data(shelterResponseList)
@@ -124,7 +124,7 @@ public class ShelterServiceImpl implements ShelterService{
                             .data(null)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
-                }else {
+                } else {
                     ResponseObj responseObj = ResponseObj.builder()
                             .message("Load shelter List Successfully")
                             .data(shelterResponseList)
@@ -143,12 +143,21 @@ public class ShelterServiceImpl implements ShelterService{
     }
 
     @Override
-    public ResponseEntity<ResponseObj> CreateShelter(CreateShelterRequest shelterRequest) {
+    public ResponseEntity<ResponseObj> CreateShelter(String shelterName, Status status) {
         try {
+
+            Shelter checkName = shelterRepository.findByShelterName(shelterName);
+            if (checkName != null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Shelter's name existed!")
+                        .build();
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObj);
+            }
+
             Shelter shelter = new Shelter();
-            shelter.setShelterName(shelterRequest.getShelterName());
+            shelter.setShelterName(shelterName);
             shelter.setShelterStatus(ShelterStatus.EMPTY);
-            shelter.setStatus(Status.ACTIVE);
+            shelter.setStatus(status);
 
             Shelter createShelter = shelterRepository.save(shelter);
             ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(createShelter);
@@ -169,31 +178,41 @@ public class ShelterServiceImpl implements ShelterService{
     }
 
     @Override
-    public ResponseEntity<ResponseObj> UpdateShelter(Long shelter_id, UpdateShelterRequest shelterRequest) {
+    public ResponseEntity<ResponseObj> UpdateShelter(Long shelter_id, String shelterName, Status status, ShelterStatus shelterStatus) {
         try {
-            Shelter shelterUpdate = shelterRepository.getReferenceById(shelter_id);
-            Collection<Shelter> shelterList = shelterRepository.findAll();
-            for (Shelter shelter : shelterList) {
-                if (shelter.equals(shelterUpdate) && shelter.getStatus().equals(Status.ACTIVE)) {
-                    shelter.setShelterName(shelterRequest.getShelterName());
+            Shelter shelter = shelterRepository.findByShelterId(shelter_id);
+            if (shelter == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Shelter not found!")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
 
-                    shelter.setShelterStatus(shelterRequest.getShelterStatus());
-
-                    Shelter updateShelter = shelterRepository.save(shelter);
-                    ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(updateShelter);
-
+            Shelter checkName = shelterRepository.findByShelterName(shelterName);
+            if(checkName != null){
+                if(!shelterName.equals(shelter.getShelterName())){
                     ResponseObj responseObj = ResponseObj.builder()
-                            .message("Update Shelter successfully")
-                            .data(shelterResponse)
+                            .message("Shelter's name existed!")
                             .build();
-                    return ResponseEntity.ok().body(responseObj);
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObj);
                 }
             }
+
+            shelter.setShelterName(shelterName);
+
+            shelter.setShelterStatus(shelterStatus);
+
+            shelter.setStatus(status);
+
+            Shelter updateShelter = shelterRepository.save(shelter);
+            ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(updateShelter);
+
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Shelter not found")
-                    .data(null)
+                    .message("Update Shelter successfully")
+                    .data(shelterResponse)
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()
@@ -205,63 +224,24 @@ public class ShelterServiceImpl implements ShelterService{
     }
 
     @Override
-    public ResponseEntity<ResponseObj> DeleteShelter(Long shelter_id) {
+    public ResponseEntity<ResponseObj> getShelterById(Long shelterId){
         try {
-            Shelter shelterDelete = shelterRepository.getReferenceById(shelter_id);
-            Collection<Shelter> shelterList = shelterRepository.findAll();
-            for (Shelter shelter : shelterList) {
-                if (shelter.equals(shelterDelete) && shelter.getStatus().equals(Status.ACTIVE)) {
-                    shelter.setStatus(Status.INACTIVE);
-
-                    shelterRepository.save(shelter);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Delete Shelter successfully")
-                            .data(null)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
+            Shelter shelter = shelterRepository.findByShelterId(shelterId);
+            if (shelter == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .message("Shelter not found!")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
+
+            ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(shelter);
+
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Shelter not found")
-                    .data(null)
+                    .message("Shelter found")
+                    .data(shelterResponse)
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
-    }
-
-    @Override
-    public ResponseEntity<ResponseObj> RestoreShelter(Long shelter_id) {
-        try {
-            Shelter shelterRestore = shelterRepository.getReferenceById(shelter_id);
-            Collection<Shelter> shelterList = shelterRepository.findAll();
-            for (Shelter shelter : shelterList) {
-                if (shelter.equals(shelterRestore) && shelter.getStatus().equals(Status.INACTIVE)) {
-
-                    shelter.setStatus(Status.ACTIVE);
-
-                    Shelter restoreShelter = shelterRepository.save(shelter);
-                    ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(restoreShelter);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Restore Shelter successfully")
-                            .data(shelterResponse)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Shelter not exist")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseObj responseObj = ResponseObj.builder()

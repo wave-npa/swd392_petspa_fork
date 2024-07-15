@@ -25,7 +25,7 @@ public class Departments implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "department_id")
-    private Long department_id;
+    private Long departmentId;
 
     @Column(name = "department_name", nullable = false)
     private String departmentName;

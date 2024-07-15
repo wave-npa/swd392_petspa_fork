@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.petspa.petcaresystem.enums.ShelterStatus;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;
@@ -55,24 +57,22 @@ public class ShelterController {
         return shelterService.ViewShelterUsing();
     }
 
+    @GetMapping("/getShelter/{shelterId}")
+    public ResponseEntity<ResponseObj> getShelter(@PathVariable(value = "shelterId") Long shelterId){
+        return shelterService.getShelterById(shelterId);
+    }
+
     @PostMapping("/create" )
-    public ResponseEntity<ResponseObj> CreateShelter(@RequestBody CreateShelterRequest shelterRequest){
-        return shelterService.CreateShelter(shelterRequest);
+    public ResponseEntity<ResponseObj> CreateShelter(@RequestParam(value = "shelter name") String shelterName,
+                                                     @RequestParam(value = "status")Status status){
+        return shelterService.CreateShelter(shelterName, status);
     }
 
     @PutMapping("/update" )
-    public ResponseEntity<ResponseObj> UpdateShelter(@RequestParam Long shelter_id,
-                                                     @RequestBody UpdateShelterRequest shelterRequest){
-        return shelterService.UpdateShelter(shelter_id, shelterRequest);
-    }
-
-    @PutMapping("/delete" )
-    ResponseEntity<ResponseObj> DeleteShelter(@RequestParam Long shelter_id){
-        return shelterService.DeleteShelter(shelter_id);
-    }
-
-    @PutMapping("/restore" )
-    public ResponseEntity<ResponseObj> RestoreShelter(@RequestParam Long shelter_id){
-        return shelterService.RestoreShelter(shelter_id);
+    public ResponseEntity<ResponseObj> UpdateShelter(@RequestParam(value = "shelter id") Long shelter_id,
+                                                     @RequestParam(value = "shelterName") String shelterName,
+                                                     @RequestParam(value = "status") Status status,
+                                                     @RequestParam(value = "shelter status")ShelterStatus shelterStatus){
+        return shelterService.UpdateShelter(shelter_id, shelterName, status, shelterStatus);
     }
 }

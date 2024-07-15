@@ -27,7 +27,7 @@ public class Shelter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "shelter_id")
-    private Long shelter_id;
+    private Long shelterId;
 
     @Column(name = "shelter_name")
     private String shelterName;
