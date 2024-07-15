@@ -1,13 +1,11 @@
 package org.petspa.petcaresystem.authenuser.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,8 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 @RestController
-@RequestMapping("/petspa/user")
 @CrossOrigin
+@RequestMapping("/petspa/user")
 @Tag(name = "User", description = "User Management API")
 @ApiResponses(value = {
     @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = AuthenUser.class), mediaType = "application/json") }),
@@ -34,7 +32,6 @@ public class AuthenUserController {
     private HttpServletRequest request;
 
     @PostMapping("/save")
-    @CrossOrigin
     public AuthenUser saveUser(@RequestBody AuthenUser user) {
        return authenUserService.createUser(user);
     }
@@ -53,9 +50,12 @@ public class AuthenUserController {
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "password") String password,
+                                        @RequestParam(value = "confirm password") String confirmPassword,
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
+        Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
+        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
@@ -64,8 +64,13 @@ public class AuthenUserController {
         authenUser.setPassword(password.trim());
         authenUser.setPhone(phone);
         authenUser.setAge(age);
-        RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser);
+        RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser, confirmPassword);
         return registerResponseDTO;
+    }
+
+    @GetMapping("/currentUser/{token}")
+    public AuthenUser getCurrentUser(@PathVariable String token) {
+        return authenUserService.getCurrentUser(token);
     }
 
     @PutMapping("/updateProfile")
@@ -96,14 +101,12 @@ public class AuthenUserController {
         return updatePassowordResponseDTO;
     }
 
-    @GetMapping("/searchUserTest")
+    @GetMapping("/searchUser")
     public ResponseAPI searchUser(@RequestParam(value = "searchTerm", defaultValue = "", required = false) String searchTerm,
                                   @RequestParam(value = "gender", required = false) Gender gender,
                                   @RequestParam(value = "status", required = false) Status status,
                                   @RequestParam(value = "orderBy", defaultValue = "user_id") String orderBy,
                                   @RequestParam(value = "order", defaultValue = "ASC") String order)
-                                  //@RequestParam(value = "page", defaultValue = 1) Integer pageNumber
-                                  //@RequestParam(value = "rowsPerPage", defaultValue = 10) Integer pageRows 
                                 {
         ResponseAPI userResponseAPI = authenUserService.searchByUserNameTEST(searchTerm.trim(), gender, status, orderBy.trim(), order.trim().toUpperCase());
         return userResponseAPI;
@@ -131,5 +134,11 @@ public class AuthenUserController {
     @GetMapping("/getAllUser")
     public List<AuthenUser> getAllAccount(){
         return authenUserService.getAllUser();
+    }
+
+    @GetMapping("/vertify")
+    public InforResponseDTO veritfyEmail(@RequestParam(value = "vertify code") String vertifyCode){
+        InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(vertifyCode.trim());
+        return inforResponseDTO;
     }
 }

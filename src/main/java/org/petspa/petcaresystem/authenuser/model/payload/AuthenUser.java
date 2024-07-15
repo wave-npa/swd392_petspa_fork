@@ -35,7 +35,7 @@ public class AuthenUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "user_name")

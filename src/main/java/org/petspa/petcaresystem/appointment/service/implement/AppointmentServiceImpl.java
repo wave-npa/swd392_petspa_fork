@@ -21,6 +21,7 @@ import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
 import org.petspa.petcaresystem.boarding.repository.BoardingRepository;
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.boarding_detail.repository.BoardingDetailRepository;
+import org.petspa.petcaresystem.config.EmailServiceImpl;
 import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.model.DoctorData;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,6 +53,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private static final String format_pattern = "yyyy-MM-dd HH:mm";
     private static final String logging_message = "An error occurred:";
     private static final Logger logger = LoggerFactory.getLogger(AppointmentService.class);
+    private static final String petStoreEmail = "petspa392@gmail.com";
 
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -76,6 +79,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private JwtUtil jwtUtil;
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private EmailServiceImpl emailService;
+    @Autowired
+    private SimpleMailMessage simpleMailMessage;
 
     @Override
     public AppointmentResponseDTO findAllAppointment() {
@@ -255,8 +262,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             data.setBookedServiceId(servicesData.getServiceId());
 
             // pet id
-            Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-            data.setPetId(appointment.getPet().getPetId());
+            if(appointment.getPet() != null) {
+                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                data.setPetId(appointment.getPet().getPetId());
+            }else{
+                data.setPetId(null);
+            }
+
+
 
             // user order id
             UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
@@ -285,7 +298,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option) {
+    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option, String phone, String email) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -341,7 +354,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentSaveForUser.setStatus(Status.valueOf("INACTIVE"));
 
         // user order: get price, set price, set order date
-        Long price = (long) servicesRepository.findByServiceId(appointment.getServiceId()).getPrice();
+        services = servicesRepository.findByServiceId(appointment.getServiceId());
+        Long price = (long) services.getPrice();
         userOrder.setPrice(price);
         userOrder.setUserOrderDate(localDateTime);
 
@@ -405,6 +419,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userOrder.setPrice(price);
                 userOrder.setUserOrderDate(localDateTime);
                 userOrder.setCustomer(null);
+
+                // email
+                String appointmentInfor =
+                        "Guess's phone: " + phone + "\n"
+                        + "Guess email: " + email + "\n"
+                        + "Appointment ID: " + appointmentSaveForUser.getAppointmentId();
+                String text = "Guess booking information:\n" + appointmentInfor;
+                String subject = "PETSPA - Register Verify code";
+                emailService.sendSimpleMessage(petStoreEmail, subject, text);
             }
 
             // --------------------------------------JPA RUN------------------------------------------------
@@ -614,7 +637,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             AuthenUser authenUser = authenUserRepository.findByUserId(userId);
 
             // user order id
-            List<UserOrder> userOrderList = ordersRepository.findAllByCustomer(authenUser);
+            Collection<UserOrder> userOrderList = ordersRepository.findAllByCustomer(authenUser);
 
             for (UserOrder userOrder : userOrderList) {
                 AppointmentResponseData appointmentResponseData = new AppointmentResponseData();

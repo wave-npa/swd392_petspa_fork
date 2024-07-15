@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-//@RestController
-//@RequestMapping("api")
 @RestController
 @RequestMapping("/petspa/shelter")
 @CrossOrigin

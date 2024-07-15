@@ -48,8 +48,10 @@ public class AppointmentController {
    @PostMapping("/save")
    @CrossOrigin
    public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
-                                                        @RequestParam(value = "hospitalize")Option option) {
-      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option);
+                                                        @RequestParam(value = "hospitalize")Option option,
+                                                        @RequestParam(value = "phone") String phone,
+                                                        @RequestParam(value = "email") String email) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, phone, email);
        return appointmentResponseInfor;
    }
 

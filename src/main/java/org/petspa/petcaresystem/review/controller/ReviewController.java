@@ -49,15 +49,15 @@ public class ReviewController {
         return reviewService.ViewReviewByAuthor(Author_id);
     }
 
-    @GetMapping(value = {"/ViewAllReview"})
-    public ResponseEntity<ResponseObj> SortReviewByRating(@RequestParam ReviewRating rating){
-        return reviewService.SortReviewByRating(rating);
-    }
+//    @GetMapping(value = {"/ViewAllReview"})
+//    public ResponseEntity<ResponseObj> SortReviewByRating(@RequestParam ReviewRating rating){
+//        return reviewService.SortReviewByRating(rating);
+//    }
 
-    @PutMapping("/delete")
-    public ResponseEntity<ResponseObj> DeleteReview(Long review_id){
-        return reviewService.DeleteReview(review_id);
-    }
+//    @PutMapping("/delete")
+//    public ResponseEntity<ResponseObj> DeleteReview(Long review_id){
+//        return reviewService.DeleteReview(review_id);
+//    }
 
     @PutMapping("/delete")
     public ResponseEntity<ResponseObj> RestoreReview(Long review_id){

@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-//@RestController
-//@RequestMapping("api")
-//@Controller
 @RestController
 @RequestMapping("/petspa/boarding")
 @CrossOrigin
@@ -43,17 +40,17 @@ public class BoardingController {
     @Autowired
     private BoardingService boardingService;
 
-    @GetMapping(value = {"/ViewAllBoarding"})
+    @GetMapping("getAll")
     public ResponseEntity<ResponseObj> ViewAllBoarding(){
         return boardingService.ViewAllBoarding();
     }
 
-    @GetMapping(value = {"/{appointment_id}/ViewBoardingByAppoinment"})
+    @GetMapping("/get/{appoitnment_id}")
     public ResponseEntity<ResponseObj> ViewABoardingbyAppointmentId(@PathVariable Long appointment_id){
         return boardingService.ViewABoardingbyAppointmentId(appointment_id);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/save")
     public ResponseEntity<ResponseObj> CreateBoarding(@RequestBody CreateBoardingRequest boardingRequest){
         return boardingService.CreateBoarding(boardingRequest);
     }
@@ -64,7 +61,7 @@ public class BoardingController {
         return boardingService.UpdateBoarding(boarding_id, boardingRequest);
     }
 
-    @PutMapping("/detele")
+    @PutMapping("/delete")
     ResponseEntity<ResponseObj> DeleteBoarding(@RequestParam Long boarding_id){
         return boardingService.DeleteBoarding(boarding_id);
     }
