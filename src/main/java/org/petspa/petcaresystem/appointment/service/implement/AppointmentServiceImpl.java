@@ -103,14 +103,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         infor.setStatusCode(statusCode);
         infor.setStatusValue(statusValue);
 
-        HttpSession session = request.getSession();
-        String token = (String) session.getAttribute("jwtToken");
-        Long userId = jwtUtil.extractUserId(token);
-
         try {
             List<Appointment> appointmentList = new ArrayList<>();
             appointmentList = appointmentRepository.findAll();
-            if (appointmentList == null) {
+            if (appointmentList.isEmpty()) {
                 message = "Appointment not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
@@ -158,8 +154,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 data.setBookedServiceId(servicesData.getServiceId());
 
                 // find pet
-                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                data.setPetId(appointment.getPet().getPetId());
+                if (appointment.getPet() != null) {
+                    Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                    data.setPetId(appointment.getPet().getPetId());
+                } else {
+                    data.setPetId(null);
+                }
 
                 // user order
                 UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
@@ -170,8 +170,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 data.setReviewId(review.getReviewId());
 
                 // boarding appointment
-                BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
-                data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
+                if (appointment.getBoardingAppointment() != null) {
+                    BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
+                    data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
+                } else {
+                    data.setBoardingAppointmentId(null);
+                }
 
                 // add appointment to response data list
                 appointmentResponseDataList.add(data);
@@ -210,10 +214,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         infor.setTimeStamp(timeStamp);
         infor.setStatusCode(statusCode);
         infor.setStatusValue(statusValue);
-
-        HttpSession session = request.getSession();
-        String token = (String) session.getAttribute("jwtToken");
-        Long userId = jwtUtil.extractUserId(token);
 
         try {
             appointment = appointmentRepository.findByAppointmentId(appointmentId);
@@ -262,13 +262,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             data.setBookedServiceId(servicesData.getServiceId());
 
             // pet id
-            if(appointment.getPet() != null) {
+            if (appointment.getPet() != null) {
                 Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
                 data.setPetId(appointment.getPet().getPetId());
-            }else{
+            } else {
                 data.setPetId(null);
             }
-
 
 
             // user order id
@@ -280,8 +279,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             data.setReviewId(review.getReviewId());
 
             // boarding appointment id
-            BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
-            data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
+            if(appointment.getBoardingAppointment() != null) {
+                BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
+                data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
+            }else{
+                data.setBoardingAppointmentId(null);
+            }
 
         } catch (Exception e) {
             logger.error("Error occurred during running:", e);
@@ -326,16 +329,49 @@ public class AppointmentServiceImpl implements AppointmentService {
         // ------------------------------handle and prepare data-------------------------------
 
         // doctor
-        Doctor doctor = doctorRepository.findByDoctorId(appointment.getDoctorId());
-        bookedDoctors.add(doctor);
-        appointmentSaveForGuess.setBookedDoctor(bookedDoctors);
-        appointmentSaveForUser.setBookedDoctor(bookedDoctors);
+        Long doctorId = appointment.getDoctorId();
+        if (doctorId != null) {
+            Doctor doctor = doctorRepository.findByDoctorId(doctorId);
+            if (doctor != null) {
+                bookedDoctors.add(doctor);
+                appointmentSaveForGuess.setBookedDoctor(bookedDoctors);
+                appointmentSaveForUser.setBookedDoctor(bookedDoctors);
+            } else {
+                message = "Invalid doctor";
+                statusCode = HttpStatus.BAD_REQUEST.value();
+                statusValue = HttpStatus.BAD_REQUEST;
+                return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+            }
+        } else {
+            message = "No doctor was choosed!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+        }
+
 
         // service
-        Services services = servicesRepository.findByServiceId(appointment.getServiceId());
-        bookedService.add(services);
-        appointmentSaveForGuess.setBookedService(bookedService);
-        appointmentSaveForUser.setBookedService(bookedService);
+        Long serviceId = appointment.getServiceId();
+        Services services = new Services();
+        if (serviceId != null) {
+            services = servicesRepository.findByServiceId(serviceId);
+            if (services != null) {
+                bookedService.add(services);
+                appointmentSaveForGuess.setBookedService(bookedService);
+                appointmentSaveForUser.setBookedService(bookedService);
+            } else {
+                message = "Invalid service!";
+                statusCode = HttpStatus.BAD_REQUEST.value();
+                statusValue = HttpStatus.BAD_REQUEST;
+                return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+            }
+        } else {
+            message = "No service was choosed!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+        }
+
 
         // create date
         appointmentSaveForGuess.setCreate_date(LocalDate.from(localDateTime));
@@ -354,19 +390,39 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentSaveForUser.setStatus(Status.valueOf("INACTIVE"));
 
         // user order: get price, set price, set order date
-        services = servicesRepository.findByServiceId(appointment.getServiceId());
-        Long price = (long) services.getPrice();
-        userOrder.setPrice(price);
-        userOrder.setUserOrderDate(localDateTime);
+        Long price = null;
+        services = servicesRepository.findByServiceId(serviceId);
+        if (services != null) {
+            price = (long) services.getPrice();
+            userOrder.setPrice(price);
+            userOrder.setUserOrderDate(localDateTime);
+        } else {
+            message = "Invalid service!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+        }
 
         // shelter: find available shelter
-        shelter = shelterRepository.findByShelterStatus(ShelterStatus.EMPTY);
+        shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
 
         // boarding: check shelter status, set boarding date, status, shelter id
-        if (shelter.getStatus() == Status.ACTIVE) {
-            boardingAppointment.setBoardingTime(localDateTime);
-            boardingAppointment.setStatus(Status.ACTIVE);
-            boardingAppointment.setShelter(shelter);
+        if (shelter != null) {
+            if (shelter.getStatus() == Status.ACTIVE) {
+                boardingAppointment.setBoardingTime(localDateTime);
+                boardingAppointment.setStatus(Status.ACTIVE);
+                boardingAppointment.setShelter(shelter);
+            } else {
+                message = "No shelter available!";
+                statusCode = HttpStatus.BAD_REQUEST.value();
+                statusValue = HttpStatus.BAD_REQUEST;
+                return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+            }
+        } else {
+            message = "No shelter available!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
         }
 
         // boarding detail
@@ -381,6 +437,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             // --------------------------------user logged in------------------------------------
             if (token != null) {
+                if (appointment.getPetId() == null || appointment.getPetId() == 0) {
+                    message = "No pet was choosed!";
+                    statusCode = HttpStatus.BAD_REQUEST.value();
+                    statusValue = HttpStatus.BAD_REQUEST;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                }
+
                 // extract user id, find user by id
                 Long userId = jwtUtil.extractUserId(token);
                 authenUser = authenUserRepository.findByUserId(userId);
@@ -391,9 +454,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                 // pet: find bet by user, set pet id for appointment
                 AuthenUser owner = authenUserRepository.findByUserId(userId);
-                pet = petRepository.findByOwner(authenUser);
+
+                List<Pet> petListbyOwner = petRepository.findAllByOwner(authenUser);
+                boolean check = false;
+                for (Pet pet1 : petListbyOwner) {
+                    if (pet1.getPetId() == appointment.getPetId()) {
+                        pet.setPetId(pet1.getPetId());
+                        pet.setAge(pet1.getAge());
+                        pet.setPet_name(pet1.getPet_name());
+                        pet.setGender(pet1.getGender());
+                        pet.setType_of_species(pet1.getType_of_species());
+                        pet.setStatus(pet1.getStatus());
+                        pet.setOwner(pet1.getOwner());
+                        check = true;
+                        break;
+                    }
+                }
+
                 if (pet != null) {
-                    appointmentSaveForUser.setPet(pet);
+                    if (check) {
+                        appointmentSaveForUser.setPet(pet);
+                    } else {
+                        message = "This pet is not present on your profile!";
+                        statusCode = HttpStatus.NOT_FOUND.value();
+                        statusValue = HttpStatus.NOT_FOUND;
+                        return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                    }
                 } else {
                     message = "Pet ID not found! Pet ID invalid or user hasn't added a pet to profile yet!";
                     statusCode = HttpStatus.NOT_FOUND.value();
@@ -423,8 +509,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 // email
                 String appointmentInfor =
                         "Guess's phone: " + phone + "\n"
-                        + "Guess email: " + email + "\n"
-                        + "Appointment ID: " + appointmentSaveForUser.getAppointmentId();
+                                + "Guess email: " + email + "\n"
+                                + "Appointment ID: " + appointmentSaveForUser.getAppointmentId();
                 String text = "Guess booking information:\n" + appointmentInfor;
                 String subject = "PETSPA - Register Verify code";
                 emailService.sendSimpleMessage(petStoreEmail, subject, text);
@@ -459,6 +545,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             } else {
                 appointmentRepository.save(appointmentSaveForUser);
             }
+
+            shelter.setShelterStatus(ShelterStatus.USING);
+            shelterRepository.save(shelter);
 
         } catch (Exception e) {
 //            logger.error("Error occurred during create appointment", e);
@@ -696,7 +785,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentResponseDataList.add(appointmentResponseData);
             }
 
-            if(appointmentResponseDataList == null || appointmentResponseDataList.isEmpty()){
+            if (appointmentResponseDataList == null || appointmentResponseDataList.isEmpty()) {
                 message = "This account hasn't booked any appointment yet!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;

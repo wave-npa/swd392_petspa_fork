@@ -6,9 +6,11 @@ import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ShelterRepository extends JpaRepository<Shelter, Long>{
-    public Shelter findByShelterStatus(ShelterStatus shelterStatus);
+    public Shelter findFirstByShelterStatus(ShelterStatus shelterStatus);
     public Shelter findByShelterId(Long id);
     public Shelter findByShelterName(String name);
 
