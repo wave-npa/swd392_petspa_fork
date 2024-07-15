@@ -13,7 +13,7 @@ import lombok.ToString;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.department.model.entity.Departments;
-import org.petspa.petcaresystem.schedule.model.Schedule;
+import org.petspa.petcaresystem.schedule.model.entity.Schedule;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -33,7 +33,6 @@ public class Doctor implements Serializable {
     private Long doctorId;
 
     @OneToOne
-    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private AuthenUser user;
 

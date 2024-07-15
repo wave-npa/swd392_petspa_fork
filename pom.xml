@@ -106,7 +106,7 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>

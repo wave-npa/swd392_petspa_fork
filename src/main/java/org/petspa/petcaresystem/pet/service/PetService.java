@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PetService {
     ResponseEntity<ResponseObj> ViewPetProfliebyId(Long pet_id);
-    ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(Long cus_id);
+    ResponseEntity<ResponseObj> ViewListPetProfilebyOwnerId(Long cus_id);
     ResponseEntity<ResponseObj> ViewListAllPetProflie();
     ResponseEntity<ResponseObj> SortPetbySpecies(Species species);
     ResponseEntity<ResponseObj> SortPetbyBreed(String breed);

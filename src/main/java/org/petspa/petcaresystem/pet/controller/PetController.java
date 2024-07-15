@@ -49,7 +49,7 @@ public class PetController {
 
     @GetMapping(value = {"/{cus_id}/ownPet"})
     public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(@PathVariable Long cus_id){
-        return petService.ViewListPetProfliebyOwnerId(cus_id);
+        return petService.ViewListPetProfilebyOwnerId(cus_id);
     }
 
     @GetMapping(value = {"/viewListPet"})
