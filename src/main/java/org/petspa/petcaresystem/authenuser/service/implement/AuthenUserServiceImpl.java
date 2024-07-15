@@ -18,6 +18,7 @@ import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
+import org.petspa.petcaresystem.role.repository.RoleRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,9 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Autowired
     AuthenUserRepository authenUserRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -154,11 +158,10 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         authenUser.setCreate_date(localDateTime);
 
         // set status value
-        authenUser.setStatus(Status.INACTIVE);
+        authenUser.setStatus(Status.ACTIVE);
 
         // set roleID = customer role
-        Role role = new Role();
-        role.setRoleId(3L);
+        Role role = roleRepository.findById(Long.parseLong("3")).orElse(null);
         authenUser.setRole(role);
 
         // check user name used?
@@ -241,15 +244,6 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
         }
         Long userId = jwtUtil.extractUserId(token);
-
-        // check user name used?
-        AuthenUser existingUserName = authenUserRepository.findByUserName(authenUser.getFullName());
-        if (existingUserName != null && !existingUserName.getUserId().equals(userId)) {
-            message = "This user name has already used! Please try another";
-            statusCode = HttpStatus.CONFLICT.value();
-            statusValue = HttpStatus.CONFLICT;
-            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
-        }
 
         // check email exist?
         AuthenUser existingEmail = authenUserRepository.findByEmail(authenUser.getEmail());

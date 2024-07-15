@@ -113,7 +113,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> ViewListAllPetProflie() {
         try {
-            List<Pet> petlist = petRepository.findAll(Sort.by(Sort.Direction.ASC, "pet_name"));
+            List<Pet> petlist = petRepository.findAll();
             if (petlist.isEmpty()) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("pet list is empty")
