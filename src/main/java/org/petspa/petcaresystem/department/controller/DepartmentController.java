@@ -48,6 +48,11 @@ public class DepartmentController {
         return departmentService.ViewAllDepartment();
     }
 
+    @GetMapping(value = {"/viewDepartment/{Department_id}"})
+    public ResponseEntity<ResponseObj> ViewDepartmentById(@PathVariable Long Department_id){
+        return departmentService.ViewDepartmentById(Department_id);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ResponseObj> CreateDepartment(@RequestBody CreateDepartmentRequest departmentRequest){
         return departmentService.CreateDepartment(departmentRequest);
