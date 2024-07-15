@@ -1,13 +1,11 @@
 package org.petspa.petcaresystem.authenuser.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,6 +51,7 @@ public class AuthenUserController {
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "password") String password,
+                                        @RequestParam(value = "confirm password") String confirmPassword,
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
@@ -64,7 +63,7 @@ public class AuthenUserController {
         authenUser.setPassword(password.trim());
         authenUser.setPhone(phone);
         authenUser.setAge(age);
-        RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser);
+        RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser, confirmPassword);
         return registerResponseDTO;
     }
 
@@ -129,5 +128,11 @@ public class AuthenUserController {
     @GetMapping("/getAllUser")
     public List<AuthenUser> getAllAccount(){
         return authenUserService.getAllUser();
+    }
+
+    @GetMapping("/vertify")
+    public InforResponseDTO veritfyEmail(@RequestParam(value = "vertify code") String vertifyCode){
+        InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(vertifyCode.trim());
+        return inforResponseDTO;
     }
 }
