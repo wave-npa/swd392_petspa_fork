@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.petspa.petcaresystem.enums.ReviewRating;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
+import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import java.io.IOException;
 @CrossOrigin
 @Tag(name = "review", description = "review Management API")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Pet.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Review.class), mediaType = "application/json") }),
         @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
         @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class ReviewController {
@@ -48,15 +49,15 @@ public class ReviewController {
         return reviewService.ViewReviewByAuthor(Author_id);
     }
 
-    @GetMapping(value = {"/ViewAllReview"})
-    public ResponseEntity<ResponseObj> SortReviewByRating(@RequestParam ReviewRating rating){
-        return reviewService.SortReviewByRating(rating);
-    }
+//    @GetMapping(value = {"/ViewAllReview"})
+//    public ResponseEntity<ResponseObj> SortReviewByRating(@RequestParam ReviewRating rating){
+//        return reviewService.SortReviewByRating(rating);
+//    }
 
-    @PutMapping("/delete")
-    public ResponseEntity<ResponseObj> DeleteReview(Long review_id){
-        return reviewService.DeleteReview(review_id);
-    }
+//    @PutMapping("/delete")
+//    public ResponseEntity<ResponseObj> DeleteReview(Long review_id){
+//        return reviewService.DeleteReview(review_id);
+//    }
 
     @PutMapping("/delete")
     public ResponseEntity<ResponseObj> RestoreReview(Long review_id){

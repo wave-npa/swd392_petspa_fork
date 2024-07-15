@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/petspa/user")
-@CrossOrigin
 @Tag(name = "User", description = "User Management API")
 @ApiResponses(value = {
     @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = AuthenUser.class), mediaType = "application/json") }),
@@ -32,12 +31,11 @@ public class AuthenUserController {
     private HttpServletRequest request;
 
     @PostMapping("/save")
-    @CrossOrigin
     public AuthenUser saveUser(@RequestBody AuthenUser user) {
        return authenUserService.createUser(user);
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
         JwtResponseDTO jwtResponseDTO = authenUserService.login(email, password);
@@ -55,6 +53,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
+        Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
+        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());

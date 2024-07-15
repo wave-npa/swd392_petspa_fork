@@ -20,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -27,94 +29,103 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 //@EnableJpaRepositories(basePackages="org.petspa.petcaresystem")
 public class SecurityConfig {
 
-     @Autowired
-     private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
-     @Bean
-      public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-          httpSecurity
-                  .authorizeHttpRequests(request ->
-                  request
-                          //------------------------ get method---------------------------
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeHttpRequests(request ->
+                        request
+                                //------------------------ get method---------------------------
 
-                          // GUEST
-                          .requestMatchers(HttpMethod.GET,
-                                  "/swagger-ui/**",
-                                  "/v3/api-docs/**",
-                                  "/actuator/**",
-                                  "/petspa/user/login",
-                                  "/petspa/user/logout",
-                                  "/petspa/appointment/getById/{appointmentId}",
-                                  "/petspa/user/vertify")
-                          .permitAll()
+                                // GUEST
+                                .requestMatchers(HttpMethod.GET,
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/actuator/**",
+                                        "/petspa/user/logout",
+                                        "/petspa/appointment/getById/{appointmentId}",
+                                        "/petspa/user/vertify")
+                                .permitAll()
 
-                          // ADMIN
-                          .requestMatchers(HttpMethod.GET,
-                                  "/petspa/user/getAllUser",
-                                  "/petspa/user/getUserById/{userId}",
-                                  "/petspa/user/findUserByAge",
-                                  "/petspa/user/searchUserTest",
-                                  "/petspa/appointment/getById/{appointmentId}",
-                                  "/petspa/appointment/getAll")
-                          .hasAuthority("ROLE_ADMIN")
+                                // ADMIN
+                                .requestMatchers(HttpMethod.GET,
+                                        "/petspa/user/getAllUser",
+                                        "/petspa/user/getUserById/{userId}",
+                                        "/petspa/user/findUserByAge",
+                                        "/petspa/user/searchUserTest",
+                                        "/petspa/appointment/getById/{appointmentId}",
+                                        "/petspa/appointment/getAll")
+                                .hasAuthority("ROLE_ADMIN")
 
-                          // STAFF
-                          .requestMatchers(HttpMethod.GET,
-                                  "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
+                                // STAFF
+                                .requestMatchers(HttpMethod.GET,
+                                        "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
 
-                          // CUSTOMER
-                          .requestMatchers(HttpMethod.GET,
-                                  "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
+                                // CUSTOMER
+                                .requestMatchers(HttpMethod.GET,
+                                        "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
 
-                          //---------------------------------------------------------------
-
+                                //---------------------------------------------------------------
 
 
-                          // ------------------------ post method---------------------------
-                          .requestMatchers(HttpMethod.POST,
+                                // ------------------------ post method---------------------------
+                                .requestMatchers(HttpMethod.POST,
 
-                                  "/petspa/user/register",
-                                  "/petspa/appointment/save",
-                                  "/petspa/user/login")
-                          .permitAll()
+                                        "/petspa/user/register",
+                                        "/petspa/appointment/save",
+                                        "/petspa/user/login")
+                                .permitAll()
 
-                          .requestMatchers(HttpMethod.POST,
+                                .requestMatchers(HttpMethod.POST,
 
-                                  "/petspa/user/save")
-                          .hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF")
-                          //---------------------------------------------------------------
-
-
+                                        "/petspa/user/save")
+                                .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+                                //---------------------------------------------------------------
 
 
-                          // ------------------------ put method---------------------------
+                                // ------------------------ put method---------------------------
 
-                          // GUEST
-                          .requestMatchers(HttpMethod.PUT,
+                                // GUEST
+                                .requestMatchers(HttpMethod.PUT,
 
-                                  "/petspa/appointment/save")
-                          .permitAll()
+                                        "/petspa/appointment/save")
+                                .permitAll()
 
-                          // STAFF
-                          .requestMatchers(HttpMethod.PUT,
-                                  "/petspa/appointment/updateStatus",
-                                  "/petspa/appointment/update")
-                          .hasAuthority("ROLE_STAFF")
+                                // STAFF
+                                .requestMatchers(HttpMethod.PUT,
+                                        "/petspa/appointment/updateStatus",
+                                        "/petspa/appointment/update")
+                                .hasAuthority("ROLE_STAFF")
 
-                          //---------------------------------------------------------------
+                                //---------------------------------------------------------------
 
 
-                          .anyRequest().authenticated());
+                                .anyRequest().authenticated());
 
-          httpSecurity.csrf(AbstractHttpConfigurer::disable);
-          httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-         return httpSecurity.build();
-     }
+        return httpSecurity.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
 }
