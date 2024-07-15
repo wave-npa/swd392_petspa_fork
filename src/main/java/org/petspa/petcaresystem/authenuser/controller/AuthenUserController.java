@@ -35,7 +35,7 @@ public class AuthenUserController {
        return authenUserService.createUser(user);
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
         JwtResponseDTO jwtResponseDTO = authenUserService.login(email, password);
@@ -53,6 +53,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
+        Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
+        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
