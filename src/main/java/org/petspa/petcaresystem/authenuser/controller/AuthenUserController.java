@@ -37,7 +37,7 @@ public class AuthenUserController {
        return authenUserService.createUser(user);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
         JwtResponseDTO jwtResponseDTO = authenUserService.login(email, password);

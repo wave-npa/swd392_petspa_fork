@@ -52,7 +52,6 @@ public class SecurityConfig {
                                   "/swagger-ui/**",
                                   "/v3/api-docs/**",
                                   "/actuator/**",
-                                  "/petspa/user/login",
                                   "/petspa/user/logout",
                                   "/petspa/appointment/getById/{appointmentId}",
                                   "/petspa/user/vertify")
@@ -84,7 +83,8 @@ public class SecurityConfig {
                           .requestMatchers(HttpMethod.POST,
 
                                   "/petspa/user/register",
-                                  "/petspa/appointment/save")
+                                  "/petspa/appointment/save",
+                                  "/petspa/user/login")
                           .permitAll()
 
                           .requestMatchers(HttpMethod.POST,
