@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/petspa/user")
-@CrossOrigin
 @Tag(name = "User", description = "User Management API")
 @ApiResponses(value = {
     @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = AuthenUser.class), mediaType = "application/json") }),
@@ -32,7 +31,6 @@ public class AuthenUserController {
     private HttpServletRequest request;
 
     @PostMapping("/save")
-    @CrossOrigin
     public AuthenUser saveUser(@RequestBody AuthenUser user) {
        return authenUserService.createUser(user);
     }
