@@ -118,10 +118,6 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                 statusValue = HttpStatus.UNAUTHORIZED;
                 return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
             }
-        } catch (AuthenticationException e) {
-            message = "Invalid email/password";
-            statusCode = HttpStatus.UNAUTHORIZED.value();
-            statusValue = HttpStatus.UNAUTHORIZED;
         } catch (Exception e) {
             logger.error("Error occurred during login", e);
             message = "Something went wrong, server error!";

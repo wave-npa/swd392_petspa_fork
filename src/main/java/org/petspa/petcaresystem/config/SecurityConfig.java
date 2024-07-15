@@ -40,70 +40,73 @@ public class SecurityConfig {
                                 //------------------------ get method---------------------------
 
                                 // GUEST
-                                .requestMatchers(HttpMethod.GET,
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/actuator/**",
-                                        "/petspa/user/logout",
-                                        "petspa/user/login",
-                                        "/currentUser/**",
-                                        "/petspa/appointment/getById/{appointmentId}",
-                                        "/petspa/user/vertify")
-                                .permitAll()
-
-                                // ADMIN
-                                .requestMatchers(HttpMethod.GET,
-                                        "/petspa/user/getAllUser",
-                                        "/petspa/user/getUserById/{userId}",
-                                        "/petspa/user/findUserByAge",
-                                        "/petspa/user/searchUserTest",
-                                        "/petspa/appointment/getById/{appointmentId}",
-                                        "/petspa/appointment/getAll")
-                                .hasAuthority("ROLE_ADMIN")
-
-                                // STAFF
-                                .requestMatchers(HttpMethod.GET,
-                                        "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
-
-                                // CUSTOMER
-                                .requestMatchers(HttpMethod.GET,
-                                        "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
-
-                                //---------------------------------------------------------------
-
-
-                                // ------------------------ post method---------------------------
-                                .requestMatchers(HttpMethod.POST,
-
-                                        "/petspa/user/register",
-                                        "/petspa/appointment/save",
-                                        "/petspa/user/login")
-                                .permitAll()
-
-                                .requestMatchers(HttpMethod.POST,
-
-                                        "/petspa/user/save")
-                                .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
-                                //---------------------------------------------------------------
-
-
-                                // ------------------------ put method---------------------------
-
-                                // GUEST
-                                .requestMatchers(HttpMethod.PUT,
-
-                                        "/petspa/appointment/save")
-                                .permitAll()
-
-                                // STAFF
-                                .requestMatchers(HttpMethod.PUT,
-                                        "/petspa/appointment/updateStatus",
-                                        "/petspa/appointment/update")
-                                .hasAuthority("ROLE_STAFF")
-
-                                //---------------------------------------------------------------
-
-
+//                                .requestMatchers(HttpMethod.GET,
+//                                        "/swagger-ui/**",
+//                                        "/v3/api-docs/**",
+//                                        "/actuator/**",
+//                                        "/petspa/user/logout",
+//                                        "/petspa/user/login",
+//                                        "/currentUser/**",
+//                                        "/petspa/appointment/getById/{appointmentId}",
+//                                        "/petspa/user/vertify")
+//                                .permitAll()
+//
+//                                // ADMIN
+//                                .requestMatchers(HttpMethod.GET,
+//                                        "/petspa/user/getAllUser",
+//                                        "/petspa/user/getUserById/{userId}",
+//                                        "/petspa/user/findUserByAge",
+//                                        "/petspa/user/searchUserTest",
+//                                        "/petspa/appointment/getById/{appointmentId}",
+//                                        "/petspa/appointment/getAll")
+//                                .hasAuthority("ROLE_ADMIN")
+//
+//                                // STAFF
+//                                .requestMatchers(HttpMethod.GET,
+//                                        "/petspa/user/getUserById/{userId}").hasAuthority("ROLE_STAFF")
+//
+//                                // CUSTOMER
+//                                .requestMatchers(HttpMethod.GET,
+//                                        "/petspa/appointment/getByUserId").hasAuthority("ROLE_CUSTOMER")
+//
+//                                //---------------------------------------------------------------
+//
+//
+//                                // ------------------------ post method---------------------------
+//                                .requestMatchers(HttpMethod.POST,
+//
+//                                        "/petspa/user/register",
+//                                        "/petspa/appointment/save",
+//                                        "/petspa/user/login")
+//                                .permitAll()
+//
+//                                .requestMatchers(HttpMethod.POST,
+//
+//                                        "/petspa/user/save")
+//                                .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+//                                //---------------------------------------------------------------
+//
+//
+//                                // ------------------------ put method---------------------------
+//
+//                                // GUEST
+//                                .requestMatchers(HttpMethod.PUT,
+//
+//                                        "/petspa/appointment/save")
+//                                .permitAll()
+//
+//                                // STAFF
+//                                .requestMatchers(HttpMethod.PUT,
+//                                        "/petspa/appointment/updateStatus",
+//                                        "/petspa/appointment/update")
+//                                .hasAuthority("ROLE_STAFF")
+//
+//                                //---------------------------------------------------------------
+                                .requestMatchers(HttpMethod.GET,"/**").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/**").permitAll()
+                                .requestMatchers(HttpMethod.PUT,"/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                                 .anyRequest().authenticated());
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
