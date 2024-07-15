@@ -13,5 +13,6 @@ import java.time.LocalDateTime;
 public class UpdateScheduleDetailRequest {
     LocalDateTime startTime;
     LocalDateTime endTime;
+    Long schedule_id;
     Status status;
 }

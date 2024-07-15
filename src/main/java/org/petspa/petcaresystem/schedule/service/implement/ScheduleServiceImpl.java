@@ -158,14 +158,14 @@ public class ScheduleServiceImpl implements ScheduleService{
                     scheduleRepository.save(schedule);
                     ScheduleResponse reviewResponse = ScheduleMapper.toScheduleResponse(schedule);
                     ResponseObj responseObj = ResponseObj.builder()
-                            .message("Create Schedule Successfully")
+                            .message("Update Schedule Successfully")
                             .data(reviewResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
             }
             ResponseObj responseObj = ResponseObj.builder()
-                    .message("Doctor not found")
+                    .message("Schedule not found")
                     .data(null)
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
