@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-//@RestController
-//@RequestMapping("api")
-//@Controller
 @RestController
 @RequestMapping("/petspa/department")
 @CrossOrigin
@@ -33,6 +30,9 @@ import java.io.IOException;
         @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class DepartmentController {
 
+    @Autowired
+    private DepartmentService departmentService;
+
     @Hidden
     @RequestMapping("/")
     @CrossOrigin
@@ -40,15 +40,12 @@ public class DepartmentController {
         response.sendRedirect("/swagger-ui.html");
     }
 
-    @Autowired
-    private DepartmentService departmentService;
-
-    @GetMapping(value = {"/viewAllDepartment"})
+    @GetMapping("getAll")
     public ResponseEntity<ResponseObj> ViewAllDepartment(){
         return departmentService.ViewAllDepartment();
     }
 
-    @PostMapping("/create")
+    @PostMapping("/save")
     public ResponseEntity<ResponseObj> CreateDepartment(@RequestBody CreateDepartmentRequest departmentRequest){
         return departmentService.CreateDepartment(departmentRequest);
     }
@@ -59,13 +56,9 @@ public class DepartmentController {
         return departmentService.UpdateDepartment(Department_id, departmentRequest);
     }
 
-    @PutMapping("/detele")
+    @PutMapping("/delete")
     ResponseEntity<ResponseObj> DeleteDepartment(@RequestParam Long Department_id){
         return departmentService.DeleteDepartment(Department_id);
     }
 
-    @PutMapping("/restore")
-    ResponseEntity<ResponseObj> RestoreDepartment(@RequestParam Long Department_id){
-        return departmentService.RestoreDepartment(Department_id);
-    }
 }

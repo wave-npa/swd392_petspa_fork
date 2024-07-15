@@ -637,7 +637,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             AuthenUser authenUser = authenUserRepository.findByUserId(userId);
 
             // user order id
-            List<UserOrder> userOrderList = ordersRepository.findAllByCustomer(authenUser);
+            Collection<UserOrder> userOrderList = ordersRepository.findAllByCustomer(authenUser);
 
             for (UserOrder userOrder : userOrderList) {
                 AppointmentResponseData appointmentResponseData = new AppointmentResponseData();
