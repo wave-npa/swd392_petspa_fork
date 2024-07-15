@@ -20,5 +20,4 @@ public interface PetService {
     ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest);
     ResponseEntity<ResponseObj> UpdatePetProflie(Long pet_id, UpdatePetRequest petRequest);
     ResponseEntity<ResponseObj> DeletePetProflie(Long pet_id);
-    ResponseEntity<ResponseObj> RestorePetProflie(Long pet_id);
 }

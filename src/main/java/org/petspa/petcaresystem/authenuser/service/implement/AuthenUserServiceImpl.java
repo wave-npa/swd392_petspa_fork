@@ -215,7 +215,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             customAuthenUserForRegister.setAddress(authenUser.getAddress());
             customAuthenUserForRegister.setPhone(authenUser.getPhone());
             customAuthenUserForRegister.setCreate_date(timeStamp);
-            customAuthenUserForRegister.setStatus("INACTIVE");
+            customAuthenUserForRegister.setStatus("ACTIVE");
             customAuthenUserForRegister.setRole("CUSTOMER");
         } catch (Exception e) {
             logger.error(this.logging_message, e);

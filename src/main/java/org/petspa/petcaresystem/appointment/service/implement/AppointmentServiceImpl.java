@@ -158,21 +158,27 @@ public class AppointmentServiceImpl implements AppointmentService {
                 data.setBookedServiceId(servicesData.getServiceId());
 
                 // find pet
-                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                data.setPetId(appointment.getPet().getPetId());
-
+                if(appointment.getPet() !== null){
+                    Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                    data.setPetId(appointment.getPet().getPetId());
+                }
                 // user order
                 UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
-                data.setUserOrderId(userOrder.getUserOrderId());
+                if(!userOrder.equals(null)){
+                    data.setUserOrderId(userOrder.getUserOrderId());
+                }
 
                 // review
                 Review review = reviewRepository.findByReviewId(appointment.getReview().getReviewId());
-                data.setReviewId(review.getReviewId());
+                if(!review.equals(null)){
+                    data.setReviewId(review.getReviewId());
+                }
 
                 // boarding appointment
                 BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
-                data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
-
+                if(!boardingAppointment.equals(null)){
+                    data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
+                }
                 // add appointment to response data list
                 appointmentResponseDataList.add(data);
             }
@@ -392,7 +398,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                 // pet: find bet by user, set pet id for appointment
                 AuthenUser owner = authenUserRepository.findByUserId(userId);
-                pet = petRepository.findByOwner(authenUser);
+                pet = petRepository.findByPetId(appointment.getPetId());
                 if (pet != null) {
                     appointmentSaveForUser.setPet(pet);
                 } else {

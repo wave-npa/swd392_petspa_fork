@@ -88,9 +88,4 @@ public class PetController {
     public ResponseEntity<ResponseObj> DeletePetProflie(@RequestParam Long pet_id){
         return petService.DeletePetProflie(pet_id);
     }
-
-    @PutMapping("/restore")
-    public ResponseEntity<ResponseObj> RestorePetProflie(@RequestParam Long pet_id){
-        return petService.RestorePetProflie(pet_id);
-    }
 }
