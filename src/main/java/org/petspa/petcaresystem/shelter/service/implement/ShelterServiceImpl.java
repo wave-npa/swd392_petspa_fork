@@ -148,6 +148,7 @@ public class ShelterServiceImpl implements ShelterService{
             Shelter shelter = new Shelter();
             shelter.setShelterName(shelterRequest.getShelterName());
             shelter.setShelterStatus(ShelterStatus.EMPTY);
+            shelter.setStatus(Status.ACTIVE);
 
             Shelter createShelter = shelterRepository.save(shelter);
             ShelterResponse shelterResponse = ShelterMapper.toShelterResponse(createShelter);
