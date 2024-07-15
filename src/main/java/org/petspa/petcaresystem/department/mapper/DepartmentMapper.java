@@ -6,7 +6,7 @@ import org.petspa.petcaresystem.department.model.response.DepartmentResponse;
 public class DepartmentMapper {
     public static DepartmentResponse toDepartmentResponse(Departments department){
         return DepartmentResponse.builder()
-                .department_id(department.getDepartment_id())
+                .department_id(department.getDepartmentId())
                 .departmentName(department.getDepartmentName())
                 .address(department.getAddress())
                 .doctors(department.getDoctor())

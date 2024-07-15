@@ -11,6 +11,7 @@ import org.petspa.petcaresystem.department.model.entity.Departments;
 import org.petspa.petcaresystem.department.model.request.CreateDepartmentRequest;
 import org.petspa.petcaresystem.department.model.request.UpdateDepartmentRequest;
 import org.petspa.petcaresystem.department.service.DepartmentService;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,19 +47,23 @@ public class DepartmentController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseObj> CreateDepartment(@RequestBody CreateDepartmentRequest departmentRequest){
-        return departmentService.CreateDepartment(departmentRequest);
+    public ResponseEntity<ResponseObj> CreateDepartment(@RequestParam(value = "department name") String departmentName,
+                                                        @RequestParam(value = "address") String address,
+                                                        @RequestParam(value = "status")Status status){
+        return departmentService.CreateDepartment(departmentName.trim(), address.trim(), status);
     }
 
     @PutMapping("/update")
-    ResponseEntity<ResponseObj> UpdateDepartment(@RequestParam Long Department_id,
-                                                 @RequestBody UpdateDepartmentRequest departmentRequest){
-        return departmentService.UpdateDepartment(Department_id, departmentRequest);
+    ResponseEntity<ResponseObj> UpdateDepartment(@RequestParam(value = "department id") Long departmentId,
+                                                 @RequestParam(value = "department name") String departmentName,
+                                                 @RequestParam(value = "address") String address,
+                                                 @RequestParam(value = "status")Status status){
+        return departmentService.UpdateDepartment(departmentId, departmentName, address, status);
     }
 
-    @PutMapping("/delete")
-    ResponseEntity<ResponseObj> DeleteDepartment(@RequestParam Long Department_id){
-        return departmentService.DeleteDepartment(Department_id);
+    @GetMapping("/getDeparment")
+    ResponseEntity<ResponseObj> getDepartment(@RequestParam Long Department_id){
+        return departmentService.getDepartment(Department_id);
     }
 
 }
