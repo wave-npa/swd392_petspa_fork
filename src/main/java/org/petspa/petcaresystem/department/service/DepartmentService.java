@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface DepartmentService {
     ResponseEntity<ResponseObj> ViewAllDepartment();
+    ResponseEntity<ResponseObj> ViewDepartmentById(Long Department_id);
     ResponseEntity<ResponseObj> CreateDepartment(CreateDepartmentRequest departmentRequest);
     ResponseEntity<ResponseObj> UpdateDepartment(Long Department_id, UpdateDepartmentRequest departmentRequest);
     ResponseEntity<ResponseObj> DeleteDepartment(Long Department_id);

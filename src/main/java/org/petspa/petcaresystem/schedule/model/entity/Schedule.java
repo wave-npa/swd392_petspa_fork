@@ -1,8 +1,7 @@
-package org.petspa.petcaresystem.schedule.model;
+package org.petspa.petcaresystem.schedule.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.doctor.model.Doctor;
@@ -35,8 +34,10 @@ public class Schedule implements Serializable {
     @Column(name = "schedule_id")
     private Long scheduleId;
 
+    @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "status")
     private Status status;
 
     @OneToOne(mappedBy = "schedule")
