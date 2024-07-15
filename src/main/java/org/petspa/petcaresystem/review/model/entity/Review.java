@@ -3,6 +3,7 @@ package org.petspa.petcaresystem.review.model.entity;
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
+import org.petspa.petcaresystem.enums.ReviewRating;
 import org.petspa.petcaresystem.enums.Status;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +31,8 @@ public class Review implements Serializable {
     private String description;
 
     @Column(name = "rating")
-    private Float rating;
+    @Enumerated(EnumType.STRING)
+    private ReviewRating rating;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
