@@ -65,9 +65,4 @@ public class MedicalRecordsController {
     public ResponseEntity<ResponseObj> DeleteMedicalRecord(@RequestParam Long medicalrecord_id) {
         return medicalRecordService.DeleteMedicalRecord(medicalrecord_id);
     }
-
-    @PutMapping("/restore")
-    public ResponseEntity<ResponseObj> RestoreMedicalRecord(@RequestParam Long medicalrecord_id) {
-        return medicalRecordService.RestoreMedicalRecord(medicalrecord_id);
-    }
 }
