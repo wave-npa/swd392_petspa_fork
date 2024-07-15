@@ -39,7 +39,7 @@ public class  MedicalRecord implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-//    co the co them
+    
     @ManyToOne
     @JoinColumn(name = "pet")
     @EqualsAndHashCode.Exclude

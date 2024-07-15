@@ -69,8 +69,19 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Optional<AuthenUser> authenUser;
         String jwtToken = "";
 
+        // check session
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("jwtToken");
+        if(token != null && !token.isEmpty()){
+            message = "You have already logged in!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+        }
+        
         authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
         String encodedPassword = authenUser.get().getPassword();
+
 
         if(!passwordEncoder.matches(password, encodedPassword)){
             message = "Invalid email/password";
@@ -85,7 +96,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
                         authenUser.get().getRole().getRoleName(),
                         authenUser.get().getUserName(),
                         authenUser.get().getUserId());
-                HttpSession session = request.getSession();
+                session = request.getSession();
                 session.setAttribute("jwtToken", jwtToken);
             }else{
                 message = "Invalid email/password";
@@ -160,10 +171,10 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         try {
             authenUserRepository.save(authenUser);
             // handle data response
-            customAuthenUserForRegister.setUserId(authenUser.getUserId());
             customAuthenUserForRegister.setUserName(authenUser.getUserName());
             customAuthenUserForRegister.setEmail(authenUser.getEmail());
             customAuthenUserForRegister.setFullName(authenUser.getFullName());
+            customAuthenUserForRegister.setAge(authenUser.getAge());
             customAuthenUserForRegister.setGender(String.valueOf(authenUser.getGender()));
             customAuthenUserForRegister.setAddress(authenUser.getAddress());
             customAuthenUserForRegister.setPhone(authenUser.getPhone());
@@ -328,13 +339,6 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         }
         return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
     }
-
-    @Override
-    public UserDetails loadUserByEmail(String email) {
-        AuthenUser authenUser = authenUserRepository.findByEmail(email);
-        return new MyUserDetails(authenUser);
-    }
-
 
     @Override
     public List<AuthenUser> getAllUser(){

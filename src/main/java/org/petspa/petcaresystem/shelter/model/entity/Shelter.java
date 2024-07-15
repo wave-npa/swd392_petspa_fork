@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import jakarta.persistence.*;
 import org.petspa.petcaresystem.boarding.model.entity.BoardingAppointment;
+import org.petspa.petcaresystem.enums.ShelterStatus;
 import org.petspa.petcaresystem.enums.Status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,14 +33,19 @@ public class Shelter implements Serializable {
     private String shelterName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "shelter_status")
+    private ShelterStatus shelterStatus;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "shelter")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private BoardingAppointment boarding;
+//    @ManyToOne
+//    @JoinColumn(name = "boardingId")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private BoardingAppointment boarding;
+
 //    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
 //    @EqualsAndHashCode.Exclude
 //    @ToString.Exclude

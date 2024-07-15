@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardingRepository extends JpaRepository<BoardingAppointment, Long>{
 
+    public BoardingAppointment findByBoardingId(Long boardingAppointmentId);
+
 }
