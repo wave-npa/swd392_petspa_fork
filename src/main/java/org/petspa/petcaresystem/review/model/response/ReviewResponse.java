@@ -14,7 +14,7 @@ import org.petspa.petcaresystem.enums.Status;
 public class ReviewResponse {
      Long reviewId;
      String description;
-     ReviewRating rating;
+     Integer rating;
      Status status;
      Appointment appointment;
      AuthenUser author;

@@ -37,6 +37,7 @@ public class AuthenUserController {
     }
 
     @GetMapping("/login")
+    @CrossOrigin
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
         JwtResponseDTO jwtResponseDTO = authenUserService.login(email, password);

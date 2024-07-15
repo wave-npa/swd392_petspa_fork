@@ -26,6 +26,8 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
+
+    @Autowired
     AuthenUserRepository userRepository;
 
     @Override
@@ -60,7 +62,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(Long cus_id) {
+    public ResponseEntity<ResponseObj> ViewListPetProfilebyOwnerId(Long cus_id) {
         try {
             AuthenUser customer = userRepository.findById(cus_id).orElse(null);
 
@@ -242,11 +244,9 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
         try {
-            AuthenUser customer = userRepository.getReferenceById(cus_id);
-            List<AuthenUser> cusList = userRepository.findAll();
+            AuthenUser cus = userRepository.findByUserId(cus_id);
             Pet pet = new Pet();
-            for (AuthenUser cus : cusList) {
-                if (cus.getStatus().equals(Status.ACTIVE) && cus.equals(customer)) {
+                if (cus.getStatus().equals(Status.ACTIVE)) {
 
                     pet.setPet_name(petRequest.getPet_name());
 
@@ -261,7 +261,7 @@ public class PetServiceImpl implements PetService {
 
                     pet.setStatus(Status.ACTIVE);
 
-                    pet.setOwner(customer);
+                    pet.setOwner(cus);
 
                     Pet createpet = petRepository.save(pet);
                     PetResponse petResponse = PetMapper.toPetResponse(createpet);
@@ -272,7 +272,6 @@ public class PetServiceImpl implements PetService {
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
-            }
 
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Customer not found")

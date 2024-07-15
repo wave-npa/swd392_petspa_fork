@@ -1,8 +1,11 @@
 package org.petspa.petcaresystem.doctor.controller;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.doctor.model.Doctor;
+import org.petspa.petcaresystem.doctor.model.DoctorData;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin
 @Tag(name = "Doctor", description = "Doctor Management API")
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = Doctor.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = AuthenUser.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class DoctorController {
@@ -36,7 +39,7 @@ public class DoctorController {
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public Collection<Doctor> getAllDoctor() {
+   public List<AuthenUser> getAllDoctor() {
        return doctorService.findAllDoctor();
    }
 

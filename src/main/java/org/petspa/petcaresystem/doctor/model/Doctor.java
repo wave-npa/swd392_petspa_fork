@@ -33,7 +33,6 @@ public class Doctor implements Serializable {
     private Long doctorId;
 
     @OneToOne
-    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private AuthenUser user;
 

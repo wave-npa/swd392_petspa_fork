@@ -30,9 +30,8 @@ public class Review implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "rating")
-    private ReviewRating rating;
+    private Integer rating;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
