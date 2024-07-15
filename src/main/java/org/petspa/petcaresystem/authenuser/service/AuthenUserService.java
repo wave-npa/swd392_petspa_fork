@@ -27,4 +27,5 @@ public interface AuthenUserService {
     public AuthenUser createUser(AuthenUser authenUser);
 
     public InforResponseDTO verifyRegister(String userEnterCode);
+    public AuthenUser getCurrentUser(String token);
 }

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/petspa/user")
 @Tag(name = "User", description = "User Management API")
 @ApiResponses(value = {
@@ -35,7 +36,7 @@ public class AuthenUserController {
        return authenUserService.createUser(user);
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public JwtResponseDTO login(@RequestParam(value = "email") String email,
                                 @RequestParam(value = "password") String password){
         JwtResponseDTO jwtResponseDTO = authenUserService.login(email, password);
@@ -53,6 +54,8 @@ public class AuthenUserController {
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "age") int age){
         AuthenUser authenUser = new AuthenUser();
+        Long id = Long.valueOf(authenUserService.getAllUser().size()) + 1;
+        authenUser.setUserId(id);
         authenUser.setUserName(userName);
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
@@ -63,6 +66,11 @@ public class AuthenUserController {
         authenUser.setAge(age);
         RegisterResponseDTO registerResponseDTO = authenUserService.register(authenUser, confirmPassword);
         return registerResponseDTO;
+    }
+
+    @GetMapping("/currentUser/{token}")
+    public AuthenUser getCurrentUser(@RequestParam(value = "token") String token) {
+        return authenUserService.getCurrentUser(token);
     }
 
     @PutMapping("/updateProfile")
