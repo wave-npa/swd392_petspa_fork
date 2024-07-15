@@ -13,14 +13,12 @@ import org.petspa.petcaresystem.department.model.request.UpdateDepartmentRequest
 import org.petspa.petcaresystem.department.service.DepartmentService;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
-import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Collection;
 
 @RestController
 @RequestMapping("/petspa/department")
@@ -38,37 +36,29 @@ public class DepartmentController {
     @Hidden
     @RequestMapping("/")
     @CrossOrigin
-    public void redirect(HttpServletResponse response) throws IOException{
+    public void redirect(HttpServletResponse response) throws IOException {
         response.sendRedirect("/swagger-ui.html");
     }
 
-   @GetMapping("/getAll")
-   @CrossOrigin
-   public Collection<Services> getAllServices() {
-       return departmentService.findAllService();
-   }
+    @GetMapping("getAll")
+    public ResponseEntity<ResponseObj> ViewAllDepartment(){
+        return departmentService.ViewAllDepartment();
+    }
 
-   @GetMapping("/get/{serviceId}")
-   @CrossOrigin
-   public Services getServiceById(@PathVariable Long serviceId) {
-       return departmentService.findServiceById(serviceId);
-   }
+    @PostMapping("/save")
+    public ResponseEntity<ResponseObj> CreateDepartment(@RequestBody CreateDepartmentRequest departmentRequest){
+        return departmentService.CreateDepartment(departmentRequest);
+    }
 
-   @PostMapping("/save")
-   @CrossOrigin
-   public Services saveService(@RequestBody Services service) {
-       return departmentService.saveService(service);
-   }
+    @PutMapping("/update")
+    ResponseEntity<ResponseObj> UpdateDepartment(@RequestParam Long Department_id,
+                                                 @RequestBody UpdateDepartmentRequest departmentRequest){
+        return departmentService.UpdateDepartment(Department_id, departmentRequest);
+    }
 
-   @PostMapping("/update")
-   @CrossOrigin
-   public Services updateService(@RequestBody Services service) {
-       return departmentService.updateService(service);
-   }
+    @PutMapping("/delete")
+    ResponseEntity<ResponseObj> DeleteDepartment(@RequestParam Long Department_id){
+        return departmentService.DeleteDepartment(Department_id);
+    }
 
-   @DeleteMapping("/delete/{serviceId}")
-   @CrossOrigin
-   public Services deleteServiceById(@PathVariable Long serviceId) {
-       return departmentService.deleteService(serviceId);
-   }
 }

@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
+import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,10 +28,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/petspa/boardingDetail")
-@Tag(name = "User", description = "Boarding Detail Management API")
+@RequestMapping("/petspa/order")
+@Tag(name = "Order", description = "Order Management API")
 @ApiResponses(value = {
-    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = BoardingDetail.class), mediaType = "application/json") }),
+    @ApiResponse (responseCode = "200", content = { @Content(schema = @Schema(implementation = UserOrder.class), mediaType = "application/json") }),
     @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class OrderController {
@@ -46,32 +48,32 @@ public class OrderController {
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public Collection<BoardingDetail> getAllBoardingDetail() {
-       return boardingDetailService.findAllBoardingDetail();
+   public Collection<UserOrder> getAllOrder() {
+       return orderService.findAllOrder();
    }
 
    @GetMapping("/get/{boardingDetailId}")
    @CrossOrigin
-   public BoardingDetail getBoardingDetailById(@PathVariable Long boardingDetailId) {
-       return boardingDetailService.findBoardingDetailById(boardingDetailId);
+   public UserOrder getOrderById(@PathVariable Long orderId) {
+       return orderService.findOrderById(orderId);
    }
 
    @PostMapping("/save")
    @CrossOrigin
-   public BoardingDetail saveBoardingDetail(@RequestBody BoardingDetail boardingDetail) {
-       return boardingDetailService.saveBoardingDetail(boardingDetail);
+   public UserOrder saveOrder(@RequestBody UserOrder order) {
+       return orderService.saveOrder(order);
    }
 
    @PostMapping("/update")
    @CrossOrigin
-   public BoardingDetail updateService(@RequestBody BoardingDetail boardingDetail) {
-       return boardingDetailService.updateBoardingDetail(boardingDetail);
+   public UserOrder updateOrder(@RequestBody UserOrder order) {
+       return orderService.updateOrder(order);
    }
 
-   @DeleteMapping("/delete/{boardingDetailId}")
+   @GetMapping("findAll/{userId}")
    @CrossOrigin
-   public BoardingDetail deleteBoardingDetailById(@PathVariable Long boardingDetailId) {
-       return boardingDetailService.deleteBoardingDetail(boardingDetailId);
+   public Collection<UserOrder> findAllOrderByUser(@PathVariable Long userId) {
+       return orderService.findOrderByUser(userId);
    }
 
 }
