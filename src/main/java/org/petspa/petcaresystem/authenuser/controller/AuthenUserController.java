@@ -141,4 +141,9 @@ public class AuthenUserController {
         InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(verifyCode.trim());
         return inforResponseDTO;
     }
+    //    @PostMapping("/forgetPassword")
+//    public InforResponseDTO forgetPassword(@RequestParam(value = "email") String email){
+//        InforResponseDTO inforResponseDTO = authenUserService.forgetPassword(email);
+//        return inforResponseDTO;
+//    }
 }

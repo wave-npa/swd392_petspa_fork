@@ -27,12 +27,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
+
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthenUserServiceImpl implements AuthenUserService {
@@ -40,6 +43,14 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     private static final String format_pattern = "yyyy-MM-dd HH:mm";
     private static final String logging_message = "An error occurred:";
     private static final Logger logger = LoggerFactory.getLogger(AuthenUserService.class);
+
+    private static final String EMAIL_REGEX =
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+    private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
+    private static final int PASSWORD_LENGTH = 12;
 
     @Autowired
     AuthenUserRepository authenUserRepository;
@@ -525,4 +536,57 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Long userId = jwtUtil.extractUserId(token);
         return authenUserRepository.findById(userId).orElse(null);
     }
+
+    @Override
+    public InforResponseDTO forgetPassword(String email){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Vertify successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        AuthenUser authenUser = authenUserRepository.findByEmail(email);
+        if(authenUser == null){
+            statusCode = HttpStatus.NOT_FOUND.value();
+            statusValue = HttpStatus.NOT_FOUND;
+            message = "Invalid email!";
+            return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
+
+        try {
+            String randomPassword =  generateRandomPassword();
+
+            // email
+            String text = String.format("This is your new password: ", randomPassword);
+            String subject = "PETSPA - Forget password";
+            emailService.sendSimpleMessage(authenUser.getEmail(), subject, text);
+
+            String encodedNewPassword = passwordEncoder.encode(randomPassword);
+
+            authenUser.setPassword(encodedNewPassword);
+            authenUserRepository.save(authenUser);
+
+        } catch (Exception e) {
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        }
+
+        return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
+    }
+
+    public static String generateRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
+
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            password.append(CHARACTERS.charAt(index));
+        }
+
+        return password.toString();
+    }
+
 }

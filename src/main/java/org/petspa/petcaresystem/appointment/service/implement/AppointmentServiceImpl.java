@@ -158,10 +158,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 data.setBookedServiceId(servicesData.getServiceId());
 
                 // find pet
-                if(appointment.getPet() !== null){
                     Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
                     data.setPetId(appointment.getPet().getPetId());
-                }
                 // user order
                 UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
                 if(!userOrder.equals(null)){
