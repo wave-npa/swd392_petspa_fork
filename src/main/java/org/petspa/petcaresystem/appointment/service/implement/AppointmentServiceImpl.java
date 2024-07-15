@@ -360,23 +360,24 @@ public class AppointmentServiceImpl implements AppointmentService {
         userOrder.setUserOrderDate(localDateTime);
 
         // shelter: find available shelter
-        shelter = shelterRepository.findByShelterStatus(ShelterStatus.EMPTY);
+        if(option.equals(true)){
+            shelter = shelterRepository.findByShelterStatus(ShelterStatus.EMPTY);
 
-        // boarding: check shelter status, set boarding date, status, shelter id
-        if (shelter.getStatus() == Status.ACTIVE) {
-            boardingAppointment.setBoardingTime(localDateTime);
-            boardingAppointment.setStatus(Status.ACTIVE);
-            boardingAppointment.setShelter(shelter);
+            // boarding: check shelter status, set boarding date, status, shelter id
+            if (shelter.getStatus() == Status.ACTIVE) {
+                boardingAppointment.setBoardingTime(localDateTime);
+                boardingAppointment.setStatus(Status.ACTIVE);
+                boardingAppointment.setShelter(shelter);
+            }
+
+            // boarding detail
+            java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
+            boardingDetail.setDate(boardingDetailDate);
+            boardingDetail.setBoardingAppointment(boardingAppointment);
+            boardingDetail.setStartTime(localDateTime);
+            boardingDetail.setEndTime(null);
+            boardingDetail.setStatus(Status.ACTIVE);
         }
-
-        // boarding detail
-        java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
-        boardingDetail.setDate(boardingDetailDate);
-        boardingDetail.setBoardingAppointment(boardingAppointment);
-        boardingDetail.setStartTime(localDateTime);
-        boardingDetail.setEndTime(null);
-        boardingDetail.setStatus(Status.ACTIVE);
-
         try {
 
             // --------------------------------user logged in------------------------------------
