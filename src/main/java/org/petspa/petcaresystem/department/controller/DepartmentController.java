@@ -13,16 +13,15 @@ import org.petspa.petcaresystem.department.model.request.UpdateDepartmentRequest
 import org.petspa.petcaresystem.department.service.DepartmentService;
 import org.petspa.petcaresystem.medicine.model.entity.Medicine;
 import org.petspa.petcaresystem.pet.model.response.ResponseObj;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collection;
 
-//@RestController
-//@RequestMapping("api")
-//@Controller
 @RestController
 @RequestMapping("/petspa/department")
 @CrossOrigin
@@ -33,39 +32,43 @@ import java.io.IOException;
         @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class DepartmentController {
 
-    @Hidden
-    @RequestMapping("/")
-    @CrossOrigin
-    public void redirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/swagger-ui.html");
-    }
-
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping(value = {"/viewAllDepartment"})
-    public ResponseEntity<ResponseObj> ViewAllDepartment(){
-        return departmentService.ViewAllDepartment();
+    @Hidden
+    @RequestMapping("/")
+    @CrossOrigin
+    public void redirect(HttpServletResponse response) throws IOException{
+        response.sendRedirect("/swagger-ui.html");
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ResponseObj> CreateDepartment(@RequestBody CreateDepartmentRequest departmentRequest){
-        return departmentService.CreateDepartment(departmentRequest);
-    }
+   @GetMapping("/getAll")
+   @CrossOrigin
+   public Collection<Services> getAllServices() {
+       return departmentService.findAllService();
+   }
 
-    @PutMapping("/update")
-    ResponseEntity<ResponseObj> UpdateDepartment(@RequestParam Long Department_id,
-                                                 @RequestBody UpdateDepartmentRequest departmentRequest){
-        return departmentService.UpdateDepartment(Department_id, departmentRequest);
-    }
+   @GetMapping("/get/{serviceId}")
+   @CrossOrigin
+   public Services getServiceById(@PathVariable Long serviceId) {
+       return departmentService.findServiceById(serviceId);
+   }
 
-    @PutMapping("/detele")
-    ResponseEntity<ResponseObj> DeleteDepartment(@RequestParam Long Department_id){
-        return departmentService.DeleteDepartment(Department_id);
-    }
+   @PostMapping("/save")
+   @CrossOrigin
+   public Services saveService(@RequestBody Services service) {
+       return departmentService.saveService(service);
+   }
 
-    @PutMapping("/restore")
-    ResponseEntity<ResponseObj> RestoreDepartment(@RequestParam Long Department_id){
-        return departmentService.RestoreDepartment(Department_id);
-    }
+   @PostMapping("/update")
+   @CrossOrigin
+   public Services updateService(@RequestBody Services service) {
+       return departmentService.updateService(service);
+   }
+
+   @DeleteMapping("/delete/{serviceId}")
+   @CrossOrigin
+   public Services deleteServiceById(@PathVariable Long serviceId) {
+       return departmentService.deleteService(serviceId);
+   }
 }

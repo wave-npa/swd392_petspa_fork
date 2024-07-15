@@ -69,7 +69,7 @@ public class AuthenUserController {
     }
 
     @GetMapping("/currentUser/{token}")
-    public AuthenUser getCurrentUser(@RequestParam(value = "token") String token) {
+    public AuthenUser getCurrentUser(@PathVariable String token) {
         return authenUserService.getCurrentUser(token);
     }
 

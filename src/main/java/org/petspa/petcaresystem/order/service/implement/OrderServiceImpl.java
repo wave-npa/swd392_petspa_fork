@@ -1,5 +1,9 @@
 package org.petspa.petcaresystem.order.service.implement;
 
-public class OrderServiceImpl {
+import org.petspa.petcaresystem.order.service.OrderService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderServiceImpl implements OrderService{
 
 }
