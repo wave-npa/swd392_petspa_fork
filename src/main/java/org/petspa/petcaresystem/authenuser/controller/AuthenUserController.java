@@ -75,15 +75,16 @@ public class AuthenUserController {
     }
 
     @PutMapping("/updateProfile")
-    public UpdateProfileResponseDTO updateProfile(@RequestParam(value = "user_name") String userName,
+    public UpdateProfileResponseDTO updateProfile(@RequestParam(value = "userId") Long userId,
+                                        @RequestParam(value = "user_name") String user_name,
                                         @RequestParam(value = "address") String address,
                                         @RequestParam(value = "email") String email,
                                         @RequestParam(value = "full_name") String fullName,
                                         @RequestParam(value = "gender") Gender gender,
                                         @RequestParam(value = "phone") String phone)
     {
-        AuthenUser authenUser = new AuthenUser();
-        authenUser.setUserName(userName);
+        AuthenUser authenUser = authenUserService.getUserById(userId).getData().orElse(null);
+        authenUser.setFullName(user_name.trim());
         authenUser.setAddress(address.trim());
         authenUser.setEmail(email.trim());
         authenUser.setFullName(fullName.trim());
@@ -137,9 +138,9 @@ public class AuthenUserController {
         return authenUserService.getAllUser();
     }
 
-    @GetMapping("/vertify")
-    public InforResponseDTO veritfyEmail(@RequestParam(value = "vertify code") String vertifyCode){
-        InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(vertifyCode.trim());
+    @GetMapping("/verify")
+    public InforResponseDTO veritfyEmail(@RequestParam(value = "verify code") String verifyCode){
+        InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(verifyCode.trim());
         return inforResponseDTO;
     }
 }
