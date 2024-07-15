@@ -38,24 +38,24 @@ public class ScheduleDetailController {
     @Autowired
     private ScheduleDetailService scheduleDetailService;
 
-    @GetMapping(value = {"/ViewScheduledetailByid/{schedule_id}"})
-    public ResponseEntity<ResponseObj> ViewAllScheduleDetailByScheduleId(@PathVariable Long schedule_id){
-        return scheduleDetailService.ViewAllScheduleDetailByScheduleId(schedule_id);
-    }
-    @PostMapping("/{schedule_id}/save")
-    public ResponseEntity<ResponseObj> CreateScheduleDetail(@PathVariable Long schedule_id,
-                                                            @RequestBody CreateScheduleDetailRequest createScheduleDetailRequest){
-        return scheduleDetailService.CreateScheduleDetail(schedule_id, createScheduleDetailRequest);
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ResponseObj> UpdateScheduleDetail(@RequestParam Long detail_id,
-                                                            @RequestBody UpdateScheduleDetailRequest updateScheduleDetailRequest ){
-        return scheduleDetailService.UpdateScheduleDetail(detail_id, updateScheduleDetailRequest);
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ResponseObj> DeleteScheduleDetail(@RequestParam Long detail_id){
-        return scheduleDetailService.DeleteScheduleDetail(detail_id);
-    }
+//    @GetMapping(value = {"/ViewScheduledetailByid/{schedule_id}"})
+//    public ResponseEntity<ResponseObj> ViewAllScheduleDetailByScheduleId(@PathVariable Long schedule_id){
+//        return scheduleDetailService.ViewAllScheduleDetailByScheduleId(schedule_id);
+//    }
+//    @PostMapping("/{schedule_id}/save")
+//    public ResponseEntity<ResponseObj> CreateScheduleDetail(@PathVariable Long schedule_id,
+//                                                            @RequestBody CreateScheduleDetailRequest createScheduleDetailRequest){
+//        return scheduleDetailService.CreateScheduleDetail(schedule_id, createScheduleDetailRequest);
+//    }
+//
+//    @PutMapping("/update")
+//    public ResponseEntity<ResponseObj> UpdateScheduleDetail(@RequestParam Long detail_id,
+//                                                            @RequestBody UpdateScheduleDetailRequest updateScheduleDetailRequest ){
+//        return scheduleDetailService.UpdateScheduleDetail(detail_id, updateScheduleDetailRequest);
+//    }
+//
+//    @PutMapping("/update")
+//    public ResponseEntity<ResponseObj> DeleteScheduleDetail(@RequestParam Long detail_id){
+//        return scheduleDetailService.DeleteScheduleDetail(detail_id);
+//    }
 }
