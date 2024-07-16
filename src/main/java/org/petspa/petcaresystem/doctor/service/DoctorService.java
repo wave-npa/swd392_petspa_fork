@@ -13,7 +13,7 @@ public interface DoctorService {
 
     public List<DoctorResponseDTO> findAllDoctor();
 
-    public Doctor findDoctorById(Long doctorId);
+    public AuthenUser findDoctorById(Long doctorId);
 
     public Doctor saveDoctor(Doctor doctor);
 

@@ -47,7 +47,7 @@ public class DoctorController {
 
    @GetMapping("/get/{doctorId}")
    @CrossOrigin
-   public Doctor getDoctorById(@PathVariable Long doctorId) {
+   public AuthenUser getDoctorById(@PathVariable Long doctorId) {
        return doctorService.findDoctorById(doctorId);
    }
 
