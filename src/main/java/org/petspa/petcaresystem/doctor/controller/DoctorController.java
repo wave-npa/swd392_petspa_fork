@@ -6,6 +6,7 @@ import java.util.List;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.model.DoctorData;
+import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
 public class DoctorController {
 
+   @Autowired
    private DoctorService doctorService;
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public List<AuthenUser> getAllDoctor() {
+   public List<DoctorResponseDTO> getAllDoctor() {
        return doctorService.findAllDoctor();
    }
 

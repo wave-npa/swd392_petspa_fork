@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.doctor.model.Doctor;
+import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface DoctorService {
 
-    public List<AuthenUser> findAllDoctor();
+    public List<DoctorResponseDTO> findAllDoctor();
 
     public Doctor findDoctorById(Long doctorId);
 
@@ -20,4 +21,5 @@ public interface DoctorService {
 
     public Doctor deleteDoctor(Long doctorId);
 
+    public List<Doctor> findAll();
 }

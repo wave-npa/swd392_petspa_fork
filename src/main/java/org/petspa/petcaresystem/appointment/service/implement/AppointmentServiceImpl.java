@@ -801,4 +801,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return new AppointmentResponseDTO(infor, appointmentResponseDataList);
     }
+
+    @Override
+    public List<Long> findByDoctorId(Long doctor_id) {
+        return appointmentRepository.findByDoctorId(doctor_id);
+    }
 }
