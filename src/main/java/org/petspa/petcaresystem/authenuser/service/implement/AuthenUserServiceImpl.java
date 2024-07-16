@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class AuthenUserServiceImpl implements AuthenUserService {
+    // cmt
 
     private static final String format_pattern = "yyyy-MM-dd HH:mm";
     private static final String logging_message = "An error occurred:";
