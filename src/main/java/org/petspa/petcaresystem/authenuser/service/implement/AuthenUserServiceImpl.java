@@ -692,7 +692,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             message = "Something went wrong, server error!";
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUser);
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUserRepository.save(authenUser));
     }
 
     @Override
@@ -717,7 +717,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             message = "Something went wrong, server error!";
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUser);
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUserRepository.save(authenUser));
     }
 
 }
