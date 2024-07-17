@@ -148,7 +148,7 @@ public class AuthenUserController {
         return authenUserService.updateUserRole(userId, role);
     }
 
-    @DeleteMapping("/updateRole/{userId}")
+    @DeleteMapping("/delete/{userId}")
     public ResponseAPI deleteUser(@PathVariable Long userId) {
         return authenUserService.deleteUser(userId);
     }
