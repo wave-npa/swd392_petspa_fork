@@ -454,7 +454,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Override
     public List<AuthenUser> getAllUser() {
-        List<AuthenUser> authenUserList = authenUserRepository.findAll();
+        List<AuthenUser> authenUserList = authenUserRepository.findAllUsersOrderById();
         return authenUserList;
     }
 
