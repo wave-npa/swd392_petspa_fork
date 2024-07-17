@@ -143,7 +143,6 @@ public class AuthenUserController {
         return inforResponseDTO;
     }
 
-//    @PostMapping("/forgetPassword")
     @PostMapping("/updateRole/{userId}")
     public ResponseAPI updateUserRole(@PathVariable Long userId, @RequestBody Role role) {
         return authenUserService.updateUserRole(userId, role);

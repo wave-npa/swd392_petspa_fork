@@ -76,81 +76,68 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     public static boolean isValidEmail(String email) {
         return pattern.matcher(email).matches();
     }
+     @Override
+     public JwtResponseDTO login(String email, String password) {
+         LocalDateTime localDateTime = LocalDateTime.now();
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+         String timeStamp = localDateTime.format(formatter);
+         String message = "Login success";
+         int statusCode = HttpStatus.OK.value();
+         HttpStatus statusValue = HttpStatus.OK;
+         Optional<AuthenUser> authenUser;
+         String jwtToken = "";
 
-    @Override
-    public JwtResponseDTO login(String email, String password) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-        String timeStamp = localDateTime.format(formatter);
-        String message = "Login success";
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus statusValue = HttpStatus.OK;
-        Optional<AuthenUser> authenUser;
-        String jwtToken = "";
+         // check session
+         HttpSession session = request.getSession();
+         String token = (String) session.getAttribute("jwtToken");
+         if (token != null && !token.isEmpty()) {
+             message = "You have already logged in!";
+             statusCode = HttpStatus.BAD_REQUEST.value();
+             statusValue = HttpStatus.BAD_REQUEST;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
 
-        // check session
-        HttpSession session = request.getSession();
-        String token = (String) session.getAttribute("jwtToken");
-        if (token != null && !token.isEmpty()) {
-            message = "You have already logged in!";
-            statusCode = HttpStatus.BAD_REQUEST.value();
-            statusValue = HttpStatus.BAD_REQUEST;
-            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-        }
+         authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
+         if (authenUser.get().getStatus() == Status.INACTIVE) {
+             message = "Your account has been blocked or inactive! Please contact for more information";
+             statusCode = HttpStatus.FORBIDDEN.value();
+             statusValue = HttpStatus.FORBIDDEN;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
 
-        authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
-        if (authenUser.get().getStatus() == Status.INACTIVE) {
-            message = "Your account has been blocked or inactive! Please contact for more information";
-            statusCode = HttpStatus.FORBIDDEN.value();
-            statusValue = HttpStatus.FORBIDDEN;
-            if (authenUser.isPresent()) {
-                if (authenUser.get().getStatus() == Status.INACTIVE) {
-                    message = "Your account has been blocked or inactive! Please vertify your email or contact for more information";
-                    statusCode = HttpStatus.FORBIDDEN.value();
-                    statusValue = HttpStatus.FORBIDDEN;
-                    return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-                }
-            } else {
-                message = "Invalid email/password";
-                statusCode = HttpStatus.UNAUTHORIZED.value();
-                statusValue = HttpStatus.UNAUTHORIZED;
-                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-            }
-
-            String encodedPassword = authenUser.get().getPassword();
+         String encodedPassword = authenUser.get().getPassword();
 
 
-            if (!passwordEncoder.matches(password, encodedPassword)) {
-                message = "Invalid email/password";
-                statusCode = HttpStatus.UNAUTHORIZED.value();
-                statusValue = HttpStatus.UNAUTHORIZED;
-                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-            }
+         if (!passwordEncoder.matches(password, encodedPassword)) {
+             message = "Invalid email/password";
+             statusCode = HttpStatus.UNAUTHORIZED.value();
+             statusValue = HttpStatus.UNAUTHORIZED;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
 
-            try {
-                if (authenUser.isPresent()) {
-                    jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
-                            authenUser.get().getRole().getRoleName(),
-                            authenUser.get().getUserName(),
-                            authenUser.get().getUserId());
-                    session = request.getSession();
-                    session.setAttribute("jwtToken", jwtToken);
-                } else {
-                    message = "Invalid email/password";
-                    statusCode = HttpStatus.UNAUTHORIZED.value();
-                    statusValue = HttpStatus.UNAUTHORIZED;
-                    return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-                }
-            } catch (Exception e) {
-                logger.error("Error occurred during login", e);
-                message = "Something went wrong, server error!";
-                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-                statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-            }
-        }
-        return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    }
+         try {
+             if (authenUser.isPresent()) {
+                 jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
+                         authenUser.get().getRole().getRoleName(),
+                         authenUser.get().getUserName(),
+                         authenUser.get().getUserId());
+                 session = request.getSession();
+                 session.setAttribute("jwtToken", jwtToken);
+             } else {
+                 message = "Invalid email/password";
+                 statusCode = HttpStatus.UNAUTHORIZED.value();
+                 statusValue = HttpStatus.UNAUTHORIZED;
+                 return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+             }
+         } catch (Exception e) {
+             logger.error("Error occurred during login", e);
+             message = "Something went wrong, server error!";
+             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+         }
 
+         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+     }
 
     @Override
     public RegisterResponseDTO register(AuthenUser authenUser, String passwordConfirm) {
