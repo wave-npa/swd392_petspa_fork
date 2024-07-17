@@ -74,6 +74,15 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
     }
 
     @Override
+    public Services saveServiceNoType(Services service, Long typeId) {
+        ServiceType serviceType = serviceTypeRepository.findById(typeId).orElse(null);
+        Collection<ServiceType> list = new ArrayList<ServiceType>();
+        list.add(serviceType);
+        service.setTypeOfService(list);
+        return servicesRepository.save(service);
+    }
+
+    @Override
     public Services updateService(Services service) {
         return servicesRepository.save(service);
     }
