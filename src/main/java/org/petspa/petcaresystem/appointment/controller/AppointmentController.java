@@ -6,6 +6,7 @@ import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO2;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.enums.Option;
@@ -33,9 +34,9 @@ public class AppointmentController {
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public AppointmentResponseDTO getAllAppointment() {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAllAppointment();
-       return appointmentResponseDTO;
+   public AppointmentResponseDTO2 getAllAppointment() {
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAllAppointment();
+       return appointmentResponseDTO2;
    }
 
    @GetMapping("/getById/{appointmentId}")
