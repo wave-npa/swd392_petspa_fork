@@ -24,6 +24,8 @@ public interface AuthenUserService {
     public ResponseAPI getUsersByCreateDateRange(LocalDateTime start_date, LocalDateTime end_date);
     public ResponseAPI searchByUserNameTEST(String searchTerm, Gender gender, Status status, String orderBy, String order);
     public ResponseAPI findAllUsersWithAgeRange(Integer startAge, Integer endAge);
+    public ResponseAPI updateUserRole(Long userId, Role role);
+    public ResponseAPI deleteUser(Long userId);
     public AuthenUser createUser(AuthenUser authenUser);
 
     public InforResponseDTO verifyRegister(String userEnterCode);

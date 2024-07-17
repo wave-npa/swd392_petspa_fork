@@ -20,6 +20,7 @@ public class DoctorServiceImpl implements DoctorService {
     private DoctorRepository doctorRepository;
 
     @Autowired
+    @Autowired
     private AuthenUserRepository authenUserRepository;
 
     @Override

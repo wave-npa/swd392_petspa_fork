@@ -16,6 +16,7 @@ import org.petspa.petcaresystem.config.JwtUtil;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.role.model.Role;
+import org.petspa.petcaresystem.role.repository.RoleRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,8 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     private SimpleMailMessage simpleMailMessage;
     @Autowired
     private EmailServiceImpl emailService;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public AuthenUser createUser(AuthenUser authenUser) {
@@ -621,4 +624,63 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
             return password.toString();
         }
+
+
+    @Override
+    public ResponseAPI updateUserRole(Long userId, Role role) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Get user successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+        AuthenUser authenUser = authenUserRepository.findById(userId).orElse(null);
+        try {
+            authenUser.setRole(role);
+            if (authenUser.equals(null)) {
+                message = "User not found!";
+                statusCode = HttpStatus.NO_CONTENT.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseAPI(message, timeStamp, statusCode, statusValue, (Optional<AuthenUser>) null);
+            }
+            Role checkRole = roleRepository.findById(role.getRoleId()).orElse(null);
+            if (!role.equals(checkRole)) {
+                message = "User not found!";
+                statusCode = HttpStatus.NO_CONTENT.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseAPI(message, timeStamp, statusCode, statusValue, (Optional<AuthenUser>) null);
+            }
+        } catch (Exception e) {
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUserRepository.save(authenUser));
     }
+
+    @Override
+    public ResponseAPI deleteUser(Long userId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Get user successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+        AuthenUser authenUser = authenUserRepository.findById(userId).orElse(null);
+        try {
+            authenUser.setStatus(Status.INACTIVE);
+            if (authenUser.equals(null)) {
+                message = "User not found!";
+                statusCode = HttpStatus.NO_CONTENT.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseAPI(message, timeStamp, statusCode, statusValue, (Optional<AuthenUser>) null);
+            }
+        } catch (Exception e) {
+            logger.error(this.logging_message, e);
+            message = "Something went wrong, server error!";
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseAPI(message, timeStamp, statusCode, statusValue, authenUserRepository.save(authenUser));
+    }
+
+}
