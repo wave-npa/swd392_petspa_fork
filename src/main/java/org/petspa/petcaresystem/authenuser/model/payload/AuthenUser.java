@@ -58,11 +58,11 @@ public class AuthenUser implements Serializable {
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = true)
     private String address;
 
     @Pattern(regexp = "\\d{10,11}", message = "Phone number must be 10-11 digits")
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone", nullable = true)
     private String phone;
 
     @Column(name = "create_date", nullable = false)

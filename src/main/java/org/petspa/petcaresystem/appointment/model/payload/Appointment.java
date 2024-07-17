@@ -46,7 +46,7 @@ public class Appointment implements Serializable {
     private Collection<Doctor> bookedDoctor;
 
     @ManyToOne
-    @JoinColumn(name = "pet_id")
+    @JoinColumn(name = "pet_id", nullable = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Pet pet;

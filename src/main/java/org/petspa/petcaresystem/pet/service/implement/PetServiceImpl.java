@@ -26,6 +26,8 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
+
+    @Autowired
     AuthenUserRepository userRepository;
 
     @Override
@@ -60,7 +62,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(Long cus_id) {
+    public ResponseEntity<ResponseObj> ViewListPetProfilebyOwnerId(Long cus_id) {
         try {
             AuthenUser customer = userRepository.findById(cus_id).orElse(null);
 
@@ -111,7 +113,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public ResponseEntity<ResponseObj> ViewListAllPetProflie() {
         try {
-            List<Pet> petlist = petRepository.findAll(Sort.by(Sort.Direction.ASC, "pet_name"));
+            List<Pet> petlist = petRepository.findAll();
             if (petlist.isEmpty()) {
                 ResponseObj responseObj = ResponseObj.builder()
                         .message("pet list is empty")
@@ -242,11 +244,9 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public ResponseEntity<ResponseObj> CreatePetProflie(Long cus_id, CreatePetRequest petRequest) {
         try {
-            AuthenUser customer = userRepository.getReferenceById(cus_id);
-            List<AuthenUser> cusList = userRepository.findAll();
+            AuthenUser cus = userRepository.findByUserId(cus_id);
             Pet pet = new Pet();
-            for (AuthenUser cus : cusList) {
-                if (cus.getStatus().equals(Status.ACTIVE) && cus.equals(customer)) {
+                if (cus.getStatus().equals(Status.ACTIVE)) {
 
                     pet.setPet_name(petRequest.getPet_name());
 
@@ -261,7 +261,7 @@ public class PetServiceImpl implements PetService {
 
                     pet.setStatus(Status.ACTIVE);
 
-                    pet.setOwner(customer);
+                    pet.setOwner(cus);
 
                     Pet createpet = petRepository.save(pet);
                     PetResponse petResponse = PetMapper.toPetResponse(createpet);
@@ -272,7 +272,6 @@ public class PetServiceImpl implements PetService {
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
-            }
 
             ResponseObj responseObj = ResponseObj.builder()
                     .message("Customer not found")
@@ -372,39 +371,4 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    @Override
-    public ResponseEntity<ResponseObj> RestorePetProflie(Long pet_id) {
-        try {
-            Pet petdelete = petRepository.getReferenceById(pet_id);
-            List<Pet> petlist = petRepository.findAll();
-
-            for (Pet pet : petlist) {
-                if (pet.equals(petdelete) && pet.getStatus() == Status.INACTIVE) {
-                    pet.setStatus(Status.ACTIVE);
-                    petRepository.save(pet);
-
-                    PetResponse petResponse = PetMapper.toPetResponse(pet);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Restore Pet Profile Successfully")
-                            .data(petResponse)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Pet not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load Pet Profile")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
-    }
 }

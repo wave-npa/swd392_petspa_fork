@@ -1,10 +1,15 @@
 package org.petspa.petcaresystem.doctor.service.implement;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+import java.util.List;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
+import org.petspa.petcaresystem.doctor.model.DoctorData;
+import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
+import org.petspa.petcaresystem.doctor.repository.DoctorDataRepository;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.enums.Status;
@@ -18,16 +23,31 @@ public class DoctorServiceImpl implements DoctorService {
     private DoctorRepository doctorRepository;
 
     @Autowired
+    private DoctorDataRepository doctorDataRepository;
+
+    @Autowired
     private AuthenUserRepository authenUserRepository;
 
     @Override
-    public Collection<Doctor> findAllDoctor() {
+    public List<Doctor> findAll() {
         return doctorRepository.findAll();
     }
 
     @Override
-    public Doctor findDoctorById(Long doctorId) {
-        return doctorRepository.findById(doctorId).orElse(null);
+    public List<DoctorResponseDTO> findAllDoctor() {
+        List<Doctor> listDoctor = doctorRepository.findAll();
+        List<DoctorResponseDTO> listResponse = new ArrayList<>(); 
+        for(int i = 0;i<listDoctor.size();i++){
+            AuthenUser authenUser = authenUserRepository.findByUserId(listDoctor.get(i).getUser().getUserId());
+            DoctorResponseDTO doctorResponseDTO = new DoctorResponseDTO(listDoctor.get(i).getDoctorId(), authenUser);
+            listResponse.add(doctorResponseDTO);
+        }
+        return listResponse;
+    }
+
+    @Override
+    public AuthenUser findDoctorById(Long doctorId) {
+        return doctorRepository.findById(doctorId).orElse(null).getUser();
     }
 
     @Override

@@ -19,7 +19,6 @@ import javax.crypto.SecretKey;
 public class JwtUtil {
 
     public static String SECRET_KEY = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
-    //sáng nay deprecated chạy bth
 
 
     private SecretKey getSingingKey(){
@@ -83,7 +82,7 @@ public class JwtUtil {
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 10000 * 60 * 24))
                 .signWith(getSingingKey()).compact();
    }
 

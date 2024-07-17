@@ -49,7 +49,7 @@ public class PetController {
 
     @GetMapping(value = {"/{cus_id}/ownPet"})
     public ResponseEntity<ResponseObj> ViewListPetProfliebyOwnerId(@PathVariable Long cus_id){
-        return petService.ViewListPetProfliebyOwnerId(cus_id);
+        return petService.ViewListPetProfilebyOwnerId(cus_id);
     }
 
     @GetMapping(value = {"/viewListPet"})
@@ -87,10 +87,5 @@ public class PetController {
     @PutMapping("/delete")
     public ResponseEntity<ResponseObj> DeletePetProflie(@RequestParam Long pet_id){
         return petService.DeletePetProflie(pet_id);
-    }
-
-    @PutMapping("/restore")
-    public ResponseEntity<ResponseObj> RestorePetProflie(@RequestParam Long pet_id){
-        return petService.RestorePetProflie(pet_id);
     }
 }

@@ -114,13 +114,11 @@ public class MedicalReportImpl implements MedicalRecordService {
     @Override
     public ResponseEntity<ResponseObj> CreateMedicalRecord(Long pet_id, CreateMedicalRecordRequest MedicalRecordRequest) {
         try {
-            Pet pet = petRepository.getReferenceById(pet_id);
-            List<Pet> petList = petRepository.findAll();
+            Pet pet = petRepository.findByPetId(pet_id);
             MedicalRecord medicalrecord = new MedicalRecord();
-            for (Pet pet1 : petList) {
-                if (pet1.getStatus().equals(Status.ACTIVE) && pet1.equals(pet)) {
+                if (pet.getStatus().equals(Status.ACTIVE)) {
 
-                    medicalrecord.setPet(pet1);
+                    medicalrecord.setPet(pet);
 
                     medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
@@ -140,7 +138,6 @@ public class MedicalReportImpl implements MedicalRecordService {
                             .build();
                     return ResponseEntity.ok().body(responseObj);
                 }
-            }
 
             ResponseObj responseObj = ResponseObj.builder()
                     .message("pet not found")
@@ -161,11 +158,10 @@ public class MedicalReportImpl implements MedicalRecordService {
     @Override
     public ResponseEntity<ResponseObj> UpdateMedicalRecord(Long medicalrecord_id, UpdateMedicalRecordRequest MedicalRecordRequest) {
         try {
-            MedicalRecord medicalrecordUpdate = medicalRecordRepository.getReferenceById(medicalrecord_id);
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
+            MedicalRecord medicalrecordUpdate = medicalRecordRepository.findById(medicalrecord_id).orElse(null);
 
-            for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecordUpdate) && medicalrecord.getStatus().equals(Status.ACTIVE)) {
+            MedicalRecord medicalrecord = new MedicalRecord();
+                if (medicalrecordUpdate.getStatus().equals(Status.ACTIVE)) {
 
                     medicalrecord.setMedical_description(MedicalRecordRequest.getDescription());
 
@@ -196,9 +192,7 @@ public class MedicalReportImpl implements MedicalRecordService {
                             .data(medicalRecordResponse)
                             .build();
                     return ResponseEntity.ok().body(responseObj);
-
                 }
-            }
 
             ResponseObj responseObj = ResponseObj.builder()
                     .message("medical record not found")
@@ -219,24 +213,12 @@ public class MedicalReportImpl implements MedicalRecordService {
     @Override
     public ResponseEntity<ResponseObj> DeleteMedicalRecord(Long medicalrecord_id) {
         try {
-            MedicalRecord medicalrecorddelete = medicalRecordRepository.getReferenceById(medicalrecord_id);
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
-
-            for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecorddelete) && medicalrecord.getStatus().equals(Status.ACTIVE)) {
+            MedicalRecord medicalrecord = medicalRecordRepository.findById(medicalrecord_id).orElse(null);
 
                     medicalrecord.setStatus(Status.INACTIVE);
 
                     medicalRecordRepository.save(medicalrecord);
 
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Delete Medical Record Successfully")
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-
-                }
-            }
-
             ResponseObj responseObj = ResponseObj.builder()
                     .message("medical record not found")
                     .data(null)
@@ -253,43 +235,4 @@ public class MedicalReportImpl implements MedicalRecordService {
         }
     }
 
-    @Override
-    public ResponseEntity<ResponseObj> RestoreMedicalRecord(Long medicalrecord_id) {
-        try {
-            MedicalRecord medicalrecordrestore = medicalRecordRepository.getReferenceById(medicalrecord_id);
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
-
-            for (MedicalRecord medicalrecord : medicalRecordList) {
-                if (medicalrecord.equals(medicalrecordrestore) && medicalrecord.getStatus().equals(Status.INACTIVE)) {
-
-                    medicalrecord.setStatus(Status.ACTIVE);
-
-                    MedicalRecord restoreMedicalRecord = medicalRecordRepository.save(medicalrecord);
-                    MedicalRecordResponse medicalRecordResponse = MedicalRecordMapper
-                            .toMedicalRecordResponse(restoreMedicalRecord);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Restore Medical Record Successfully")
-                            .data(medicalRecordResponse)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-
-                }
-            }
-
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("medical record not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
-    }
 }

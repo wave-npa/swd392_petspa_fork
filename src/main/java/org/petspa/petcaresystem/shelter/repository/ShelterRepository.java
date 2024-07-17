@@ -13,5 +13,4 @@ public interface ShelterRepository extends JpaRepository<Shelter, Long>{
     public Shelter findFirstByShelterStatus(ShelterStatus shelterStatus);
     public Shelter findByShelterId(Long id);
     public Shelter findByShelterName(String name);
-
 }

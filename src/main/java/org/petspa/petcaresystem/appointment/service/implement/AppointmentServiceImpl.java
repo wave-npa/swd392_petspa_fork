@@ -464,6 +464,38 @@ public class AppointmentServiceImpl implements AppointmentService {
             boardingDetail.setEndTime(null);
             boardingDetail.setStatus(Status.ACTIVE);
         }
+
+        if(option.equals(true)){
+        // shelter: find available shelter
+        shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
+
+        // boarding: check shelter status, set boarding date, status, shelter id
+        if (shelter != null) {
+            if (shelter.getStatus() == Status.ACTIVE) {
+                boardingAppointment.setBoardingTime(localDateTime);
+                boardingAppointment.setStatus(Status.ACTIVE);
+                boardingAppointment.setShelter(shelter);
+            } else {
+                message = "No shelter available!";
+                statusCode = HttpStatus.BAD_REQUEST.value();
+                statusValue = HttpStatus.BAD_REQUEST;
+                return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+            }
+        } else {
+            message = "No shelter available!";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+        }
+
+        // boarding detail
+        java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
+        boardingDetail.setDate(boardingDetailDate);
+        boardingDetail.setBoardingAppointment(boardingAppointment);
+        boardingDetail.setStartTime(localDateTime);
+        boardingDetail.setEndTime(null);
+        boardingDetail.setStatus(Status.ACTIVE);
+        }
         try {
 
             // --------------------------------user logged in------------------------------------
