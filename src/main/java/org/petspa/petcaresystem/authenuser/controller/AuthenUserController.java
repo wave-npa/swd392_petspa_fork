@@ -6,6 +6,7 @@ import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.enums.Gender;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.role.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -141,6 +142,17 @@ public class AuthenUserController {
         InforResponseDTO inforResponseDTO = authenUserService.verifyRegister(verifyCode.trim());
         return inforResponseDTO;
     }
+
+    @PostMapping("/updateRole/{userId}")
+    public ResponseAPI updateUserRole(@PathVariable Long userId, @RequestBody Role role) {
+        return authenUserService.updateUserRole(userId, role);
+    }
+
+    @DeleteMapping("/updateRole/{userId}")
+    public ResponseAPI deleteUser(@PathVariable Long userId) {
+        return authenUserService.deleteUser(userId);
+    }
+
     //    @PostMapping("/forgetPassword")
 //    public InforResponseDTO forgetPassword(@RequestParam(value = "email") String email){
 //        InforResponseDTO inforResponseDTO = authenUserService.forgetPassword(email);

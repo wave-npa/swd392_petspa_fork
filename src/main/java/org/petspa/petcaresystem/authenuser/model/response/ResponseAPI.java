@@ -16,8 +16,18 @@ public class ResponseAPI {
     private String timeStamp;
     private int statusCode;
     private HttpStatus statusValue;
+    private AuthenUser user;
     private List<AuthenUser> list;
     private Optional<AuthenUser> data;
+
+    public ResponseAPI(String message, String timeStamp, int statusCode, HttpStatus statusValue, AuthenUser user) {
+        this.message = message;
+        this.timeStamp = timeStamp;
+        this.statusCode = statusCode;
+        this.statusValue = statusValue;
+        this.user = user;
+    }
+
 
     public ResponseAPI(String message, String timeStamp, int statusCode, HttpStatus statusValue, List<AuthenUser> list) {
         this.message = message;
