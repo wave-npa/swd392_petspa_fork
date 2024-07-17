@@ -10,20 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class DoctorData {
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        @Column(name = "doctor_id")
         private Long doctorId;
-
-        private Long userId;
-
-        private Long departmentId;
-        
-        private Long scheduleId;
+        private String userName;
+        private String departmentName;
 }

@@ -8,10 +8,8 @@ import jakarta.persistence.Query;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForRegister;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForUpdateProfile;
-import org.petspa.petcaresystem.authenuser.model.payload.Vertify;
 import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
-import org.petspa.petcaresystem.authenuser.repository.VertifyRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.config.EmailServiceImpl;
 import org.petspa.petcaresystem.config.JwtUtil;
@@ -23,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -72,12 +69,14 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     private SimpleMailMessage simpleMailMessage;
     @Autowired
     private EmailServiceImpl emailService;
-    @Autowired
-    private VertifyRepository vertifyRepository;
 
     @Override
     public AuthenUser createUser(AuthenUser authenUser) {
         return authenUserRepository.save(authenUser);
+    }
+
+    public static boolean isValidEmail(String email) {
+        return pattern.matcher(email).matches();
     }
 
     @Override
@@ -106,38 +105,50 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             message = "Your account has been blocked or inactive! Please contact for more information";
             statusCode = HttpStatus.FORBIDDEN.value();
             statusValue = HttpStatus.FORBIDDEN;
-            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-        }
-
-        String encodedPassword = authenUser.get().getPassword();
-
-
-        if (!passwordEncoder.matches(password, encodedPassword)) {
-            message = "Invalid email/password";
-            statusCode = HttpStatus.UNAUTHORIZED.value();
-            statusValue = HttpStatus.UNAUTHORIZED;
-            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-        }
-
-        try {
             if (authenUser.isPresent()) {
-                jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
-                        authenUser.get().getRole().getRoleName(),
-                        authenUser.get().getUserName(),
-                        authenUser.get().getUserId());
-                session = request.getSession();
-                session.setAttribute("jwtToken", jwtToken);
+                if (authenUser.get().getStatus() == Status.INACTIVE) {
+                    message = "Your account has been blocked or inactive! Please vertify your email or contact for more information";
+                    statusCode = HttpStatus.FORBIDDEN.value();
+                    statusValue = HttpStatus.FORBIDDEN;
+                    return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+                }
             } else {
                 message = "Invalid email/password";
                 statusCode = HttpStatus.UNAUTHORIZED.value();
                 statusValue = HttpStatus.UNAUTHORIZED;
                 return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
             }
-        } catch (Exception e) {
-            logger.error("Error occurred during login", e);
-            message = "Something went wrong, server error!";
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+
+            String encodedPassword = authenUser.get().getPassword();
+
+
+            if (!passwordEncoder.matches(password, encodedPassword)) {
+                message = "Invalid email/password";
+                statusCode = HttpStatus.UNAUTHORIZED.value();
+                statusValue = HttpStatus.UNAUTHORIZED;
+                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+            }
+
+            try {
+                if (authenUser.isPresent()) {
+                    jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
+                            authenUser.get().getRole().getRoleName(),
+                            authenUser.get().getUserName(),
+                            authenUser.get().getUserId());
+                    session = request.getSession();
+                    session.setAttribute("jwtToken", jwtToken);
+                } else {
+                    message = "Invalid email/password";
+                    statusCode = HttpStatus.UNAUTHORIZED.value();
+                    statusValue = HttpStatus.UNAUTHORIZED;
+                    return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+                }
+            } catch (Exception e) {
+                logger.error("Error occurred during login", e);
+                message = "Something went wrong, server error!";
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+                statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
         }
 
         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
@@ -154,7 +165,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         HttpStatus statusValue = HttpStatus.OK;
 
         // confirm password
-        if(!authenUser.getPassword().equals(passwordConfirm)){
+        if (!authenUser.getPassword().equals(passwordConfirm)) {
             message = "Password confirm not match!";
             statusCode = HttpStatus.UNPROCESSABLE_ENTITY.value();
             statusValue = HttpStatus.UNPROCESSABLE_ENTITY;
@@ -169,10 +180,11 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         authenUser.setCreate_date(localDateTime);
 
         // set status value
-        authenUser.setStatus(Status.ACTIVE);
+        authenUser.setStatus(Status.INACTIVE);
 
         // set roleID = customer role
-        Role role = roleRepository.findById(Long.parseLong("3")).orElse(null);
+        Role role = new Role();
+        role.setRoleId(3L);
         authenUser.setRole(role);
 
         // check user name used?
@@ -200,19 +212,26 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         }
 
         CustomAuthenUserForRegister customAuthenUserForRegister = new CustomAuthenUserForRegister();
+
+        if (!isValidEmail(authenUser.getEmail())) {
+            message = "This email is invalid! Please enter a real email follow format example@gmail.com";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
+            return new RegisterResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
+
         try {
             authenUserRepository.save(authenUser);
 
+            HttpSession session = request.getSession();
+
             // vertify
             String vertifyCode = UUID.randomUUID().toString();
-            Vertify vertify = new Vertify();
-            vertify.setUserId(authenUser.getUserId());
-            vertify.setVertifyCode(vertifyCode);
-            vertifyRepository.save(vertify);
+            session.setAttribute("vertifyCode", vertifyCode);
 
             // email
-            HttpSession session = request.getSession();
             session.setAttribute("userId", authenUser.getUserId());
+            System.out.println(authenUser.getUserId());
             String text = String.format(simpleMailMessage.getText(), vertifyCode);
             String subject = "PETSPA - Register Verify code";
             emailService.sendSimpleMessage(authenUser.getEmail(), subject, text);
@@ -226,7 +245,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             customAuthenUserForRegister.setAddress(authenUser.getAddress());
             customAuthenUserForRegister.setPhone(authenUser.getPhone());
             customAuthenUserForRegister.setCreate_date(timeStamp);
-            customAuthenUserForRegister.setStatus("ACTIVE");
+            customAuthenUserForRegister.setStatus("INACTIVE");
             customAuthenUserForRegister.setRole("CUSTOMER");
         } catch (Exception e) {
             logger.error(this.logging_message, e);
@@ -255,6 +274,15 @@ public class AuthenUserServiceImpl implements AuthenUserService {
             return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
         }
         Long userId = jwtUtil.extractUserId(token);
+
+        // check user name used?
+        AuthenUser existingUserName = authenUserRepository.findByUserName(authenUser.getUserName());
+        if (existingUserName != null && !existingUserName.getUserId().equals(userId)) {
+            message = "This user name has already used! Please try another";
+            statusCode = HttpStatus.CONFLICT.value();
+            statusValue = HttpStatus.CONFLICT;
+            return new UpdateProfileResponseDTO(message, timeStamp, statusCode, statusValue, null);
+        }
 
         // check email exist?
         AuthenUser existingEmail = authenUserRepository.findByEmail(authenUser.getEmail());
@@ -304,7 +332,8 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     }
 
     @Override
-    public UpdatePassowordResponseDTO updatePassword(String current_password, String new_password, String confirm_password) {
+    public UpdatePassowordResponseDTO updatePassword(String current_password, String new_password, String
+            confirm_password) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -330,13 +359,18 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         AuthenUser authenUser = authenUserRepository.findByUserId(userId);
         String userPasswordStoredInDatabase = authenUser.getPassword();
         if (!passwordEncoder.matches(current_password, userPasswordStoredInDatabase)) {
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
             message = "Incorrect current password! Use 'Forget Password' if you don't remember your password";
+
             return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
         }
 
         // check confirm password match?
         if (!new_password.equals(confirm_password)) {
             message = "Not match new password and confirm password! Please try again";
+            statusCode = HttpStatus.BAD_REQUEST.value();
+            statusValue = HttpStatus.BAD_REQUEST;
             return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
         }
 
@@ -367,22 +401,27 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         int statusCode = HttpStatus.OK.value();
         HttpStatus statusValue = HttpStatus.OK;
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         if (session != null) {
             session.invalidate();
-        } else {
-            message = "You haven't logged in yet!";
-            statusCode = HttpStatus.BAD_REQUEST.value();
-            statusValue = HttpStatus.BAD_REQUEST;
+            session = request.getSession();
+            String jwtToken = (String) session.getAttribute("jwtToken");
+            if (jwtToken != null) {
+                session.removeAttribute("jwtToken");
+            } else {
+                message = "You haven't logged in yet!";
+                statusCode = HttpStatus.UNAUTHORIZED.value();
+                statusValue = HttpStatus.UNAUTHORIZED;
+            }
         }
         return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
     }
 
-    @Override
-    public List<AuthenUser> getAllUser() {
-        List<AuthenUser> authenUserList = authenUserRepository.findAll();
-        return authenUserList;
-    }
+        @Override
+        public List<AuthenUser> getAllUser () {
+            List<AuthenUser> authenUserList = authenUserRepository.findAll();
+            return authenUserList;
+        }
 
     @Override
     public ResponseAPI getUserById(Long id) {
@@ -495,41 +534,41 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         return new ResponseAPI(timeStamp, message, statusCode, statusValue, authenUserList);
     }
 
-    @Override
-    public InforResponseDTO verifyRegister(String userEnterCode) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-        String timeStamp = localDateTime.format(formatter);
-        String message = "Vertify successfully";
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus statusValue = HttpStatus.OK;
+        @Override
+        public InforResponseDTO verifyRegister (String userEnterCode){
+            LocalDateTime localDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+            String timeStamp = localDateTime.format(formatter);
+            String message = "Vertify successfully";
+            int statusCode = HttpStatus.OK.value();
+            HttpStatus statusValue = HttpStatus.OK;
 
 
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("userId");
 
-        try {
-            Vertify vertify = vertifyRepository.findByUserId(userId);
-            String vertifyCode = vertify.getVertifyCode();
-
-            if (userEnterCode.equals(vertifyCode)) {
+            try {
                 AuthenUser authenUser = authenUserRepository.findByUserId(userId);
-                authenUser.setStatus(Status.ACTIVE);
-                authenUserRepository.save(authenUser);
-                vertifyRepository.delete(vertify);
-            } else {
-                message = "Vertify fail! Incorrect vertify code!";
-                statusCode = HttpStatus.OK.value();
-                statusValue = HttpStatus.OK;
-            }
-        }catch (Exception e){
-            logger.error(this.logging_message, e);
-            message = "Something went wrong, server error!";
-            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+                String vertifyCode = (String) session.getAttribute("vertifyCode");
 
-        return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
-    }
+                if (userEnterCode.equals(vertifyCode)) {
+                    authenUser.setStatus(Status.ACTIVE);
+                    authenUserRepository.save(authenUser);
+                    session.removeAttribute("vertifyCode");
+                } else {
+                    message = "Vertify fail! Incorrect vertify code!";
+                    statusCode = HttpStatus.OK.value();
+                    statusValue = HttpStatus.OK;
+                }
+            } catch (Exception e) {
+                logger.error(this.logging_message, e);
+                message = "Something went wrong, server error!";
+                statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            }
+
+            return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
+        }
 
     @Override
     public AuthenUser getCurrentUser(String token) {
@@ -537,56 +576,55 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         return authenUserRepository.findById(userId).orElse(null);
     }
 
-    @Override
-    public InforResponseDTO forgetPassword(String email){
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-        String timeStamp = localDateTime.format(formatter);
-        String message = "Vertify successfully";
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus statusValue = HttpStatus.OK;
+        @Override
+        public InforResponseDTO forgetPassword (String email){
+            LocalDateTime localDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+            String timeStamp = localDateTime.format(formatter);
+            String message = "Vertify successfully";
+            int statusCode = HttpStatus.OK.value();
+            HttpStatus statusValue = HttpStatus.OK;
 
-        AuthenUser authenUser = authenUserRepository.findByEmail(email);
-        if(authenUser == null){
-            statusCode = HttpStatus.NOT_FOUND.value();
-            statusValue = HttpStatus.NOT_FOUND;
-            message = "Invalid email!";
+            AuthenUser authenUser = authenUserRepository.findByEmail(email);
+            if (authenUser == null) {
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                message = "Invalid email!";
+                return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
+            }
+
+            try {
+                String randomPassword = generateRandomPassword();
+
+                // email
+                String text = String.format("This is your new password: ", randomPassword);
+                String subject = "PETSPA - Forget password";
+                emailService.sendSimpleMessage(authenUser.getEmail(), subject, text);
+
+                String encodedNewPassword = passwordEncoder.encode(randomPassword);
+
+                authenUser.setPassword(encodedNewPassword);
+                authenUserRepository.save(authenUser);
+
+            } catch (Exception e) {
+                logger.error(this.logging_message, e);
+                message = "Something went wrong, server error!";
+                statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            }
+
             return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
         }
 
-        try {
-            String randomPassword =  generateRandomPassword();
+        public static String generateRandomPassword () {
+            SecureRandom random = new SecureRandom();
+            StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
 
-            // email
-            String text = String.format("This is your new password: ", randomPassword);
-            String subject = "PETSPA - Forget password";
-            emailService.sendSimpleMessage(authenUser.getEmail(), subject, text);
+            for (int i = 0; i < PASSWORD_LENGTH; i++) {
+                int index = random.nextInt(CHARACTERS.length());
+                password.append(CHARACTERS.charAt(index));
+            }
 
-            String encodedNewPassword = passwordEncoder.encode(randomPassword);
-
-            authenUser.setPassword(encodedNewPassword);
-            authenUserRepository.save(authenUser);
-
-        } catch (Exception e) {
-            logger.error(this.logging_message, e);
-            message = "Something went wrong, server error!";
-            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            return password.toString();
         }
-
-        return new InforResponseDTO(message, timeStamp, statusCode, statusValue);
     }
-
-    public static String generateRandomPassword() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
-
-        for (int i = 0; i < PASSWORD_LENGTH; i++) {
-            int index = random.nextInt(CHARACTERS.length());
-            password.append(CHARACTERS.charAt(index));
-        }
-
-        return password.toString();
-    }
-
-}
