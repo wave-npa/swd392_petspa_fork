@@ -19,7 +19,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    @Autowired
+
     @Autowired
     private AuthenUserRepository authenUserRepository;
 
@@ -31,7 +31,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorResponseDTO> findAllDoctor() {
         List<Doctor> listDoctor = doctorRepository.findAll();
-        List<DoctorResponseDTO> listResponse = new ArrayList<>(); 
+        List<DoctorResponseDTO> listResponse = new ArrayList<>();
         for(int i = 0;i<listDoctor.size();i++){
             AuthenUser authenUser = authenUserRepository.findByUserId(listDoctor.get(i).getUser().getUserId());
             DoctorResponseDTO doctorResponseDTO = new DoctorResponseDTO(listDoctor.get(i).getDoctorId(), authenUser);
