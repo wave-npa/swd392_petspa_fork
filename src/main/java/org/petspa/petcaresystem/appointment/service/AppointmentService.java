@@ -19,6 +19,6 @@ public interface AppointmentService {
     public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO createAppointmentRequestDTO, Option option, String fullName, String phone, String email);
     public AppointmentResponseInfor updateAppointment(UpdateAppointmentRequestDTO updateAppointmentRequestDTO);
     public AppointmentResponseInfor updateAppointmentStatus(Long appointmentId, Status status);
-    public List<Long> findByDoctorId(Long doctor_id);
     public AppointmentResponseDTO2 findAllAppointmentByUserId(Long userId);
+    public AppointmentResponseDTO2 findAppointmentByDoctorId(Long doctorId);
 }
