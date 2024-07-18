@@ -73,10 +73,7 @@ public class ServiceAndComboServiceImpl implements ServiceAndComboService{
         return servicesRepository.save(service);
     }
 
-<<<<<<< HEAD
     @Override
-=======
->>>>>>> backup-repo/main
     public Services saveServiceNoType(Services service, Long typeId) {
         ServiceType serviceType = serviceTypeRepository.findById(typeId).orElse(null);
         Collection<ServiceType> list = new ArrayList<ServiceType>();

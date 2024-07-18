@@ -10,13 +10,7 @@ import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDT
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.enums.Option;
-<<<<<<< HEAD
 import org.petspa.petcaresystem.enums.Status;
-=======
-import org.petspa.petcaresystem.enums.ShelterStatus;
-import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.shelter.model.entity.Shelter;
->>>>>>> backup-repo/main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,16 +50,11 @@ public class AppointmentController {
    @CrossOrigin
    public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
                                                         @RequestParam(value = "hospitalize")Option option,
-<<<<<<< HEAD
-                                                        @RequestParam(value = "phone") String phone,
-                                                        @RequestParam(value = "email") String email) {
-      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, phone, email);
-=======
+
                                                         @RequestParam(value = "full name") String fullName,
                                                         @RequestParam(value = "phone") String phone,
                                                         @RequestParam(value = "email") String email) {
       AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, fullName, phone, email);
->>>>>>> backup-repo/main
        return appointmentResponseInfor;
    }
 

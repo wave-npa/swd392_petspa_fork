@@ -74,10 +74,6 @@ public class ServicesController {
        return serviceAndComboService.saveServiceNoType(service, typeId);
    }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> backup-repo/main
    @PostMapping("/update")
    @CrossOrigin
    public Services updateService(@RequestBody Services service) {

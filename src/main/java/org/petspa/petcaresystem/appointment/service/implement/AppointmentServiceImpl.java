@@ -4,22 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
-<<<<<<< HEAD
-=======
 import org.petspa.petcaresystem.appointment.model.payload.GuessInfor;
->>>>>>> backup-repo/main
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.*;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
-<<<<<<< HEAD
-=======
 import org.petspa.petcaresystem.appointment.repository.GuessRepository;
->>>>>>> backup-repo/main
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
@@ -44,20 +37,11 @@ import org.petspa.petcaresystem.pet.model.entity.PetData;
 import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.repository.ReviewRepository;
-<<<<<<< HEAD
-import org.petspa.petcaresystem.serviceAppointment.model.Combo;
-=======
-import org.petspa.petcaresystem.serviceAppointment.model.ServiceType;
->>>>>>> backup-repo/main
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
 import org.petspa.petcaresystem.serviceAppointment.repository.ComboRepository;
 import org.petspa.petcaresystem.serviceAppointment.repository.ServiceTypeRepository;
 import org.petspa.petcaresystem.serviceAppointment.repository.ServicesRepository;
-<<<<<<< HEAD
-import org.petspa.petcaresystem.serviceAppointment.service.ServiceAndComboService;
-=======
->>>>>>> backup-repo/main
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 import org.petspa.petcaresystem.shelter.repository.ShelterRepository;
 import org.slf4j.Logger;
@@ -66,10 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-<<<<<<< HEAD
-=======
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> backup-repo/main
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -113,11 +94,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private ServiceTypeRepository serviceTypeRepository;
     @Autowired
     private ComboRepository comboRepository;
-<<<<<<< HEAD
-=======
     @Autowired
     private GuessRepository guessRepository;
->>>>>>> backup-repo/main
 
     @Override
     public AppointmentResponseDTO2 findAllAppointment() {
@@ -194,10 +172,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                     servicesData.setStatus(services.getStatus());
                     servicesData.setDiscountPercent(services.getDiscountPercent());
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> backup-repo/main
                 data.setBookedService(servicesData);
 
                 // find pet
@@ -214,8 +188,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                         petData.setOwnerId(pet.getOwner().getUserId());
                         petData.setSpecies(pet.getSpecies());
                         data.setPet(petData);
-<<<<<<< HEAD
-=======
 
 
                         // user
@@ -223,10 +195,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                         data.setUserName(authenUser.getUserName());
                         data.setEmail(authenUser.getEmail());
                         data.setPhoneNumber(authenUser.getPhone());
->>>>>>> backup-repo/main
                     }
                 } else {
                     data.setPet(null);
+                    data.setUserName(null);
+                    data.setEmail(null);
+                    data.setPhoneNumber(null);
                 }
 
                 // user order
@@ -368,15 +342,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         return new AppointmentResponseDTO(infor, data);
     }
 
-<<<<<<< HEAD
-    @Override
-    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option, String phone, String email) {
-=======
+
 
     @Override
     @Transactional
     public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option, String fullName, String phone, String email) {
->>>>>>> backup-repo/main
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -461,13 +431,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentSaveForUser.setEndTime(null);
 
         // status
-<<<<<<< HEAD
-        appointmentSaveForGuess.setStatus(Status.valueOf("ACTIVE"));
-        appointmentSaveForUser.setStatus(Status.valueOf("ACTIVE"));
-=======
         appointmentSaveForGuess.setStatus(Status.INACTIVE);
         appointmentSaveForUser.setStatus(Status.INACTIVE);
->>>>>>> backup-repo/main
 
         // user order: get price, set price, set order date
         Long price = null;
@@ -483,43 +448,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
         }
 
-<<<<<<< HEAD
-        if(option.equals(true)){
-            // shelter: find available shelter
-            shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
-
-            // boarding: check shelter status, set boarding date, status, shelter id
-            if (shelter != null) {
-                if (shelter.getStatus() == Status.ACTIVE) {
-                    boardingAppointment.setBoardingTime(localDateTime);
-                    boardingAppointment.setStatus(Status.ACTIVE);
-                    boardingAppointment.setShelter(shelter);
-                } else {
-                    message = "No shelter available!";
-                    statusCode = HttpStatus.BAD_REQUEST.value();
-                    statusValue = HttpStatus.BAD_REQUEST;
-                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
-                }
-            } else {
-                message = "No shelter available!";
-                statusCode = HttpStatus.BAD_REQUEST.value();
-                statusValue = HttpStatus.BAD_REQUEST;
-                return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
-            }
-
-            // boarding detail
-            java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
-            boardingDetail.setDate(boardingDetailDate);
-            boardingDetail.setBoardingAppointment(boardingAppointment);
-            boardingDetail.setStartTime(localDateTime);
-            boardingDetail.setEndTime(null);
-            boardingDetail.setStatus(Status.ACTIVE);
-        }
-
-        if(option.equals(true)){
-=======
         if(option == Option.YES){
->>>>>>> backup-repo/main
         // shelter: find available shelter
         shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
 
@@ -550,10 +479,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boardingDetail.setEndTime(null);
         boardingDetail.setStatus(Status.ACTIVE);
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> backup-repo/main
         try {
 
             // --------------------------------user logged in------------------------------------
@@ -606,11 +532,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userOrder.setUserOrderDate(localDateTime);
                 userOrder.setCustomer(authenUser);
 
-<<<<<<< HEAD
-=======
                 appointmentSaveForUser.setUserId(userId);
 
->>>>>>> backup-repo/main
             } else {
                 // ----------------------------user not login-----------------------------------
 
@@ -624,18 +547,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userOrder.setPrice(price);
                 userOrder.setUserOrderDate(localDateTime);
                 userOrder.setCustomer(null);
-<<<<<<< HEAD
-
-                // email
-                String appointmentInfor =
-                        "Guess's phone: " + phone + "\n"
-                                + "Guess email: " + email + "\n"
-                                + "Appointment ID: " + appointmentSaveForUser.getAppointmentId();
-                String text = "Guess booking information:\n" + appointmentInfor;
-                String subject = "PETSPA - Register Verify code";
-                emailService.sendSimpleMessage(petStoreEmail, subject, text);
-=======
->>>>>>> backup-repo/main
             }
 
             // --------------------------------------JPA RUN------------------------------------------------
@@ -664,8 +575,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             // create appointment
             if (token == null) {
                 appointmentRepository.save(appointmentSaveForGuess);
-<<<<<<< HEAD
-=======
 
                 // guess info
                 GuessInfor guessInfor = new GuessInfor();
@@ -675,20 +584,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 guessInfor.setAppointmentId(appointmentSaveForGuess.getAppointmentId());
                 guessRepository.save(guessInfor);
 
->>>>>>> backup-repo/main
             } else {
                 appointmentRepository.save(appointmentSaveForUser);
             }
 
-<<<<<<< HEAD
-            shelter.setShelterStatus(ShelterStatus.USING);
-            shelterRepository.save(shelter);
-=======
             if(option == Option.YES){
                 shelter.setShelterStatus(ShelterStatus.USING);
                 shelterRepository.save(shelter);
             }
->>>>>>> backup-repo/main
 
         } catch (Exception e) {
 //            logger.error("Error occurred during create appointment", e);
@@ -953,8 +856,4 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Long> findByDoctorId(Long doctor_id) {
         return appointmentRepository.findByDoctorId(doctor_id);
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> backup-repo/main
 }

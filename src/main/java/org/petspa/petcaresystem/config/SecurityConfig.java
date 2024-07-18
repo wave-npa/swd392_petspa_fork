@@ -33,10 +33,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true,proxyTargetClass=true)
-<<<<<<< HEAD
-//@EnableGlobalMethodSecurity(prePostEnabled=true,proxyTargetClass=true)
-=======
->>>>>>> backup-repo/main
 public class SecurityConfig {
 
     @Autowired

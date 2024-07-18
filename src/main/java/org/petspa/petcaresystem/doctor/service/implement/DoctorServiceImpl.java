@@ -19,10 +19,6 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> backup-repo/main
     @Autowired
     private AuthenUserRepository authenUserRepository;
 
@@ -34,11 +30,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorResponseDTO> findAllDoctor() {
         List<Doctor> listDoctor = doctorRepository.findAll();
-<<<<<<< HEAD
         List<DoctorResponseDTO> listResponse = new ArrayList<>();
-=======
-        List<DoctorResponseDTO> listResponse = new ArrayList<>(); 
->>>>>>> backup-repo/main
         for(int i = 0;i<listDoctor.size();i++){
             AuthenUser authenUser = authenUserRepository.findByUserId(listDoctor.get(i).getUser().getUserId());
             DoctorResponseDTO doctorResponseDTO = new DoctorResponseDTO(listDoctor.get(i).getDoctorId(), authenUser);
@@ -73,9 +65,5 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setUser(user);
         return doctorRepository.save(doctor);
     }
+}
 
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> backup-repo/main

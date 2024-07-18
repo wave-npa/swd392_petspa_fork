@@ -26,12 +26,9 @@ public class AppointmentResponseData2 {
     private LocalDateTime endTime;
     private DoctorData bookedDoctor;
     private ServicesData bookedService;
-<<<<<<< HEAD
-=======
     private String userName;
     private String email;
     private String phoneNumber;
->>>>>>> backup-repo/main
     private PetData pet;
     private Long reviewId;
     private Long boardingAppointmentId;
