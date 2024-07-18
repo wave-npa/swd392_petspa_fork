@@ -1,15 +1,12 @@
 package org.petspa.petcaresystem.doctor.service.implement;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import java.util.List;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
-import org.petspa.petcaresystem.doctor.model.DoctorData;
 import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
-import org.petspa.petcaresystem.doctor.repository.DoctorDataRepository;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.enums.Status;
@@ -21,9 +18,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private DoctorRepository doctorRepository;
-
-    @Autowired
-    private DoctorDataRepository doctorDataRepository;
 
     @Autowired
     private AuthenUserRepository authenUserRepository;

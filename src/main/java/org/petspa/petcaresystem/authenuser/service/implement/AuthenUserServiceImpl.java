@@ -8,10 +8,8 @@ import jakarta.persistence.Query;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForRegister;
 import org.petspa.petcaresystem.authenuser.model.payload.CustomAuthenUserForUpdateProfile;
-import org.petspa.petcaresystem.authenuser.model.payload.Vertify;
 import org.petspa.petcaresystem.authenuser.model.response.*;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
-import org.petspa.petcaresystem.authenuser.repository.VertifyRepository;
 import org.petspa.petcaresystem.authenuser.service.AuthenUserService;
 import org.petspa.petcaresystem.config.EmailServiceImpl;
 import org.petspa.petcaresystem.config.JwtUtil;
@@ -23,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -72,151 +69,81 @@ public class AuthenUserServiceImpl implements AuthenUserService {
     private SimpleMailMessage simpleMailMessage;
     @Autowired
     private EmailServiceImpl emailService;
-    @Autowired
-    private VertifyRepository vertifyRepository;
 
     @Override
     public AuthenUser createUser(AuthenUser authenUser) {
         return authenUserRepository.save(authenUser);
     }
 
-    // @Override
-    // public JwtResponseDTO login(String email, String password) {
-    //     LocalDateTime localDateTime = LocalDateTime.now();
-    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-    //     String timeStamp = localDateTime.format(formatter);
-    //     String message = "Login success";
-    //     int statusCode = HttpStatus.OK.value();
-    //     HttpStatus statusValue = HttpStatus.OK;
-    //     Optional<AuthenUser> authenUser;
-    //     String jwtToken = "";
 
-    //     // check session
-    //     HttpSession session = request.getSession();
-    //     String token = (String) session.getAttribute("jwtToken");
-    //     if (token != null && !token.isEmpty()) {
-    //         message = "You have already logged in!";
-    //         statusCode = HttpStatus.BAD_REQUEST.value();
-    //         statusValue = HttpStatus.BAD_REQUEST;
-    //         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    //     }
-
-    //     authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
-    //     if (authenUser.get().getStatus() == Status.INACTIVE) {
-    //         message = "Your account has been blocked or inactive! Please contact for more information";
-    //         statusCode = HttpStatus.FORBIDDEN.value();
-    //         statusValue = HttpStatus.FORBIDDEN;
-    //         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    //     }
-
-    //     String encodedPassword = authenUser.get().getPassword();
-
-
-    //     if (!passwordEncoder.matches(password, encodedPassword)) {
-    //         message = "Invalid email/password";
-    //         statusCode = HttpStatus.UNAUTHORIZED.value();
-    //         statusValue = HttpStatus.UNAUTHORIZED;
-    //         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    //     }
-
-    //     try {
-    //         if (authenUser.isPresent()) {
-    //             jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
-    //                     authenUser.get().getRole().getRoleName(),
-    //                     authenUser.get().getUserName(),
-    //                     authenUser.get().getUserId());
-    //             session = request.getSession();
-    //             session.setAttribute("jwtToken", jwtToken);
-    //         } else {
-    //             message = "Invalid email/password";
-    //             statusCode = HttpStatus.UNAUTHORIZED.value();
-    //             statusValue = HttpStatus.UNAUTHORIZED;
-    //             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    //         }
-    //     } catch (Exception e) {
-    //         logger.error("Error occurred during login", e);
-    //         message = "Something went wrong, server error!";
-    //         statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-    //         statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-    //     }
-
-    //     return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-    // }
-
-    @Override
-    public JwtResponseDTO login(String email, String password) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
-        String timeStamp = localDateTime.format(formatter);
-        String message = "Login success";
-        int statusCode = HttpStatus.OK.value();
-        HttpStatus statusValue = HttpStatus.OK;
-        Optional<AuthenUser> authenUser;
-        String jwtToken = "";
-
-        // check session
-        HttpSession session = request.getSession();
-        String token = (String) session.getAttribute("jwtToken");
-        if (token != null && !token.isEmpty()) {
-            message = "You have already logged in!";
-            statusCode = HttpStatus.BAD_REQUEST.value();
-            statusValue = HttpStatus.BAD_REQUEST;
-            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-        }
-
-        authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
-        if (authenUser.get().getStatus() == Status.INACTIVE) {
-            message = "Your account has been blocked or inactive! Please contact for more information";
-            statusCode = HttpStatus.FORBIDDEN.value();
-            statusValue = HttpStatus.FORBIDDEN;
-            if (authenUser.isPresent()) {
-                if (authenUser.get().getStatus() == Status.INACTIVE) {
-                    message = "Your account has been blocked or inactive! Please vertify your email or contact for more information";
-                    statusCode = HttpStatus.FORBIDDEN.value();
-                    statusValue = HttpStatus.FORBIDDEN;
-                    return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-                }
-            } else {
-                message = "Invalid email/password";
-                statusCode = HttpStatus.UNAUTHORIZED.value();
-                statusValue = HttpStatus.UNAUTHORIZED;
-                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-            }
-        }
-
-        String encodedPassword = authenUser.get().getPassword();
-
-
-        if (!passwordEncoder.matches(password, encodedPassword)) {
-            message = "Invalid email/password";
-            statusCode = HttpStatus.UNAUTHORIZED.value();
-            statusValue = HttpStatus.UNAUTHORIZED;
-            return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-        }
-
-        try {
-            if (authenUser.isPresent()) {
-                jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
-                        authenUser.get().getRole().getRoleName(),
-                        authenUser.get().getUserName(),
-                        authenUser.get().getUserId());
-                session = request.getSession();
-                session.setAttribute("jwtToken", jwtToken);
-            } else {
-                message = "Invalid email/password";
-                statusCode = HttpStatus.UNAUTHORIZED.value();
-                statusValue = HttpStatus.UNAUTHORIZED;
-                return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
-            }
-        } catch (Exception e) {
-            logger.error("Error occurred during login", e);
-            message = "Something went wrong, server error!";
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-
-        return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+    public static boolean isValidEmail(String email) {
+        return pattern.matcher(email).matches();
     }
+
+
+     @Override
+     public JwtResponseDTO login(String email, String password) {
+         LocalDateTime localDateTime = LocalDateTime.now();
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+         String timeStamp = localDateTime.format(formatter);
+         String message = "Login success";
+         int statusCode = HttpStatus.OK.value();
+         HttpStatus statusValue = HttpStatus.OK;
+         Optional<AuthenUser> authenUser;
+         String jwtToken = "";
+
+         // check session
+         HttpSession session = request.getSession();
+         String token = (String) session.getAttribute("jwtToken");
+         if (token != null && !token.isEmpty()) {
+             message = "You have already logged in!";
+             statusCode = HttpStatus.BAD_REQUEST.value();
+             statusValue = HttpStatus.BAD_REQUEST;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
+
+         authenUser = Optional.ofNullable(authenUserRepository.findByEmail(email));
+         if(authenUser.isPresent()) {
+             if (authenUser.get().getStatus() == Status.INACTIVE) {
+                 message = "Your account has been blocked or inactive! Please contact for more information";
+                 statusCode = HttpStatus.FORBIDDEN.value();
+                 statusValue = HttpStatus.FORBIDDEN;
+                 return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+             }
+         }else{
+             message = "Invalid email/password";
+             statusCode = HttpStatus.UNAUTHORIZED.value();
+             statusValue = HttpStatus.UNAUTHORIZED;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
+
+         String encodedPassword = authenUser.get().getPassword();
+
+
+         if (!passwordEncoder.matches(password, encodedPassword)) {
+             message = "Invalid email/password";
+             statusCode = HttpStatus.UNAUTHORIZED.value();
+             statusValue = HttpStatus.UNAUTHORIZED;
+             return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+         }
+
+         try {
+                 jwtToken = jwtUtil.generateToken(authenUser.get().getEmail(),
+                         authenUser.get().getRole().getRoleName(),
+                         authenUser.get().getUserName(),
+                         authenUser.get().getUserId());
+                 session = request.getSession();
+                 session.setAttribute("jwtToken", jwtToken);
+         } catch (Exception e) {
+             logger.error("Error occurred during login", e);
+             message = "Something went wrong, server error!";
+             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+         }
+
+         return new JwtResponseDTO(jwtToken, message, timeStamp, statusCode, statusValue);
+     }
+
 
     @Override
     public RegisterResponseDTO register(AuthenUser authenUser, String passwordConfirm) {
@@ -277,16 +204,15 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         try {
             authenUserRepository.save(authenUser);
 
+            HttpSession session = request.getSession();
+
             // vertify
             String vertifyCode = UUID.randomUUID().toString();
-            Vertify vertify = new Vertify();
-            vertify.setUserId(authenUser.getUserId());
-            vertify.setVertifyCode(vertifyCode);
-            vertifyRepository.save(vertify);
+            session.setAttribute("vertifyCode", vertifyCode);
 
             // email
-            HttpSession session = request.getSession();
             session.setAttribute("userId", authenUser.getUserId());
+            System.out.println(authenUser.getUserId());
             String text = String.format(simpleMailMessage.getText(), vertifyCode);
             String subject = "PETSPA - Register Verify code";
             emailService.sendSimpleMessage(authenUser.getEmail(), subject, text);
@@ -443,7 +369,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            session.invalidate();
+            session.removeAttribute("jwtToken");
         } else {
             message = "You haven't logged in yet!";
             statusCode = HttpStatus.BAD_REQUEST.value();
@@ -583,23 +509,23 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         Long userId = (Long) session.getAttribute("userId");
 
         try {
-            Vertify vertify = vertifyRepository.findByUserId(userId);
-            String vertifyCode = vertify.getVertifyCode();
+            AuthenUser authenUser = authenUserRepository.findByUserId(userId);
+            String vertifyCode = (String) session.getAttribute("vertifyCode");
 
             if (userEnterCode.equals(vertifyCode)) {
-                AuthenUser authenUser = authenUserRepository.findByUserId(userId);
                 authenUser.setStatus(Status.ACTIVE);
                 authenUserRepository.save(authenUser);
-                vertifyRepository.delete(vertify);
+                session.removeAttribute("vertifyCode");
             } else {
                 message = "Vertify fail! Incorrect vertify code!";
                 statusCode = HttpStatus.OK.value();
                 statusValue = HttpStatus.OK;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(this.logging_message, e);
             message = "Something went wrong, server error!";
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
         }
 
         return new InforResponseDTO(message, timeStamp, statusCode, statusValue);

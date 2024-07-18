@@ -8,12 +8,12 @@ import java.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.GuessInfor;
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
-import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
-import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseData;
-import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
+import org.petspa.petcaresystem.appointment.model.response.*;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
+import org.petspa.petcaresystem.appointment.repository.GuessRepository;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
@@ -23,6 +23,8 @@ import org.petspa.petcaresystem.boarding_detail.model.BoardingDetail;
 import org.petspa.petcaresystem.boarding_detail.repository.BoardingDetailRepository;
 import org.petspa.petcaresystem.config.EmailServiceImpl;
 import org.petspa.petcaresystem.config.JwtUtil;
+import org.petspa.petcaresystem.department.model.entity.Departments;
+import org.petspa.petcaresystem.department.repository.DepartmentRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.model.DoctorData;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
@@ -32,11 +34,15 @@ import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.order.model.UserOrder;
 import org.petspa.petcaresystem.order.repository.OrdersRepository;
 import org.petspa.petcaresystem.pet.model.entity.Pet;
+import org.petspa.petcaresystem.pet.model.entity.PetData;
 import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.repository.ReviewRepository;
+import org.petspa.petcaresystem.serviceAppointment.model.ServiceType;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
+import org.petspa.petcaresystem.serviceAppointment.repository.ComboRepository;
+import org.petspa.petcaresystem.serviceAppointment.repository.ServiceTypeRepository;
 import org.petspa.petcaresystem.serviceAppointment.repository.ServicesRepository;
 import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 import org.petspa.petcaresystem.shelter.repository.ShelterRepository;
@@ -46,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -83,9 +90,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     private EmailServiceImpl emailService;
     @Autowired
     private SimpleMailMessage simpleMailMessage;
+    @Autowired
+    private DepartmentRepository departmentRepository;
+    @Autowired
+    private ServiceTypeRepository serviceTypeRepository;
+    @Autowired
+    private ComboRepository comboRepository;
+    @Autowired
+    private GuessRepository guessRepository;
 
     @Override
-    public AppointmentResponseDTO findAllAppointment() {
+    public AppointmentResponseDTO2 findAllAppointment() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -95,7 +110,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
         AppointmentResponseInfor infor = new AppointmentResponseInfor();
-        List<AppointmentResponseData> appointmentResponseDataList = new ArrayList<>();
+        List<AppointmentResponseData2> appointmentResponseDataList = new ArrayList<>();
 
 
         infor.setMessage(message);
@@ -113,11 +128,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 infor.setMessage(message);
                 infor.setStatusCode(statusCode);
                 infor.setStatusValue(statusValue);
-                return new AppointmentResponseDTO(infor, appointmentResponseDataList);
+                return new AppointmentResponseDTO2(infor, appointmentResponseDataList);
             }
             for (Appointment appointment : appointmentList) {
 
-                AppointmentResponseData data = new AppointmentResponseData();
+                AppointmentResponseData2 data = new AppointmentResponseData2();
 
                 // id
                 data.setAppointmentId(appointment.getAppointmentId());
@@ -140,8 +155,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 DoctorData doctorData = new DoctorData();
                 for (Doctor doctor : doctorList) {
                     doctorData.setDoctorId(doctor.getDoctorId());
+                    AuthenUser authenUser = authenUserRepository.findByUserId(doctor.getUser().getUserId());
+                    doctorData.setUserName(authenUser.getUserName());
+                    Departments departments = departmentRepository.findByDepartmentId(doctor.getDepartment().getDepartmentId());
+                    doctorData.setDepartmentName(departments.getDepartmentName());
                 }
-                data.setBookedDoctorId(doctorData.getDoctorId());
+                data.setBookedDoctor(doctorData);
 
                 // booked service
                 Collection<Services> bookedServices = appointment.getBookedService();
@@ -149,16 +168,39 @@ public class AppointmentServiceImpl implements AppointmentService {
                 ServicesData servicesData = new ServicesData();
                 for (Services services : serviceList) {
                     servicesData.setServiceId(services.getServiceId());
-
+                    servicesData.setServiceName(services.getServiceName());
+                    servicesData.setDescription(services.getDescription());
+                    servicesData.setPrice(services.getPrice());
+                    servicesData.setStatus(services.getStatus());
+                    servicesData.setDiscountPercent(services.getDiscountPercent());
                 }
-                data.setBookedServiceId(servicesData.getServiceId());
+
+                data.setBookedService(servicesData);
 
                 // find pet
                 if (appointment.getPet() != null) {
                     Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                    data.setPetId(appointment.getPet().getPetId());
+                    if(pet != null) {
+                        PetData petData = new PetData();
+                        petData.setPet_name(pet.getPet_name());
+                        petData.setAge(pet.getAge());
+                        petData.setGender(pet.getGender());
+                        petData.setStatus(pet.getStatus());
+                        petData.setPetId(pet.getPetId());
+                        petData.setType_of_species(pet.getType_of_species());
+                        petData.setOwnerId(pet.getOwner().getUserId());
+                        petData.setSpecies(pet.getSpecies());
+                        data.setPet(petData);
+
+
+                        // user
+                        AuthenUser authenUser = authenUserRepository.findByUserId(pet.getOwner().getUserId());
+                        data.setUserName(authenUser.getUserName());
+                        data.setEmail(authenUser.getEmail());
+                        data.setPhoneNumber(authenUser.getPhone());
+                    }
                 } else {
-                    data.setPetId(null);
+                    data.setPet(null);
                 }
 
                 // user order
@@ -192,7 +234,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             infor.setStatusValue(statusValue);
         }
 
-        return new AppointmentResponseDTO(infor, appointmentResponseDataList);
+        return new AppointmentResponseDTO2(infor, appointmentResponseDataList);
     }
 
     @Override
@@ -300,8 +342,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return new AppointmentResponseDTO(infor, data);
     }
 
+
     @Override
-    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option, String phone, String email) {
+    @Transactional
+    public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO appointment, Option option, String fullName, String phone, String email) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -386,8 +430,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentSaveForUser.setEndTime(null);
 
         // status
-        appointmentSaveForGuess.setStatus(Status.valueOf("ACTIVE"));
-        appointmentSaveForUser.setStatus(Status.valueOf("ACTIVE"));
+        appointmentSaveForGuess.setStatus(Status.INACTIVE);
+        appointmentSaveForUser.setStatus(Status.INACTIVE);
 
         // user order: get price, set price, set order date
         Long price = null;
@@ -403,7 +447,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
         }
 
-        if(option.equals(true)){
+        if(option == Option.YES){
         // shelter: find available shelter
         shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
 
@@ -434,6 +478,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boardingDetail.setEndTime(null);
         boardingDetail.setStatus(Status.ACTIVE);
         }
+
         try {
 
             // --------------------------------user logged in------------------------------------
@@ -486,6 +531,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userOrder.setUserOrderDate(localDateTime);
                 userOrder.setCustomer(authenUser);
 
+                appointmentSaveForUser.setUserId(userId);
+
             } else {
                 // ----------------------------user not login-----------------------------------
 
@@ -499,15 +546,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userOrder.setPrice(price);
                 userOrder.setUserOrderDate(localDateTime);
                 userOrder.setCustomer(null);
-
-                // email
-                String appointmentInfor =
-                        "Guess's phone: " + phone + "\n"
-                                + "Guess email: " + email + "\n"
-                                + "Appointment ID: " + appointmentSaveForUser.getAppointmentId();
-                String text = "Guess booking information:\n" + appointmentInfor;
-                String subject = "PETSPA - Register Verify code";
-                emailService.sendSimpleMessage(petStoreEmail, subject, text);
             }
 
             // --------------------------------------JPA RUN------------------------------------------------
@@ -536,12 +574,23 @@ public class AppointmentServiceImpl implements AppointmentService {
             // create appointment
             if (token == null) {
                 appointmentRepository.save(appointmentSaveForGuess);
+
+                // guess info
+                GuessInfor guessInfor = new GuessInfor();
+                guessInfor.setEmail(email);
+                guessInfor.setFullName(fullName);
+                guessInfor.setPhone(phone);
+                guessInfor.setAppointmentId(appointmentSaveForGuess.getAppointmentId());
+                guessRepository.save(guessInfor);
+
             } else {
                 appointmentRepository.save(appointmentSaveForUser);
             }
 
-            shelter.setShelterStatus(ShelterStatus.USING);
-            shelterRepository.save(shelter);
+            if(option == Option.YES){
+                shelter.setShelterStatus(ShelterStatus.USING);
+                shelterRepository.save(shelter);
+            }
 
         } catch (Exception e) {
 //            logger.error("Error occurred during create appointment", e);
@@ -806,4 +855,5 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Long> findByDoctorId(Long doctor_id) {
         return appointmentRepository.findByDoctorId(doctor_id);
     }
+
 }

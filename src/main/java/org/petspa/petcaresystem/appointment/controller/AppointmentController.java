@@ -6,10 +6,13 @@ import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.appointment.model.request.CreateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.request.UpdateAppointmentRequestDTO;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO;
+import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDTO2;
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.appointment.service.AppointmentService;
 import org.petspa.petcaresystem.enums.Option;
+import org.petspa.petcaresystem.enums.ShelterStatus;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.shelter.model.entity.Shelter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,9 +36,9 @@ public class AppointmentController {
 
    @GetMapping("/getAll")
    @CrossOrigin
-   public AppointmentResponseDTO getAllAppointment() {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAllAppointment();
-       return appointmentResponseDTO;
+   public AppointmentResponseDTO2 getAllAppointment() {
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAllAppointment();
+       return appointmentResponseDTO2;
    }
 
    @GetMapping("/getById/{appointmentId}")
@@ -49,9 +52,10 @@ public class AppointmentController {
    @CrossOrigin
    public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
                                                         @RequestParam(value = "hospitalize")Option option,
+                                                        @RequestParam(value = "full name") String fullName,
                                                         @RequestParam(value = "phone") String phone,
                                                         @RequestParam(value = "email") String email) {
-      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, phone, email);
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, fullName, phone, email);
        return appointmentResponseInfor;
    }
 
