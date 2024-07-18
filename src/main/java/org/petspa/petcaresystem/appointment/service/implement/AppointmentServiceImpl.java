@@ -155,7 +155,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 for (Doctor doctor : doctorList) {
                     doctorData.setDoctorId(doctor.getDoctorId());
                     AuthenUser authenUser = authenUserRepository.findByUserId(doctor.getUser().getUserId());
-                    doctorData.setUserName(authenUser.getUserName());
+                    doctorData.setFullName(authenUser.getFullName());
                     Departments departments = departmentRepository.findByDepartmentId(doctor.getDepartment().getDepartmentId());
                     doctorData.setDepartmentName(departments.getDepartmentName());
                 }
@@ -297,7 +297,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 for (Doctor doctor : doctorList) {
                     doctorData.setDoctorId(doctor.getDoctorId());
                     AuthenUser authenUser = authenUserRepository.findByUserId(doctor.getUser().getUserId());
-                    doctorData.setUserName(authenUser.getUserName());
+                    doctorData.setFullName(authenUser.getFullName());
                     Departments departments = departmentRepository.findByDepartmentId(doctor.getDepartment().getDepartmentId());
                     doctorData.setDepartmentName(departments.getDepartmentName());
                 }
@@ -436,7 +436,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             for (Doctor doctor : doctorList) {
                 doctorData.setDoctorId(doctor.getDoctorId());
                 AuthenUser authenUser = authenUserRepository.findByUserId(doctor.getUser().getUserId());
-                doctorData.setUserName(authenUser.getUserName());
+                doctorData.setFullName(authenUser.getFullName());
                 Departments departments = departmentRepository.findByDepartmentId(doctor.getDepartment().getDepartmentId());
                 doctorData.setDepartmentName(departments.getDepartmentName());
             }
@@ -985,7 +985,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 for (Doctor doctors : doctorList) {
                     doctorData.setDoctorId(doctors.getDoctorId());
                     AuthenUser authenUser = authenUserRepository.findByUserId(doctors.getUser().getUserId());
-                    doctorData.setUserName(authenUser.getUserName());
+                    doctorData.setFullName(authenUser.getFullName());
                     Departments departments = departmentRepository.findByDepartmentId(doctors.getDepartment().getDepartmentId());
                     doctorData.setDepartmentName(departments.getDepartmentName());
                 }

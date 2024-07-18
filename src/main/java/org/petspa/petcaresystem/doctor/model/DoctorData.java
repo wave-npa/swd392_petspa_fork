@@ -16,6 +16,6 @@ import lombok.Setter;
 @Setter
 public class DoctorData {
         private Long doctorId;
-        private String userName;
+        private String fullName;
         private String departmentName;
 }
