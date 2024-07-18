@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.appointment.controller;
 
+import java.net.http.HttpResponse;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
@@ -82,5 +83,12 @@ public class AppointmentController {
    private AppointmentResponseDTO2 getAppointmentByDoctorId(@RequestParam(value = "doctorId") Long doctorId){
       AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAppointmentByDoctorId(doctorId);
       return appointmentResponseDTO2;
+   }
+
+   @DeleteMapping("delete/{appointmentId}")
+   private AppointmentResponseInfor deleteAppointmentById(@PathVariable(value = "appointmentId") Long appointmentId){
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.deleteAppointment(appointmentId);
+      return appointmentResponseInfor;
+
    }
 }

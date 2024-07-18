@@ -37,6 +37,7 @@ import org.petspa.petcaresystem.pet.model.entity.PetData;
 import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.repository.ReviewRepository;
+import org.petspa.petcaresystem.schedule.model.response.ResponseInfor;
 import org.petspa.petcaresystem.serviceAppointment.model.Services;
 import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
 import org.petspa.petcaresystem.serviceAppointment.repository.ComboRepository;
@@ -1067,6 +1068,72 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         return new AppointmentResponseDTO2(infor, appointmentResponseDataList);
+    }
 
+    @Override
+    @Transactional
+    public AppointmentResponseInfor deleteAppointment(Long appointmentId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Appointments were deleted successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setMessage(message);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
+        try{
+
+            Appointment appointment = appointmentRepository.findByAppointmentId(appointmentId);
+            if(appointment == null){
+                message = "Appointment not found!";
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+                statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+                responseInfor.setMessage(message);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+            }
+
+            // review
+            Review review = reviewRepository.findByReviewId(appointment.getReview().getReviewId());
+
+            // order
+            UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
+
+            // boarding
+            BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
+
+            // detail
+            BoardingDetail boardingDetail = boardingDetailRepository.findByBoardingAppointment(boardingAppointment);
+
+            // shelter
+            Long shelterId = boardingAppointment.getShelter().getShelterId();
+            Shelter shelter = shelterRepository.findByShelterId(shelterId);
+            shelter.setShelterStatus(ShelterStatus.EMPTY);
+
+            // run sql
+            appointmentRepository.delete(appointment);
+            reviewRepository.delete(review);
+            ordersRepository.delete(userOrder);
+            boardingDetailRepository.delete(boardingDetail);
+            boardingRepository.delete(boardingAppointment);
+            shelterRepository.save(shelter);
+
+        }catch (Exception e) {
+            logger.error("Error occurred during running:", e);
+            e.printStackTrace();
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseInfor.setMessage(message);
+            responseInfor.setStatusCode(statusCode);
+            responseInfor.setStatusValue(statusValue);
+        }
+
+        return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 }

@@ -9,6 +9,7 @@ import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseDT
 import org.petspa.petcaresystem.appointment.model.response.AppointmentResponseInfor;
 import org.petspa.petcaresystem.enums.Option;
 import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.schedule.model.response.ResponseInfor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,4 +22,5 @@ public interface AppointmentService {
     public AppointmentResponseInfor updateAppointmentStatus(Long appointmentId, Status status);
     public AppointmentResponseDTO2 findAllAppointmentByUserId(Long userId);
     public AppointmentResponseDTO2 findAppointmentByDoctorId(Long doctorId);
+    public AppointmentResponseInfor deleteAppointment(Long appointmentId);
 }

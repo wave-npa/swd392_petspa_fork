@@ -6,7 +6,11 @@ import java.util.List;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
+import org.petspa.petcaresystem.doctor.model.reponse.DoctorResponseData;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.print.Doc;
 
 @Service
 public interface DoctorService {
@@ -22,4 +26,5 @@ public interface DoctorService {
     public Doctor deleteDoctor(Long doctorId);
 
     public List<Doctor> findAll();
+    public ResponseEntity<DoctorResponseData> findDoctorByUserId(Long userId);
 }
