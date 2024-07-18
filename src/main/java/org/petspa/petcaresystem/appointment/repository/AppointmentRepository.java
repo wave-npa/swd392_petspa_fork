@@ -14,6 +14,10 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     public Appointment findByAppointmentId(Long appointmentId);
     public Appointment findByUserOrder(UserOrder userOrder);
+<<<<<<< HEAD
+=======
+
+>>>>>>> backup-repo/main
     @Query(value = "SELECT appointment_id FROM pet_spa.doctor_booked WHERE doctor_id = :doctor_id", nativeQuery=true)
     public List<Long> findByDoctorId(@Param("doctor_id") Long doctorId);
 }

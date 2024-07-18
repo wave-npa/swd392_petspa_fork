@@ -96,4 +96,10 @@ public class Appointment implements Serializable {
 //    @OneToOne(mappedBy = "appointment")
     @JsonIgnore
     private Review review;
+<<<<<<< HEAD
+=======
+
+    @Column(name = "userId", nullable = true)
+    private Long userId;
+>>>>>>> backup-repo/main
 }
