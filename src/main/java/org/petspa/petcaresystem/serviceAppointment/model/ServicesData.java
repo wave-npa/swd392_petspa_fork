@@ -22,9 +22,7 @@ public class ServicesData {
     private Long serviceId;
     private String serviceName;
     private String description;
-    private Long typeOfServiceId;
     private float price;
     private int discountPercent;
     private Status status;
-    private Long serviceComboId;
 }

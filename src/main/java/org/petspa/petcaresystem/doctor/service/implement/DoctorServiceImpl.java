@@ -1,13 +1,11 @@
 package org.petspa.petcaresystem.doctor.service.implement;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import java.util.List;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
-import org.petspa.petcaresystem.doctor.model.DoctorData;
 import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
@@ -21,7 +19,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    @Autowired
+
     @Autowired
     private AuthenUserRepository authenUserRepository;
 
@@ -33,7 +31,6 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorResponseDTO> findAllDoctor() {
         List<Doctor> listDoctor = doctorRepository.findAll();
-        List<DoctorResponseDTO> listResponse = new ArrayList<>(); 
         List<DoctorResponseDTO> listResponse = new ArrayList<>();
         for(int i = 0;i<listDoctor.size();i++){
             AuthenUser authenUser = authenUserRepository.findByUserId(listDoctor.get(i).getUser().getUserId());

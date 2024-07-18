@@ -29,4 +29,5 @@ public interface AppointmentService {
     public AppointmentResponseDTO getAppointmentByUserId();
     public List<Long> findByDoctorId(Long doctor_id);
 
+
 }
