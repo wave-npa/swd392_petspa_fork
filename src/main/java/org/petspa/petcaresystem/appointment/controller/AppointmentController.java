@@ -73,8 +73,8 @@ public class AppointmentController {
    }
 
    @GetMapping("/getByUserId")
-   private AppointmentResponseDTO getAppointmentByUserId(){
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.getAppointmentByUserId();
-      return appointmentResponseDTO;
+   private AppointmentResponseDTO2 getAppointmentByUserId(@RequestParam(value = "userId") Long userId){
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAllAppointmentByUserId(userId);
+      return appointmentResponseDTO2;
    }
 }

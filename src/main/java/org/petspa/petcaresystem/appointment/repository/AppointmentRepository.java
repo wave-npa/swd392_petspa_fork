@@ -16,4 +16,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     public Appointment findByUserOrder(UserOrder userOrder);
     @Query(value = "SELECT appointment_id FROM pet_spa.doctor_booked WHERE doctor_id = :doctor_id", nativeQuery=true)
     public List<Long> findByDoctorId(@Param("doctor_id") Long doctorId);
+    public List<Appointment> findByUserId(Long userId);
 }
