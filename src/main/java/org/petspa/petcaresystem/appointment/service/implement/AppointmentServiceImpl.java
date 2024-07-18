@@ -750,6 +750,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             if (token == null) {
                 appointmentRepository.save(appointmentSaveForGuess);
 
+                if(email.isEmpty() || fullName.isEmpty() || phone.isEmpty()){
+                    message = "Guess have to fill all these email, fullname and phone's number!";
+                    statusCode = HttpStatus.BAD_REQUEST.value();
+                    statusValue = HttpStatus.BAD_REQUEST;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                }
                 // guess info
                 GuessInfor guessInfor = new GuessInfor();
                 guessInfor.setEmail(email);
@@ -1107,26 +1113,30 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             BoardingAppointment boardingAppointment = new BoardingAppointment();
             BoardingDetail boardingDetail = new BoardingDetail();
+            Shelter shelter = new Shelter();
             if (appointment.getBoardingAppointment() != null) {
                 // boarding
                 boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
 
                 // detail
                 boardingDetail = boardingDetailRepository.findByBoardingAppointment(boardingAppointment);
+
+                // shelter
+                Long shelterId = boardingAppointment.getShelter().getShelterId();
+                shelter = shelterRepository.findByShelterId(shelterId);
+                shelter.setShelterStatus(ShelterStatus.EMPTY);
             }
 
-            // shelter
-            Long shelterId = boardingAppointment.getShelter().getShelterId();
-            Shelter shelter = shelterRepository.findByShelterId(shelterId);
-            shelter.setShelterStatus(ShelterStatus.EMPTY);
 
             // run sql
             appointmentRepository.delete(appointment);
             reviewRepository.delete(review);
             ordersRepository.delete(userOrder);
-            boardingDetailRepository.delete(boardingDetail);
-            boardingRepository.delete(boardingAppointment);
-            shelterRepository.save(shelter);
+            if (appointment.getBoardingAppointment() != null) {
+                boardingDetailRepository.delete(boardingDetail);
+                boardingRepository.delete(boardingAppointment);
+                shelterRepository.save(shelter);
+            }
 
         } catch (Exception e) {
             logger.error("Error occurred during running:", e);

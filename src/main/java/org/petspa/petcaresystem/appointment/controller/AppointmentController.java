@@ -51,10 +51,9 @@ public class AppointmentController {
    @CrossOrigin
    public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
                                                         @RequestParam(value = "hospitalize")Option option,
-
-                                                        @RequestParam(value = "full name") String fullName,
-                                                        @RequestParam(value = "phone") String phone,
-                                                        @RequestParam(value = "email") String email) {
+                                                        @RequestParam(value = "full name", required = false ) String fullName,
+                                                        @RequestParam(value = "phone", required = false) String phone,
+                                                        @RequestParam(value = "email", required = false) String email) {
       AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, fullName, phone, email);
        return appointmentResponseInfor;
    }
