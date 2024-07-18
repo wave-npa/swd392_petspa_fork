@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
@@ -178,7 +179,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 // find pet
                 if (appointment.getPet() != null) {
                     Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                    if(pet != null) {
+                    if (pet != null) {
                         PetData petData = new PetData();
                         petData.setPet_name(pet.getPet_name());
                         petData.setAge(pet.getAge());
@@ -320,7 +321,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 // find pet
                 if (appointment.getPet() != null) {
                     Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                    if(pet != null) {
+                    if (pet != null) {
                         PetData petData = new PetData();
                         petData.setPet_name(pet.getPet_name());
                         petData.setAge(pet.getAge());
@@ -459,7 +460,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             // find pet
             if (appointment.getPet() != null) {
                 Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                if(pet != null) {
+                if (pet != null) {
                     PetData petData = new PetData();
                     petData.setPet_name(pet.getPet_name());
                     petData.setAge(pet.getAge());
@@ -496,10 +497,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             data.setReviewId(review.getReviewId());
 
             // boarding appointment id
-            if(appointment.getBoardingAppointment() != null) {
+            if (appointment.getBoardingAppointment() != null) {
                 BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
                 data.setBoardingAppointmentId(boardingAppointment.getBoardingId());
-            }else{
+            } else {
                 data.setBoardingAppointmentId(null);
             }
 
@@ -621,36 +622,36 @@ public class AppointmentServiceImpl implements AppointmentService {
             return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
         }
 
-        if(option == Option.YES){
-        // shelter: find available shelter
-        shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
+        if (option == Option.YES) {
+            // shelter: find available shelter
+            shelter = shelterRepository.findFirstByShelterStatus(ShelterStatus.EMPTY);
 
-        // boarding: check shelter status, set boarding date, status, shelter id
-        if (shelter != null) {
-            if (shelter.getStatus() == Status.ACTIVE) {
-                boardingAppointment.setBoardingTime(localDateTime);
-                boardingAppointment.setStatus(Status.ACTIVE);
-                boardingAppointment.setShelter(shelter);
+            // boarding: check shelter status, set boarding date, status, shelter id
+            if (shelter != null) {
+                if (shelter.getStatus() == Status.ACTIVE) {
+                    boardingAppointment.setBoardingTime(localDateTime);
+                    boardingAppointment.setStatus(Status.ACTIVE);
+                    boardingAppointment.setShelter(shelter);
+                } else {
+                    message = "No shelter available!";
+                    statusCode = HttpStatus.BAD_REQUEST.value();
+                    statusValue = HttpStatus.BAD_REQUEST;
+                    return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
+                }
             } else {
                 message = "No shelter available!";
                 statusCode = HttpStatus.BAD_REQUEST.value();
                 statusValue = HttpStatus.BAD_REQUEST;
                 return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
             }
-        } else {
-            message = "No shelter available!";
-            statusCode = HttpStatus.BAD_REQUEST.value();
-            statusValue = HttpStatus.BAD_REQUEST;
-            return new AppointmentResponseInfor(message, timeStamp, statusCode, statusValue);
-        }
 
-        // boarding detail
-        java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
-        boardingDetail.setDate(boardingDetailDate);
-        boardingDetail.setBoardingAppointment(boardingAppointment);
-        boardingDetail.setStartTime(localDateTime);
-        boardingDetail.setEndTime(null);
-        boardingDetail.setStatus(Status.ACTIVE);
+            // boarding detail
+            java.sql.Date boardingDetailDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
+            boardingDetail.setDate(boardingDetailDate);
+            boardingDetail.setBoardingAppointment(boardingAppointment);
+            boardingDetail.setStartTime(localDateTime);
+            boardingDetail.setEndTime(null);
+            boardingDetail.setStatus(Status.ACTIVE);
         }
 
         try {
@@ -761,7 +762,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.save(appointmentSaveForUser);
             }
 
-            if(option == Option.YES){
+            if (option == Option.YES) {
                 shelter.setShelterStatus(ShelterStatus.USING);
                 shelterRepository.save(shelter);
             }
@@ -919,7 +920,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseDTO2 findAppointmentByDoctorId(Long doctorId){
+    public AppointmentResponseDTO2 findAppointmentByDoctorId(Long doctorId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -940,7 +941,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         try {
             List<Appointment> appointmentList = new ArrayList<>();
             Doctor doctor = doctorRepository.findByDoctorId(doctorId);
-            if(doctor == null){
+            if (doctor == null) {
                 message = "Doctor not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
@@ -1008,7 +1009,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 // find pet
                 if (appointment.getPet() != null) {
                     Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                    if(pet != null) {
+                    if (pet != null) {
                         PetData petData = new PetData();
                         petData.setPet_name(pet.getPet_name());
                         petData.setAge(pet.getAge());
@@ -1086,10 +1087,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         responseInfor.setStatusCode(statusCode);
         responseInfor.setStatusValue(statusValue);
 
-        try{
+        try {
 
             Appointment appointment = appointmentRepository.findByAppointmentId(appointmentId);
-            if(appointment == null){
+            if (appointment == null) {
                 message = "Appointment not found!";
                 statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
                 statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -1104,11 +1105,15 @@ public class AppointmentServiceImpl implements AppointmentService {
             // order
             UserOrder userOrder = ordersRepository.findByUserOrderId(appointment.getUserOrder().getUserOrderId());
 
-            // boarding
-            BoardingAppointment boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
+            BoardingAppointment boardingAppointment = new BoardingAppointment();
+            BoardingDetail boardingDetail = new BoardingDetail();
+            if (appointment.getBoardingAppointment() != null) {
+                // boarding
+                boardingAppointment = boardingRepository.findByBoardingId(appointment.getBoardingAppointment().getBoardingId());
 
-            // detail
-            BoardingDetail boardingDetail = boardingDetailRepository.findByBoardingAppointment(boardingAppointment);
+                // detail
+                boardingDetail = boardingDetailRepository.findByBoardingAppointment(boardingAppointment);
+            }
 
             // shelter
             Long shelterId = boardingAppointment.getShelter().getShelterId();
@@ -1123,7 +1128,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             boardingRepository.delete(boardingAppointment);
             shelterRepository.save(shelter);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error occurred during running:", e);
             e.printStackTrace();
             message = "Something went wrong, server error!";

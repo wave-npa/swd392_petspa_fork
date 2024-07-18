@@ -93,7 +93,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     Doctor doctor = doctorRepository.findByDoctorId(schedule.getDoctor().getDoctorId());
                     DoctorData doctorData = new DoctorData();
                     doctorData.setDoctorId(doctor.getDoctorId());
-                    doctorData.setUserName(doctor.getUser().getUserName());
+                    doctorData.setFullName(doctor.getUser().getFullName());
                     doctorData.setDepartmentName(doctor.getDepartment().getDepartmentName());
                     scheduleResponseData.setDoctorData(doctorData);
                 }
@@ -174,7 +174,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             // doctor data
             DoctorData doctorData = new DoctorData();
             doctorData.setDoctorId(doctor.getDoctorId());
-            doctorData.setUserName(doctor.getUser().getUserName());
+            doctorData.setFullName(doctor.getUser().getFullName());
             doctorData.setDepartmentName(doctor.getDepartment().getDepartmentName());
             scheduleResponseData.setDoctorData(doctorData);
 
