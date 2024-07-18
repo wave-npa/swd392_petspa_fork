@@ -68,6 +68,12 @@ public class ServicesController {
        return serviceAndComboService.saveService(service);
    }
 
+   @PostMapping("/save/{typeId}")
+   @CrossOrigin
+   public Services saveServiceNoType(@RequestBody Services service, @PathVariable Long typeId) {
+       return serviceAndComboService.saveServiceNoType(service, typeId);
+   }
+
    @PostMapping("/update")
    @CrossOrigin
    public Services updateService(@RequestBody Services service) {

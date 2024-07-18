@@ -26,6 +26,9 @@ public interface AuthenUserRepository extends JpaRepository<AuthenUser, Long>{
     public AuthenUser findByUserId(Long userId);
     public List<AuthenUser> findByStatus(Status status);
 
+    @Query(value = "SELECT * FROM pet_spa.authen_user ORDER BY user_id DESC", nativeQuery=true)
+    public List<AuthenUser> findAllUsersOrderById();
+
     //find amount of user by join date
     @Query(value = "SELECT * FROM pet_spa.authen_user WHERE create_date BETWEEN :startTime AND :endTime", nativeQuery=true)
     public List<AuthenUser> findAllUsersWithCreateDateRange(

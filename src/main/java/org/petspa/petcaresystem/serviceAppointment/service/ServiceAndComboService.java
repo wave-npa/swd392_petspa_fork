@@ -27,6 +27,8 @@ public interface ServiceAndComboService {
 
     public Services saveService(Services service);
 
+    public Services saveServiceNoType(Services service, Long typeId);
+
     public Services updateService(Services service);
 
     public Services deleteService(Long serviceId);

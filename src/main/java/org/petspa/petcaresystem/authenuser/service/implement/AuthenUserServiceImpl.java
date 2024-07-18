@@ -402,11 +402,11 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         return new UpdatePassowordResponseDTO(message, timeStamp, statusCode, statusValue);
     }
 
-        @Override
-        public List<AuthenUser> getAllUser () {
-            List<AuthenUser> authenUserList = authenUserRepository.findAll();
-            return authenUserList;
-        }
+    @Override
+    public List<AuthenUser> getAllUser() {
+        List<AuthenUser> authenUserList = authenUserRepository.findAllUsersOrderById();
+        return authenUserList;
+    }
 
         @Override
         public ResponseAPI getUserById (Long id){
