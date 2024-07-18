@@ -7,55 +7,41 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import org.petspa.petcaresystem.pet.model.response.ResponseObj;
+import org.petspa.petcaresystem.enums.Status;
 import org.petspa.petcaresystem.schedule.model.entity.ScheduleDetail;
-import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequest;
-import org.petspa.petcaresystem.schedule.model.request.UpdateScheduleDetailRequest;
+import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequestDTO;
+import org.petspa.petcaresystem.schedule.model.response.ResponseInfor;
 import org.petspa.petcaresystem.schedule.service.ScheduleDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/petspa/scheduledetail")
 @CrossOrigin
-@Tag(name = "scheduledetail", description = "scheduledetail Management API")
+@Tag(name = "scheduleDetail", description = "Schedule Detail Management API")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ScheduleDetail.class), mediaType = "application/json") }),
-        @ApiResponse (responseCode = "404", content = { @Content(schema = @Schema()) }),
-        @ApiResponse (responseCode = "500", content = { @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ScheduleDetail.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
 public class ScheduleDetailController {
-
-    @Hidden
-    @RequestMapping("/")
-    @CrossOrigin
-    public void redirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/swagger-ui.html");
-    }
 
     @Autowired
     private ScheduleDetailService scheduleDetailService;
 
-//    @GetMapping(value = {"/ViewScheduledetailByid/{schedule_id}"})
-//    public ResponseEntity<ResponseObj> ViewAllScheduleDetailByScheduleId(@PathVariable Long schedule_id){
-//        return scheduleDetailService.ViewAllScheduleDetailByScheduleId(schedule_id);
-//    }
-//    @PostMapping("/{schedule_id}/save")
-//    public ResponseEntity<ResponseObj> CreateScheduleDetail(@PathVariable Long schedule_id,
-//                                                            @RequestBody CreateScheduleDetailRequest createScheduleDetailRequest){
-//        return scheduleDetailService.CreateScheduleDetail(schedule_id, createScheduleDetailRequest);
-//    }
-//
-//    @PutMapping("/update")
-//    public ResponseEntity<ResponseObj> UpdateScheduleDetail(@RequestParam Long detail_id,
-//                                                            @RequestBody UpdateScheduleDetailRequest updateScheduleDetailRequest ){
-//        return scheduleDetailService.UpdateScheduleDetail(detail_id, updateScheduleDetailRequest);
-//    }
-//
-//    @PutMapping("/update")
-//    public ResponseEntity<ResponseObj> DeleteScheduleDetail(@RequestParam Long detail_id){
-//        return scheduleDetailService.DeleteScheduleDetail(detail_id);
-//    }
+    @PostMapping("/save")
+    public ResponseInfor createScheduleDetail(@RequestParam(value = "scheduleId") Long scheduleId,
+                                              @RequestBody CreateScheduleDetailRequestDTO createScheduleDetailRequestDTO) {
+        ResponseInfor responseInfor = scheduleDetailService.createScheduleDetail(scheduleId, createScheduleDetailRequestDTO);
+        return responseInfor;
+    }
+
+    @PutMapping("/update")
+    public ResponseInfor updateScheduleDetail(@RequestParam Long detailId,
+                                              @RequestBody CreateScheduleDetailRequestDTO updateScheduleDetailRequest) {
+        ResponseInfor responseInfor = scheduleDetailService.updateScheduleDetail(detailId, updateScheduleDetailRequest);
+        return responseInfor;
+    }
 }

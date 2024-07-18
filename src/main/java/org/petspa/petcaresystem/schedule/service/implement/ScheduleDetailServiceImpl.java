@@ -1,215 +1,120 @@
 package org.petspa.petcaresystem.schedule.service.implement;
 
+
 import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.pet.model.response.ResponseObj;
-import org.petspa.petcaresystem.schedule.mapper.ScheduleDetailMapper;
-import org.petspa.petcaresystem.schedule.mapper.ScheduleMapper;
 import org.petspa.petcaresystem.schedule.model.entity.Schedule;
 import org.petspa.petcaresystem.schedule.model.entity.ScheduleDetail;
-import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequest;
-import org.petspa.petcaresystem.schedule.model.request.CreateScheduleRequest;
-import org.petspa.petcaresystem.schedule.model.request.UpdateScheduleDetailRequest;
-import org.petspa.petcaresystem.schedule.model.request.UpdateScheduleRequest;
-import org.petspa.petcaresystem.schedule.model.response.ScheduleDetailResponse;
-import org.petspa.petcaresystem.schedule.model.response.ScheduleResponse;
+import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequestDTO;
+import org.petspa.petcaresystem.schedule.model.request.CreateScheduleRequestDTO;
+import org.petspa.petcaresystem.schedule.model.response.ResponseInfor;
+import org.petspa.petcaresystem.schedule.model.response.ScheduleResponseDTO;
 import org.petspa.petcaresystem.schedule.repository.ScheduleDetailRepository;
 import org.petspa.petcaresystem.schedule.repository.ScheduleRepository;
 import org.petspa.petcaresystem.schedule.service.ScheduleDetailService;
-import org.petspa.petcaresystem.schedule.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ScheduleDetailServiceImpl implements ScheduleDetailService {
 
+    private static final String format_pattern = "yyyy-MM-dd HH:mm";
+
     @Autowired
     private ScheduleDetailRepository scheduleDetailRepository;
+    @Autowired
     private ScheduleRepository scheduleRepository;
 
+
+
     @Override
-    public ResponseEntity<ResponseObj> ViewAllScheduleDetailByScheduleId(Long schedule_id) {
-        try {
-            Schedule viewschedule = scheduleRepository.getReferenceById(schedule_id);
-            List<Schedule> scheduleDoctor = scheduleRepository.findAll(Sort.by(Sort.Direction.ASC, "date"));
-            if (scheduleDoctor.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no Schedule created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            List<ScheduleDetail> scheduleDetails = scheduleDetailRepository.findAll();
-            List<ScheduleDetailResponse> scheduleDetailResponses = new ArrayList<>();
-            for (Schedule schedule : scheduleDoctor) {
-                if (schedule.equals(viewschedule) && schedule.getStatus().equals(Status.ACTIVE)) {
-                    for (ScheduleDetail scheduleDetail : scheduleDetails) {
-                        ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailMapper
-                                .toScheduleDetailResponse(scheduleDetail);
-                        scheduleDetailResponses.add(scheduleDetailResponse);
-                    }
-                }
-            }
-            if (scheduleDetailResponses.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no Schedule detail created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            } else {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("Load Schedule Details Successfully")
-                        .data(scheduleDetailResponses)
-                        .build();
-                return ResponseEntity.ok().body(responseObj);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
+    public ScheduleResponseDTO viewSchedulebyDoctorId(Long doctor_id) {
+        return null;
     }
 
     @Override
-    public ResponseEntity<ResponseObj> CreateScheduleDetail(Long schedule_id, CreateScheduleDetailRequest createScheduleDetailRequest) {
+    public ResponseInfor createScheduleDetail(Long scheduleId, CreateScheduleDetailRequestDTO createScheduleDetailRequestDTO) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Create new schedule and detail successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setMessage(message);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
         try {
-            Schedule createforschedule = scheduleRepository.getReferenceById(schedule_id);
-            List<Schedule> scheduleDoctor = scheduleRepository.findAll(Sort.by(Sort.Direction.ASC, "date"));
-            if (scheduleDoctor.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no Schedule created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+            Schedule schedule = scheduleRepository.findByScheduleId(scheduleId);
+            if(schedule == null){
+                message = "Schedule not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseInfor(message, timeStamp, statusCode, statusValue);
             }
+
+
+            // schedule detail
             ScheduleDetail scheduleDetail = new ScheduleDetail();
-            for (Schedule schedule : scheduleDoctor) {
-                if (schedule.equals(createforschedule) && schedule.getStatus().equals(Status.ACTIVE)) {
+            scheduleDetail.setSchedule(schedule);
+            scheduleDetail.setStatus(createScheduleDetailRequestDTO.getStatus());
+            scheduleDetail.setStartTime(createScheduleDetailRequestDTO.getStartTime());
+            scheduleDetail.setEndTime(createScheduleDetailRequestDTO.getEndTime());
+            scheduleDetailRepository.save(scheduleDetail);
 
-                    scheduleDetail.setStartTime(createScheduleDetailRequest.getStartTime());
-                    scheduleDetail.setEndTime(createScheduleDetailRequest.getEndTime());
-                    scheduleDetail.setSchedule(schedule);
-                    scheduleDetail.setStatus(Status.ACTIVE);
-
-                    scheduleDetailRepository.save(scheduleDetail);
-                    ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailMapper
-                            .toScheduleDetailResponse(scheduleDetail);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Create Schedule Detail Successfully")
-                            .data(scheduleDetailResponse)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Schedule not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        return new ResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 
     @Override
-    public ResponseEntity<ResponseObj> UpdateScheduleDetail(Long detail_id, UpdateScheduleDetailRequest updateScheduleDetailRequest) {
+    public ResponseInfor updateScheduleDetail(Long scheduleDetailId, CreateScheduleDetailRequestDTO createScheduleDetailRequestDTO) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Create new schedule and detail successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setMessage(message);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
         try {
-            ScheduleDetail updatescheduleDetail = scheduleDetailRepository.getReferenceById(detail_id);
-            List<ScheduleDetail> scheduleDetailList = scheduleDetailRepository.findAll();
-            if (scheduleDetailList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no Schedule details created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+            ScheduleDetail scheduleDetail = scheduleDetailRepository.findByDetailId(scheduleDetailId);
+            if(scheduleDetail == null){
+                message = "Schedule detail not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseInfor(message, timeStamp, statusCode, statusValue);
             }
-            for (ScheduleDetail scheduleDetail : scheduleDetailList) {
-                if (scheduleDetail.equals(updatescheduleDetail) && scheduleDetail.getStatus().equals(Status.ACTIVE)) {
 
-                    scheduleDetail.setStartTime(updateScheduleDetailRequest.getStartTime());
-                    scheduleDetail.setEndTime(updateScheduleDetailRequest.getEndTime());
 
-                    Schedule schedule = scheduleRepository.getReferenceById(updateScheduleDetailRequest.getSchedule_id());
-                    scheduleDetail.setSchedule(schedule);
+            // schedule detail
+            scheduleDetail.setStatus(createScheduleDetailRequestDTO.getStatus());
+            scheduleDetail.setStartTime(createScheduleDetailRequestDTO.getStartTime());
+            scheduleDetail.setEndTime(createScheduleDetailRequestDTO.getEndTime());
+            scheduleDetailRepository.save(scheduleDetail);
 
-                    scheduleDetail.setStatus(Status.ACTIVE);
-
-                    scheduleDetailRepository.save(scheduleDetail);
-                    ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailMapper
-                            .toScheduleDetailResponse(scheduleDetail);
-                    ResponseObj responseObj = ResponseObj.builder()
-                        .message("Update Schedule Detail Successfully")
-                        .data(scheduleDetailResponse)
-                        .build();
-                    return ResponseEntity.ok().body(responseObj);
-            }
-        }
-        ResponseObj responseObj = ResponseObj.builder()
-                .message("Schedule detail not found")
-                .data(null)
-                .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-    }
-
-    @Override
-    public ResponseEntity<ResponseObj> DeleteScheduleDetail(Long detail_id) {
-        try {
-            ScheduleDetail updatescheduleDetail = scheduleDetailRepository.getReferenceById(detail_id);
-            List<ScheduleDetail> scheduleDetailList = scheduleDetailRepository.findAll();
-            if (scheduleDetailList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no Schedule details created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            for (ScheduleDetail scheduleDetail : scheduleDetailList) {
-                if (scheduleDetail.equals(updatescheduleDetail) && scheduleDetail.getStatus().equals(Status.ACTIVE)) {
-
-                    scheduleDetail.setStatus(Status.INACTIVE);
-
-                    scheduleDetailRepository.save(scheduleDetail);
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Update Schedule Detail Successfully")
-                            .data(null)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Schedule detail not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
+        return new ResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 }
