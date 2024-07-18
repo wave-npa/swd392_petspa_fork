@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GuessRepository extends JpaRepository<GuessInfor, Long> {
+    public GuessInfor findByAppointmentId(Long appointmentId);
 }

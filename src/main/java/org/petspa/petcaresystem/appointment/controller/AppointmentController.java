@@ -41,9 +41,9 @@ public class AppointmentController {
 
    @GetMapping("/getById/{appointmentId}")
    @CrossOrigin
-   public AppointmentResponseDTO getAppointmentById(@PathVariable Long appointmentId) {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAppointmentById(appointmentId);
-       return appointmentResponseDTO;
+   public AppointmentResponseDTO2 getAppointmentById(@PathVariable Long appointmentId) {
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAppointmentById(appointmentId);
+       return appointmentResponseDTO2;
    }
 
    @PostMapping("/save")

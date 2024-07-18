@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public interface AppointmentService {
 
     public AppointmentResponseDTO2 findAllAppointment();
-    public AppointmentResponseDTO findAppointmentById(Long appointmentId);
+    public AppointmentResponseDTO2 findAppointmentById(Long appointmentId);
     public AppointmentResponseInfor saveAppointment(CreateAppointmentRequestDTO createAppointmentRequestDTO, Option option, String fullName, String phone, String email);
     public AppointmentResponseInfor updateAppointment(UpdateAppointmentRequestDTO updateAppointmentRequestDTO);
     public AppointmentResponseInfor updateAppointmentStatus(Long appointmentId, Status status);

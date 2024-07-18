@@ -198,9 +198,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                     }
                 } else {
                     data.setPet(null);
-                    data.setUserName(null);
-                    data.setEmail(null);
-                    data.setPhoneNumber(null);
+
+                    GuessInfor guessInfor = guessRepository.findByAppointmentId(appointment.getAppointmentId());
+                    data.setUserName(guessInfor.getFullName());
+                    data.setEmail(guessInfor.getEmail());
+                    data.setPhoneNumber(guessInfor.getEmail());
                 }
 
                 // user order
@@ -238,7 +240,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseDTO findAppointmentById(Long appointmentId) {
+    public AppointmentResponseDTO2 findAppointmentById(Long appointmentId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -248,7 +250,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
         AppointmentResponseInfor infor = new AppointmentResponseInfor();
-        AppointmentResponseData data = new AppointmentResponseData();
+        AppointmentResponseData2 data = new AppointmentResponseData2();
         Appointment appointment = new Appointment();
 
 
@@ -266,7 +268,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 infor.setMessage(message);
                 infor.setStatusCode(statusCode);
                 infor.setStatusValue(statusValue);
-                return new AppointmentResponseDTO(infor, data);
+                return new AppointmentResponseDTO2(infor, data);
             }
 
             // appointment id
@@ -284,31 +286,61 @@ public class AppointmentServiceImpl implements AppointmentService {
             // end time
             data.setEndTime(appointment.getEndTime());
 
-            // booked doctor id
+            // booked doctor
             Collection<Doctor> bookedDoctors = appointment.getBookedDoctor();
             List<Doctor> doctorList = new ArrayList<>(bookedDoctors);
             DoctorData doctorData = new DoctorData();
             for (Doctor doctor : doctorList) {
                 doctorData.setDoctorId(doctor.getDoctorId());
+                AuthenUser authenUser = authenUserRepository.findByUserId(doctor.getUser().getUserId());
+                doctorData.setUserName(authenUser.getUserName());
+                Departments departments = departmentRepository.findByDepartmentId(doctor.getDepartment().getDepartmentId());
+                doctorData.setDepartmentName(departments.getDepartmentName());
             }
-            data.setBookedDoctorId(doctorData.getDoctorId());
+            data.setBookedDoctor(doctorData);
 
-            // booked service id
+            // booked service
             Collection<Services> bookedServices = appointment.getBookedService();
             List<Services> serviceList = new ArrayList<>(bookedServices);
             ServicesData servicesData = new ServicesData();
             for (Services services : serviceList) {
                 servicesData.setServiceId(services.getServiceId());
-
+                servicesData.setServiceName(services.getServiceName());
+                servicesData.setDescription(services.getDescription());
+                servicesData.setPrice(services.getPrice());
+                servicesData.setStatus(services.getStatus());
+                servicesData.setDiscountPercent(services.getDiscountPercent());
             }
-            data.setBookedServiceId(servicesData.getServiceId());
+            data.setBookedService(servicesData);
 
-            // pet id
+            // find pet
             if (appointment.getPet() != null) {
                 Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
-                data.setPetId(appointment.getPet().getPetId());
+                if(pet != null) {
+                    PetData petData = new PetData();
+                    petData.setPet_name(pet.getPet_name());
+                    petData.setAge(pet.getAge());
+                    petData.setGender(pet.getGender());
+                    petData.setStatus(pet.getStatus());
+                    petData.setPetId(pet.getPetId());
+                    petData.setType_of_species(pet.getType_of_species());
+                    petData.setOwnerId(pet.getOwner().getUserId());
+                    petData.setSpecies(pet.getSpecies());
+                    data.setPet(petData);
+
+                    // user
+                    AuthenUser authenUser = authenUserRepository.findByUserId(pet.getOwner().getUserId());
+                    data.setUserName(authenUser.getUserName());
+                    data.setEmail(authenUser.getEmail());
+                    data.setPhoneNumber(authenUser.getPhone());
+                }
             } else {
-                data.setPetId(null);
+                data.setPet(null);
+
+                GuessInfor guessInfor = guessRepository.findByAppointmentId(appointment.getAppointmentId());
+                data.setUserName(guessInfor.getFullName());
+                data.setEmail(guessInfor.getEmail());
+                data.setPhoneNumber(guessInfor.getEmail());
             }
 
 
@@ -339,7 +371,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             infor.setStatusValue(statusValue);
         }
 
-        return new AppointmentResponseDTO(infor, data);
+        return new AppointmentResponseDTO2(infor, data);
     }
 
 
