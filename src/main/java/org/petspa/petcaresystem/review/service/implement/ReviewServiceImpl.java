@@ -1,5 +1,7 @@
 package org.petspa.petcaresystem.review.service.implement;
 
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.enums.ReviewRating;
@@ -24,13 +26,15 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
     private static final String format_pattern = "yyyy-MM-dd HH:mm";
 
     @Autowired
     private ReviewRepository reviewRepository;
     @Autowired
     private AuthenUserRepository authenUserRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Override
     public ReviewResponseDTO findAllReview() {
@@ -49,20 +53,20 @@ public class ReviewServiceImpl implements ReviewService{
         responseInfor.setStatusCode(statusCode);
         responseInfor.setStatusValue(statusValue);
 
-        try{
+        try {
 
             List<Review> reviewList = reviewRepository.findAll();
-            if(reviewList == null){
+            if (reviewList == null) {
                 message = "Review not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
                 responseInfor.setTimeStamp(timeStamp);
                 responseInfor.setStatusCode(statusCode);
                 responseInfor.setStatusValue(statusValue);
-                return new ReviewResponseDTO(responseInfor,null, reviewResponseDataList);
+                return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
             }
 
-            for(Review review : reviewList){
+            for (Review review : reviewList) {
                 ReviewResponseData reviewResponseData = new ReviewResponseData();
                 reviewResponseData.setReviewId(review.getReviewId());
                 reviewResponseData.setDescription(reviewResponseData.getDescription());
@@ -73,12 +77,12 @@ public class ReviewServiceImpl implements ReviewService{
                 reviewResponseDataList.add(reviewResponseData);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             message = "Something went wrong, server error!";
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ReviewResponseDTO(responseInfor,null, reviewResponseDataList);
+        return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
     }
 
     @Override
@@ -98,30 +102,30 @@ public class ReviewServiceImpl implements ReviewService{
         responseInfor.setStatusCode(statusCode);
         responseInfor.setStatusValue(statusValue);
 
-        try{
+        try {
 
             AuthenUser authenUser = authenUserRepository.findByUserId(userId);
-            if(authenUser == null){
+            if (authenUser == null) {
                 message = "User not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
                 responseInfor.setTimeStamp(timeStamp);
                 responseInfor.setStatusCode(statusCode);
                 responseInfor.setStatusValue(statusValue);
-                return new ReviewResponseDTO(responseInfor,null, null);
+                return new ReviewResponseDTO(responseInfor, null, null);
             }
             List<Review> reviewList = reviewRepository.findByAuthor(authenUser);
-            if(reviewList == null){
+            if (reviewList == null) {
                 message = "Review not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
                 responseInfor.setTimeStamp(timeStamp);
                 responseInfor.setStatusCode(statusCode);
                 responseInfor.setStatusValue(statusValue);
-                return new ReviewResponseDTO(responseInfor,null, null);
+                return new ReviewResponseDTO(responseInfor, null, null);
             }
 
-            for(Review review : reviewList){
+            for (Review review : reviewList) {
                 ReviewResponseData reviewResponseData = new ReviewResponseData();
                 reviewResponseData.setReviewId(review.getReviewId());
                 reviewResponseData.setDescription(review.getDescription());
@@ -132,12 +136,12 @@ public class ReviewServiceImpl implements ReviewService{
                 reviewResponseDataList.add(reviewResponseData);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             message = "Something went wrong, server error!";
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ReviewResponseDTO(responseInfor,null, reviewResponseDataList);
+        return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
     }
 
     @Override
@@ -149,10 +153,10 @@ public class ReviewServiceImpl implements ReviewService{
         int statusCode = HttpStatus.OK.value();
         HttpStatus statusValue = HttpStatus.OK;
 
-        try{
+        try {
 
             Review review = reviewRepository.findByReviewId(reviewId);
-            if(review == null){
+            if (review == null) {
                 message = "Review not found!";
                 statusCode = HttpStatus.NOT_FOUND.value();
                 statusValue = HttpStatus.NOT_FOUND;
@@ -166,11 +170,68 @@ public class ReviewServiceImpl implements ReviewService{
             reviewRepository.save(review);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             message = "Something went wrong, server error!";
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseInfor(message, timeStamp, statusCode, statusValue);
+    }
+
+    @Override
+    public ReviewResponseDTO findReviewByApppointmentId(Long appointmentId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Review found";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        ReviewResponseData reviewResponseData = new ReviewResponseData();
+
+        responseInfor.setMessage(message);
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
+        try {
+
+            Appointment appointment = appointmentRepository.findByAppointmentId(appointmentId);
+            if (appointment == null) {
+                message = "Appointment not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO(responseInfor, null, null);
+            }
+
+            Review review = reviewRepository.findByAppointment(appointment);
+            if (review == null) {
+                message = "Review not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO(responseInfor, null, null);
+            }
+
+
+            reviewResponseData.setReviewId(review.getReviewId());
+            reviewResponseData.setDescription(review.getDescription());
+            reviewResponseData.setReviewRating(review.getRating());
+            reviewResponseData.setStatus(review.getStatus());
+            reviewResponseData.setUserId(review.getAuthor().getUserId());
+
+
+        } catch (Exception e) {
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ReviewResponseDTO(responseInfor, reviewResponseData, null);
     }
 }

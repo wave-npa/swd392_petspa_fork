@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.review.repository;
 
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.review.model.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long>{
     public Review findByReviewId(Long reviewID);
     public List<Review> findByAuthor(AuthenUser authenUser);
+    public Review findByAppointment(Appointment appointment);
 
 }

@@ -725,18 +725,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             // --------------------------------------JPA RUN------------------------------------------------
 
-            // review: set des, rating, status for review, create review, set review id for appointment
-            review.setDescription(null);
-            review.setRating(null);
-            review.setStatus(Status.ACTIVE);
-            reviewRepository.save(review);
-            appointmentSaveForGuess.setReview(review);
-            appointmentSaveForUser.setReview(review);
+            if(token != null) {
+                // review: set des, rating, status for review, create review, set review id for appointment
+                review.setDescription(null);
+                review.setRating(null);
+                review.setStatus(Status.ACTIVE);
+                reviewRepository.save(review);
+                appointmentSaveForUser.setReview(review);
 
-            // create order
-            ordersRepository.save(userOrder);
-            appointmentSaveForGuess.setUserOrder(userOrder);
-            appointmentSaveForUser.setUserOrder(userOrder);
+                // create order
+                ordersRepository.save(userOrder);
+                appointmentSaveForUser.setUserOrder(userOrder);
+            }else{
+                appointmentSaveForGuess.setReview(null);
+                appointmentSaveForGuess.setUserOrder(null);
+            }
 
             // create boarding & boarding detail
             if (option == Option.YES) {
@@ -1127,9 +1130,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 shelter.setShelterStatus(ShelterStatus.EMPTY);
             }
 
+            // guess infor
+            GuessInfor guessInfor = guessRepository.findByAppointmentId(appointmentId);
+
+
 
             // run sql
             appointmentRepository.delete(appointment);
+            if(guessInfor != null){
+                guessRepository.delete(guessInfor);
+            }
             reviewRepository.delete(review);
             ordersRepository.delete(userOrder);
             if (appointment.getBoardingAppointment() != null) {

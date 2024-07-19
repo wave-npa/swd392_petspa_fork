@@ -36,22 +36,27 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @GetMapping(value = {"/findAllReview"})
-    public ReviewResponseDTO ViewAllReview(){
+    public ReviewResponseDTO findAllReview(){
         ReviewResponseDTO reviewResponseDTO = reviewService.findAllReview();
         return reviewResponseDTO;
     }
 
-    @GetMapping(value = {"/viewReview/{authorId}"})
-    public ReviewResponseDTO ViewReviewByAuthor(@PathVariable Long authorId){
+    @GetMapping(value = {"/findReviewByAuthorId/{authorId}"})
+    public ReviewResponseDTO findReviewByAuthorId(@PathVariable Long authorId){
         ReviewResponseDTO reviewResponseDTO = reviewService.findReviewByAuthor(authorId);
         return reviewResponseDTO;
     }
 
     @PutMapping(value = {"/update/{reviewId}"})
-    public ResponseInfor ViewReviewByAuthor(@PathVariable(value = "reviewId") Long reviewId,
+    public ResponseInfor updateReview(@PathVariable(value = "reviewId") Long reviewId,
                                             @RequestBody UpdateReviewRequestDTO updateReviewRequestDTO){
         ResponseInfor responseInfor = reviewService.updateStatusReview(reviewId, updateReviewRequestDTO);
         return responseInfor;
     }
 
+    @GetMapping(value = {"/findReviewByAppointmentId/{appointmentId}"})
+    public ReviewResponseDTO findReviewByAppointmentId(@PathVariable(value = "appointmentId") Long appointmentId){
+        ReviewResponseDTO reviewResponseDTO = reviewService.findReviewByApppointmentId(appointmentId);
+        return reviewResponseDTO;
+    }
 }

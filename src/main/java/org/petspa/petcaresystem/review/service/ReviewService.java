@@ -16,5 +16,7 @@ public interface ReviewService {
     ReviewResponseDTO findAllReview();
     ReviewResponseDTO findReviewByAuthor(Long userId);
     ResponseInfor updateStatusReview(Long reviewId, UpdateReviewRequestDTO updateReviewRequestDTO);
+
+    ReviewResponseDTO findReviewByApppointmentId(Long appointmentId);
 }
 
