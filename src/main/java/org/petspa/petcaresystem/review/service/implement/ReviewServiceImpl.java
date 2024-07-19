@@ -1,17 +1,22 @@
 package org.petspa.petcaresystem.review.service.implement;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.GuessInfor;
 import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.enums.ReviewRating;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
+import org.petspa.petcaresystem.pet.model.entity.PetData;
+import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.model.request.UpdateReviewRequestDTO;
-import org.petspa.petcaresystem.review.model.response.ResponseInfor;
-import org.petspa.petcaresystem.review.model.response.ReviewResponseDTO;
-import org.petspa.petcaresystem.review.model.response.ReviewResponseData;
+import org.petspa.petcaresystem.review.model.response.*;
 import org.petspa.petcaresystem.review.repository.ReviewRepository;
 import org.petspa.petcaresystem.review.service.ReviewService;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
+import org.petspa.petcaresystem.serviceAppointment.repository.ServicesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -35,6 +40,10 @@ public class ReviewServiceImpl implements ReviewService {
     private AuthenUserRepository authenUserRepository;
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private ServicesRepository servicesRepository;
+    @Autowired
+    private PetRepository petRepository;
 
     @Override
     public ReviewResponseDTO findAllReview() {
@@ -179,7 +188,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewResponseDTO findReviewByApppointmentId(Long appointmentId) {
+    public ReviewResponseDTO2 findReviewByApppointmentId(Long appointmentId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
         String timeStamp = localDateTime.format(formatter);
@@ -188,7 +197,7 @@ public class ReviewServiceImpl implements ReviewService {
         HttpStatus statusValue = HttpStatus.OK;
 
         ResponseInfor responseInfor = new ResponseInfor();
-        ReviewResponseData reviewResponseData = new ReviewResponseData();
+        ReviewResponseData2 reviewResponseData2 = new ReviewResponseData2();
 
         responseInfor.setMessage(message);
         responseInfor.setTimeStamp(timeStamp);
@@ -205,7 +214,7 @@ public class ReviewServiceImpl implements ReviewService {
                 responseInfor.setTimeStamp(timeStamp);
                 responseInfor.setStatusCode(statusCode);
                 responseInfor.setStatusValue(statusValue);
-                return new ReviewResponseDTO(responseInfor, null, null);
+                return new ReviewResponseDTO2(responseInfor, null);
             }
 
             Review review = reviewRepository.findByAppointment(appointment);
@@ -216,15 +225,48 @@ public class ReviewServiceImpl implements ReviewService {
                 responseInfor.setTimeStamp(timeStamp);
                 responseInfor.setStatusCode(statusCode);
                 responseInfor.setStatusValue(statusValue);
-                return new ReviewResponseDTO(responseInfor, null, null);
+                return new ReviewResponseDTO2(responseInfor, null);
             }
 
 
-            reviewResponseData.setReviewId(review.getReviewId());
-            reviewResponseData.setDescription(review.getDescription());
-            reviewResponseData.setReviewRating(review.getRating());
-            reviewResponseData.setStatus(review.getStatus());
-            reviewResponseData.setUserId(review.getAuthor().getUserId());
+            reviewResponseData2.setReviewId(review.getReviewId());
+            reviewResponseData2.setDescription(review.getDescription());
+            reviewResponseData2.setReviewRating(review.getRating());
+            reviewResponseData2.setStatus(review.getStatus());
+            reviewResponseData2.setUserId(review.getAuthor().getUserId());
+
+            AuthenUser authenUser = authenUserRepository.findByUserId(review.getAuthor().getUserId());
+            reviewResponseData2.setFullName(authenUser.getFullName());
+
+            // service
+            Collection<Services> bookedServices = appointment.getBookedService();
+            List<Services> serviceList = new ArrayList<>(bookedServices);
+            ServicesData servicesData = new ServicesData();
+            for (Services services : serviceList) {
+                servicesData.setServiceName(services.getServiceName());
+            }
+            reviewResponseData2.setServiceName(servicesData.getServiceName());
+
+
+            // find pet
+            if (appointment.getPet() != null) {
+                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                if (pet != null) {
+                    PetData petData = new PetData();
+                    petData.setPet_name(pet.getPet_name());
+                    petData.setAge(pet.getAge());
+                    petData.setGender(pet.getGender());
+                    petData.setStatus(pet.getStatus());
+                    petData.setPetId(pet.getPetId());
+                    petData.setType_of_species(pet.getType_of_species());
+                    petData.setOwnerId(pet.getOwner().getUserId());
+                    petData.setSpecies(pet.getSpecies());
+                    reviewResponseData2.setPetData(petData);
+
+                }
+            } else {
+                reviewResponseData2.setPetData(null);
+            }
 
 
         } catch (Exception e) {
@@ -232,6 +274,6 @@ public class ReviewServiceImpl implements ReviewService {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ReviewResponseDTO(responseInfor, reviewResponseData, null);
+        return new ReviewResponseDTO2(responseInfor, reviewResponseData2);
     }
 }

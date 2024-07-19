@@ -14,6 +14,7 @@ import org.petspa.petcaresystem.review.model.entity.Review;
 import org.petspa.petcaresystem.review.model.request.UpdateReviewRequestDTO;
 import org.petspa.petcaresystem.review.model.response.ResponseInfor;
 import org.petspa.petcaresystem.review.model.response.ReviewResponseDTO;
+import org.petspa.petcaresystem.review.model.response.ReviewResponseDTO2;
 import org.petspa.petcaresystem.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +56,8 @@ public class ReviewController {
     }
 
     @GetMapping(value = {"/findReviewByAppointmentId/{appointmentId}"})
-    public ReviewResponseDTO findReviewByAppointmentId(@PathVariable(value = "appointmentId") Long appointmentId){
-        ReviewResponseDTO reviewResponseDTO = reviewService.findReviewByApppointmentId(appointmentId);
-        return reviewResponseDTO;
+    public ReviewResponseDTO2 findReviewByAppointmentId(@PathVariable(value = "appointmentId") Long appointmentId){
+        ReviewResponseDTO2 reviewResponseDTO2 = reviewService.findReviewByApppointmentId(appointmentId);
+        return reviewResponseDTO2;
     }
 }

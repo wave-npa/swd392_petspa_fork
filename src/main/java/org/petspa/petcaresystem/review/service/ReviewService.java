@@ -5,6 +5,7 @@ import org.petspa.petcaresystem.pet.model.response.ResponseObj;
 import org.petspa.petcaresystem.review.model.request.UpdateReviewRequestDTO;
 import org.petspa.petcaresystem.review.model.response.ResponseInfor;
 import org.petspa.petcaresystem.review.model.response.ReviewResponseDTO;
+import org.petspa.petcaresystem.review.model.response.ReviewResponseDTO2;
 import org.petspa.petcaresystem.review.model.response.ReviewResponseData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,6 @@ public interface ReviewService {
     ReviewResponseDTO findReviewByAuthor(Long userId);
     ResponseInfor updateStatusReview(Long reviewId, UpdateReviewRequestDTO updateReviewRequestDTO);
 
-    ReviewResponseDTO findReviewByApppointmentId(Long appointmentId);
+    ReviewResponseDTO2 findReviewByApppointmentId(Long appointmentId);
 }
 
