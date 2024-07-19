@@ -1,5 +1,6 @@
 package org.petspa.petcaresystem.appointment.controller;
 
+import java.net.http.HttpResponse;
 import java.util.Collection;
 
 import org.petspa.petcaresystem.appointment.model.payload.Appointment;
@@ -41,18 +42,19 @@ public class AppointmentController {
 
    @GetMapping("/getById/{appointmentId}")
    @CrossOrigin
-   public AppointmentResponseDTO getAppointmentById(@PathVariable Long appointmentId) {
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.findAppointmentById(appointmentId);
-       return appointmentResponseDTO;
+   public AppointmentResponseDTO2 getAppointmentById(@PathVariable Long appointmentId) {
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAppointmentById(appointmentId);
+       return appointmentResponseDTO2;
    }
 
    @PostMapping("/save")
    @CrossOrigin
    public AppointmentResponseInfor createNewAppointment(@RequestBody CreateAppointmentRequestDTO createAppointmentRequestDTO,
                                                         @RequestParam(value = "hospitalize")Option option,
-                                                        @RequestParam(value = "phone") String phone,
-                                                        @RequestParam(value = "email") String email) {
-      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, phone, email);
+                                                        @RequestParam(value = "full name", required = false ) String fullName,
+                                                        @RequestParam(value = "phone", required = false) String phone,
+                                                        @RequestParam(value = "email", required = false) String email) {
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.saveAppointment(createAppointmentRequestDTO, option, fullName, phone, email);
        return appointmentResponseInfor;
    }
 
@@ -71,8 +73,21 @@ public class AppointmentController {
    }
 
    @GetMapping("/getByUserId")
-   private AppointmentResponseDTO getAppointmentByUserId(){
-      AppointmentResponseDTO appointmentResponseDTO = appointmentService.getAppointmentByUserId();
-      return appointmentResponseDTO;
+   private AppointmentResponseDTO2 getAppointmentByUserId(@RequestParam(value = "userId") Long userId){
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAllAppointmentByUserId(userId);
+      return appointmentResponseDTO2;
+   }
+
+   @GetMapping("/getByDoctorId")
+   private AppointmentResponseDTO2 getAppointmentByDoctorId(@RequestParam(value = "doctorId") Long doctorId){
+      AppointmentResponseDTO2 appointmentResponseDTO2 = appointmentService.findAppointmentByDoctorId(doctorId);
+      return appointmentResponseDTO2;
+   }
+
+   @DeleteMapping("delete/{appointmentId}")
+   private AppointmentResponseInfor deleteAppointmentById(@PathVariable(value = "appointmentId") Long appointmentId){
+      AppointmentResponseInfor appointmentResponseInfor = appointmentService.deleteAppointment(appointmentId);
+      return appointmentResponseInfor;
+
    }
 }

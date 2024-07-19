@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
@@ -45,6 +46,55 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
+=======
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy JAR app to Azure Web App - petspa392
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java version
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'microsoft'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app
+          path: '${{ github.workspace }}/target/*.jar'
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: java-app
+>>>>>>> backup-repo/main
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -52,6 +102,7 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2552CF0D76384466BD7E878BED812CAC }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6FC1B6D58E384AD6A34817BBCF919CFF }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8C2B2D302E1D4537B0D0D0CEBB24EB9D }}
+<<<<<<< HEAD
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -60,4 +111,14 @@ jobs:
           app-name: 'petspa392'
           slot-name: 'Production'
           package: '*.jar'
+=======
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'petspa392'
+          slot-name: 'Production'
+          package: '*.jar'
+>>>>>>> backup-repo/main
           

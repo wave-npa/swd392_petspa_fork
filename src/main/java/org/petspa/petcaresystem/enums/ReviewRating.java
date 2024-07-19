@@ -7,9 +7,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ReviewRating {
-    E_VERY_BAD,//1 sao
-    D_BAD,//2 sao
-    C_SATISFIED,//3 sao
-    B_GOOD,//4 sao
-    A_VERY_GOOD;//5 sao
+    VERY_BAD,//1 sao
+    BAD,//2 sao
+    SATISFIED,//3 sao
+    GOOD,//4 sao
+    VERY_GOOD;//5 sao
 }

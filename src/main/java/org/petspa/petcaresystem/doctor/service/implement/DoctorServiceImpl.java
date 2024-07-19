@@ -7,10 +7,13 @@ import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.doctor.model.Doctor;
 import org.petspa.petcaresystem.doctor.model.DoctorResponseDTO;
+import org.petspa.petcaresystem.doctor.model.reponse.DoctorResponseData;
 import org.petspa.petcaresystem.doctor.repository.DoctorRepository;
 import org.petspa.petcaresystem.doctor.service.DoctorService;
 import org.petspa.petcaresystem.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +21,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private DoctorRepository doctorRepository;
-
 
     @Autowired
     private AuthenUserRepository authenUserRepository;
@@ -67,4 +69,23 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.save(doctor);
     }
 
+    @Override
+    public ResponseEntity<DoctorResponseData> findDoctorByUserId(Long userId){
+        AuthenUser authenUser = authenUserRepository.findByUserId(userId);
+        if(authenUser == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Doctor doctor = doctorRepository.findByUser(authenUser);
+        if(doctor == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        DoctorResponseData doctorResponseData = new DoctorResponseData();
+        doctorResponseData.setDoctorId(doctor.getDoctorId());
+        doctorResponseData.setFullName(authenUser.getFullName());
+
+        return new ResponseEntity<>(doctorResponseData, HttpStatus.OK);
+    }
 }
+

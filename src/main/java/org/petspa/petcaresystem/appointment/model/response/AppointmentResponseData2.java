@@ -26,6 +26,9 @@ public class AppointmentResponseData2 {
     private LocalDateTime endTime;
     private DoctorData bookedDoctor;
     private ServicesData bookedService;
+    private String userName;
+    private String email;
+    private String phoneNumber;
     private PetData pet;
     private Long reviewId;
     private Long boardingAppointmentId;

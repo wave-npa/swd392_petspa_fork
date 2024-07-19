@@ -1,258 +1,279 @@
 package org.petspa.petcaresystem.review.service.implement;
 
+import org.petspa.petcaresystem.appointment.model.payload.Appointment;
+import org.petspa.petcaresystem.appointment.model.payload.GuessInfor;
+import org.petspa.petcaresystem.appointment.repository.AppointmentRepository;
 import org.petspa.petcaresystem.authenuser.model.payload.AuthenUser;
 import org.petspa.petcaresystem.authenuser.repository.AuthenUserRepository;
 import org.petspa.petcaresystem.enums.ReviewRating;
-import org.petspa.petcaresystem.enums.Status;
-import org.petspa.petcaresystem.pet.model.response.ResponseObj;
-import org.petspa.petcaresystem.review.mapper.ReviewMapper;
+import org.petspa.petcaresystem.pet.model.entity.Pet;
+import org.petspa.petcaresystem.pet.model.entity.PetData;
+import org.petspa.petcaresystem.pet.repository.PetRepository;
 import org.petspa.petcaresystem.review.model.entity.Review;
-import org.petspa.petcaresystem.review.model.response.ReviewResponse;
+import org.petspa.petcaresystem.review.model.request.UpdateReviewRequestDTO;
+import org.petspa.petcaresystem.review.model.response.*;
 import org.petspa.petcaresystem.review.repository.ReviewRepository;
 import org.petspa.petcaresystem.review.service.ReviewService;
+import org.petspa.petcaresystem.serviceAppointment.model.Services;
+import org.petspa.petcaresystem.serviceAppointment.model.ServicesData;
+import org.petspa.petcaresystem.serviceAppointment.repository.ServicesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Service
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
+    private static final String format_pattern = "yyyy-MM-dd HH:mm";
 
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
     private AuthenUserRepository authenUserRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    private ServicesRepository servicesRepository;
+    @Autowired
+    private PetRepository petRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> ViewAllReview() {
+    public ReviewResponseDTO findAllReview() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Review found";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        List<ReviewResponseData> reviewResponseDataList = new ArrayList<>();
+
+        responseInfor.setMessage(message);
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
         try {
-            List<Review> reviewList = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "rating"));
-            if (reviewList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no reviews created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+            List<Review> reviewList = reviewRepository.findAll();
+            if (reviewList == null) {
+                message = "Review not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
             }
-            List<ReviewResponse> reviewResponses = new ArrayList<>();
+
             for (Review review : reviewList) {
-                ReviewResponse reviewResponse = ReviewMapper.toReviewResponse(review);
-                reviewResponses.add(reviewResponse);
+                ReviewResponseData reviewResponseData = new ReviewResponseData();
+                reviewResponseData.setReviewId(review.getReviewId());
+                reviewResponseData.setDescription(reviewResponseData.getDescription());
+                reviewResponseData.setReviewRating(reviewResponseData.getReviewRating());
+                reviewResponseData.setStatus(review.getStatus());
+                reviewResponseData.setUserId(review.getAuthor().getUserId());
+
+                reviewResponseDataList.add(reviewResponseData);
             }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Load reviews Successfully")
-                    .data(reviewResponses)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
     }
 
     @Override
-    public ResponseEntity<ResponseObj> ViewReviewByAuthor(Long Author_id) {
+    public ReviewResponseDTO findReviewByAuthor(Long userId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Review found";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
+        ResponseInfor responseInfor = new ResponseInfor();
+        List<ReviewResponseData> reviewResponseDataList = new ArrayList<>();
+
+        responseInfor.setMessage(message);
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
         try {
-            AuthenUser author = authenUserRepository.getReferenceById(Author_id);
-            List<AuthenUser> authenUserList = authenUserRepository.findAll();
-            for (AuthenUser authenUser : authenUserList) {
-                if (authenUser.equals(author) && authenUser.getStatus().equals(Status.ACTIVE)) {
-                    Collection<Review> reviewList = authenUser.getWrittenReview();
-                    if (reviewList.isEmpty()) {
-                        ResponseObj responseObj = ResponseObj.builder()
-                                .message("There are no reviews created yet")
-                                .data(null)
-                                .build();
-                        return ResponseEntity.ok().body(responseObj);
-                    } else {
-                        List<ReviewResponse> reviewResponses = new ArrayList<>();
-                        for (Review review : reviewList) {
-                            ReviewResponse reviewResponse = ReviewMapper.toReviewResponse(review);
-                            reviewResponses.add(reviewResponse);
-                        }
-                        ResponseObj responseObj = ResponseObj.builder()
-                                .message("Load reviews Successfully")
-                                .data(reviewResponses)
-                                .build();
-                        return ResponseEntity.ok().body(responseObj);
-                    }
-                }
+
+            AuthenUser authenUser = authenUserRepository.findByUserId(userId);
+            if (authenUser == null) {
+                message = "User not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO(responseInfor, null, null);
             }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Author not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            List<Review> reviewList = reviewRepository.findByAuthor(authenUser);
+            if (reviewList == null) {
+                message = "Review not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO(responseInfor, null, null);
+            }
+
+            for (Review review : reviewList) {
+                ReviewResponseData reviewResponseData = new ReviewResponseData();
+                reviewResponseData.setReviewId(review.getReviewId());
+                reviewResponseData.setDescription(review.getDescription());
+                reviewResponseData.setReviewRating(review.getRating());
+                reviewResponseData.setStatus(review.getStatus());
+                reviewResponseData.setUserId(review.getAuthor().getUserId());
+
+                reviewResponseDataList.add(reviewResponseData);
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        return new ReviewResponseDTO(responseInfor, null, reviewResponseDataList);
     }
 
     @Override
-    public ResponseEntity<ResponseObj> SortReviewByRating(ReviewRating rating) {
+    public ResponseInfor updateStatusReview(Long reviewId, UpdateReviewRequestDTO updateReviewRequestDTO) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Review updated successfully";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
+
         try {
-            List<Review> reviewList = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "rating"));
-            if (reviewList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no reviews created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+            Review review = reviewRepository.findByReviewId(reviewId);
+            if (review == null) {
+                message = "Review not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                return new ResponseInfor(message, timeStamp, statusCode, statusValue);
             }
-            List<ReviewResponse> reviewResponses = new ArrayList<>();
-            for (Review review : reviewList) {
-                if (review.getRating().equals(rating)) {
-                    ReviewResponse reviewResponse = ReviewMapper.toReviewResponse(review);
-                    reviewResponses.add(reviewResponse);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Load reviews Successfully")
-                    .data(reviewResponses)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+
+            review.setDescription(updateReviewRequestDTO.getDescription());
+            review.setRating(updateReviewRequestDTO.getRating());
+            review.setStatus(updateReviewRequestDTO.getStatus());
+
+            reviewRepository.save(review);
+
+
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        return new ResponseInfor(message, timeStamp, statusCode, statusValue);
     }
 
     @Override
-    public ResponseEntity<ResponseObj> DeleteReview(Long review_id) {
-        try {
-            Review deletereview = reviewRepository.getReferenceById(review_id);
-            List<Review> reviewList = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "rating"));
-            if (reviewList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no reviews created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            for (Review review : reviewList) {
-                if (review.equals(deletereview) && review.getStatus().equals(Status.ACTIVE)) {
-                    review.setStatus(Status.INACTIVE);
-                    reviewRepository.save(review);
+    public ReviewResponseDTO2 findReviewByApppointmentId(Long appointmentId) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format_pattern);
+        String timeStamp = localDateTime.format(formatter);
+        String message = "Review found";
+        int statusCode = HttpStatus.OK.value();
+        HttpStatus statusValue = HttpStatus.OK;
 
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Delete review Successfully")
-                            .data(null)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
+        ResponseInfor responseInfor = new ResponseInfor();
+        ReviewResponseData2 reviewResponseData2 = new ReviewResponseData2();
+
+        responseInfor.setMessage(message);
+        responseInfor.setTimeStamp(timeStamp);
+        responseInfor.setStatusCode(statusCode);
+        responseInfor.setStatusValue(statusValue);
+
+        try {
+
+            Appointment appointment = appointmentRepository.findByAppointmentId(appointmentId);
+            if (appointment == null) {
+                message = "Appointment not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO2(responseInfor, null);
             }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Review not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+
+            Review review = reviewRepository.findByAppointment(appointment);
+            if (review == null) {
+                message = "Review not found!";
+                statusCode = HttpStatus.NOT_FOUND.value();
+                statusValue = HttpStatus.NOT_FOUND;
+                responseInfor.setTimeStamp(timeStamp);
+                responseInfor.setStatusCode(statusCode);
+                responseInfor.setStatusValue(statusValue);
+                return new ReviewResponseDTO2(responseInfor, null);
+            }
+
+
+            reviewResponseData2.setReviewId(review.getReviewId());
+            reviewResponseData2.setDescription(review.getDescription());
+            reviewResponseData2.setReviewRating(review.getRating());
+            reviewResponseData2.setStatus(review.getStatus());
+            reviewResponseData2.setUserId(review.getAuthor().getUserId());
+
+            AuthenUser authenUser = authenUserRepository.findByUserId(review.getAuthor().getUserId());
+            reviewResponseData2.setFullName(authenUser.getFullName());
+
+            // service
+            Collection<Services> bookedServices = appointment.getBookedService();
+            List<Services> serviceList = new ArrayList<>(bookedServices);
+            ServicesData servicesData = new ServicesData();
+            for (Services services : serviceList) {
+                servicesData.setServiceName(services.getServiceName());
+            }
+            reviewResponseData2.setServiceName(servicesData.getServiceName());
+
+
+            // find pet
+            if (appointment.getPet() != null) {
+                Pet pet = petRepository.findByPetId(appointment.getPet().getPetId());
+                if (pet != null) {
+                    PetData petData = new PetData();
+                    petData.setPet_name(pet.getPet_name());
+                    petData.setAge(pet.getAge());
+                    petData.setGender(pet.getGender());
+                    petData.setStatus(pet.getStatus());
+                    petData.setPetId(pet.getPetId());
+                    petData.setType_of_species(pet.getType_of_species());
+                    petData.setOwnerId(pet.getOwner().getUserId());
+                    petData.setSpecies(pet.getSpecies());
+                    reviewResponseData2.setPetData(petData);
+
+                }
+            } else {
+                reviewResponseData2.setPetData(null);
+            }
+
 
         } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
+            message = "Something went wrong, server error!";
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            statusValue = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-    }
-
-    @Override
-    public ResponseEntity<ResponseObj> RestoreReview(Long review_id) {
-        try {
-            Review restorereview = reviewRepository.getReferenceById(review_id);
-            List<Review> reviewList = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "rating"));
-            if (reviewList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no reviews created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            for (Review review : reviewList) {
-                if (review.equals(restorereview) && review.getStatus().equals(Status.INACTIVE)) {
-                    review.setStatus(Status.ACTIVE);
-                    reviewRepository.save(review);
-
-                    ReviewResponse reviewResponse = ReviewMapper.toReviewResponse(review);
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Restore review Successfully")
-                            .data(reviewResponse)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Review not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
-    }
-
-    @Override
-    public ResponseEntity<ResponseObj> RemoveReview(Long review_id) {
-        try {
-            Review removereview = reviewRepository.getReferenceById(review_id);
-            List<Review> reviewList = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "rating"));
-            if (reviewList.isEmpty()) {
-                ResponseObj responseObj = ResponseObj.builder()
-                        .message("There are no reviews created yet")
-                        .data(null)
-                        .build();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-            }
-            for (Review review : reviewList) {
-                if (review.equals(removereview)) {
-
-                    reviewRepository.delete(review);
-
-                    ResponseObj responseObj = ResponseObj.builder()
-                            .message("Remove review Successfully")
-                            .data(null)
-                            .build();
-                    return ResponseEntity.ok().body(responseObj);
-                }
-            }
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Review not found")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseObj responseObj = ResponseObj.builder()
-                    .message("Fail to load")
-                    .data(null)
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
-        }
+        return new ReviewResponseDTO2(responseInfor, reviewResponseData2);
     }
 }

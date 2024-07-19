@@ -1,17 +1,20 @@
 package org.petspa.petcaresystem.schedule.service;
 
-import org.petspa.petcaresystem.pet.model.response.ResponseObj;
-import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequest;
-import org.petspa.petcaresystem.schedule.model.request.CreateScheduleRequest;
-import org.petspa.petcaresystem.schedule.model.request.UpdateScheduleDetailRequest;
-import org.petspa.petcaresystem.schedule.model.request.UpdateScheduleRequest;
-import org.springframework.http.ResponseEntity;
+import org.petspa.petcaresystem.enums.Status;
+import org.petspa.petcaresystem.schedule.model.request.CreateScheduleDetailRequestDTO;
+import org.petspa.petcaresystem.schedule.model.request.CreateScheduleRequestDTO;
+import org.petspa.petcaresystem.schedule.model.response.ResponseInfor;
+import org.petspa.petcaresystem.schedule.model.response.ScheduleResponseDTO;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public interface ScheduleDetailService {
-    ResponseEntity<ResponseObj> ViewAllScheduleDetailByScheduleId(Long schedule_id);
-    ResponseEntity<ResponseObj> CreateScheduleDetail(Long schedule_id, CreateScheduleDetailRequest createScheduleDetailRequest);
-    ResponseEntity<ResponseObj> UpdateScheduleDetail(Long detail_id, UpdateScheduleDetailRequest updateScheduleDetailRequest );
-    ResponseEntity<ResponseObj> DeleteScheduleDetail(Long detail_id);
+    ScheduleResponseDTO viewSchedulebyDoctorId(Long doctor_id);
+
+    ResponseInfor createScheduleDetail(Long scheduleId, CreateScheduleDetailRequestDTO createScheduleDetailRequestDTO);
+
+    ResponseInfor updateScheduleDetail(Long scheduleDetailId, CreateScheduleDetailRequestDTO createScheduleDetailRequestDTO );
 }
