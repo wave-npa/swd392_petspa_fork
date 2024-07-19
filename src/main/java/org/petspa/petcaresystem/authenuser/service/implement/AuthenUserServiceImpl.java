@@ -70,6 +70,8 @@ public class AuthenUserServiceImpl implements AuthenUserService {
 
     @Override
     public AuthenUser createUser(AuthenUser authenUser) {
+        String encodedPassword = passwordEncoder.encode(authenUser.getPassword());
+        authenUser.setPassword(encodedPassword);
         return authenUserRepository.save(authenUser);
     }
 
@@ -206,6 +208,7 @@ public class AuthenUserServiceImpl implements AuthenUserService {
         }
 
         try {
+            
             authenUserRepository.save(authenUser);
 
             HttpSession session = request.getSession();
